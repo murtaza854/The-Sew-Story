@@ -1,0 +1,81 @@
+@import '../global.scss';
+
+.user-dashboard {
+    min-height: 40vh;
+    font-family: $font-urbanist;
+    .box-shadow-dashboard {
+        // box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px 0px;
+        padding: 1.5rem 2rem;
+        padding-bottom: 0.5rem;
+        border-radius: 15px;
+        margin: 0.5rem 0;
+    }
+    .page-item {
+        .page-link {
+            z-index: 3;
+            color: black;
+        }
+    }
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #dee2e6;
+    }
+    .page-item.active {
+        .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: black;
+            border-color: black;
+        }
+    }
+    .bs-select {
+        display: none;
+    }
+    .delete-icon {
+        color: black;
+        width: fit-content;
+        margin: 0 auto;
+        font-size: 2rem;
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+        &:hover {
+            color: #8fbedf;
+        }
+    }
+    .icon-link {
+        color: black;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: 1rem;
+        font-size: 2rem;
+        transition: 0.3s ease-in-out;
+        &:hover {
+            color: #8fbedf;
+        }
+    }
+    .dash-open-icon {
+        color: black;
+        right: 1rem;
+        top: 1rem;
+        font-size: 2rem;
+        transition: .3s ease-in-out;
+        &:hover {
+            color: $primary-color;
+            cursor: pointer;
+        }
+    }
+    .close-icon {
+        color: black;
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        font-size: 2rem;
+        transition: .3s ease-in-out;
+        &:hover {
+            color: $primary-color;
+            cursor: pointer;
+        }
+    }
+}

@@ -1,0 +1,71 @@
+.dashboard-sidebar {
+    border-right: 1px solid black;
+    background-color: white;
+    .link-row {
+        display: flex;
+        flex-direction: column;
+        a {
+            width: fit-content;
+            color: black;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        .active {
+            text-decoration: underline;
+        }
+    }
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .dashboard-sidebar {
+        transform: translateY(100%);
+        position: fixed;
+        z-index: 9;
+        padding: 3rem 1.5rem;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    .active-dashboard-sidebar {
+        transform: translateX(100%);
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px 0px;
+        animation-name: filterPanelOpen;
+        animation-duration: 1s;
+        animation-iteration-count: 1;
+        animation-timing-function: ease;
+        animation-fill-mode: forwards;
+    }
+    .remove-dashboard-sidebar {
+        transform: translateY(0%);
+        box-shadow: none;
+        animation-name: filterPanelClose;
+        animation-duration: 1s;
+        animation-iteration-count: 1;
+        animation-timing-function: ease;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes filterPanelOpen {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0%);
+        }
+    }
+
+    @keyframes filterPanelClose {
+        from {
+            transform: translateY(0%);
+        }
+        to {
+            transform: translateY(100%);
+        }
+    }
+}

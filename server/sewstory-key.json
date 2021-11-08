@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "the-sew-story",
+  "private_key_id": "6521c2fbb6fac67913201beead1f87fab45f63fa",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC46Sa43h1iWbTT\nExldZltP2GjJXm6mLxahywJDIoM/uni7EluZjGaTwPe0hflb3uYphrOMXN+AEcec\n/6Ziosk7uzMNOlYj7WBzZDGEXwyDwWd825z/Ktsdiikp/DAwqAAeOpHVUz7IzKeM\nTTCi0cdFOfZML0j4ftRmpALqluFgtsJBrf1UDFbaLDOae2GxJNYOkJVxQkLzgahD\nt1RLUrxXZksF2oXEMZ7pLLTnCz7L+EVbMPbbavW251aiK2tmmOuBnywp0KY8cEWk\ncv5CPdEAEST1FJa1bwIDkamgMOvvskmiNhAStqDDPYuwmK4mjiv4XPE2WgaSTjJT\nWhJ8uqx5AgMBAAECggEAD3eKIoPKwa2nAVJbSGudxvKfRjvAxeQRsLAgVPEDuT6N\n53j4QkJjGKgXGCmuM1v0VOQka+DfXZEvKR/dwSmkazuEAE7hQnFSRGistymzrGgu\nsbwVeGcTa7fBLHbAqas90kl8JhPH4Eg1GhhhUXc6Y70ez93TLN0AA4Njzo9XFA2l\nAYoy0ejr6jtXXULGBb5crUj8wAfBhkR7XKi66bzALXP+JJF9Og9jMZd9Gasp3ohr\nkqPyZ1pbHGYSPoyaLWiiWS4t/Og5me1r6dZO6vX+UDnzIXVFJesIBNOtLoVrkERR\n68bDHApex65Lfrh+ac/6TVwCff6WuEwItK0DbFhhYQKBgQDmopxHwH/fdzLIfQC/\nouN7mvTC8SQA3ApuZvzVDw5JSZMKdoyroOsKwIf53MHIx1nOJoMHLELshlX2CMxn\nX2T9EBYJhQ7ynuwOqFZgVLpM8TNY8zFiAVAxaRKgoXap0RRDdwW/EkCL8g0eYpdq\nOb6hERkVfKt9Wn2mYF1P0otI4QKBgQDNPzKRnl8loFw8T9IBhp9W6EGIhCVOpZhL\nd5XIOOE/GOiJaevDi3Bo1Zv+pc0NWwpHID9fnUght+Ti+OPh33V2Qnwaq+RGuQnw\nob/3FPAesVUzv5o4tIJJlDY9+9VSiw8BIGMFDHbET5hQKeCvr9+Go1OIadnu29EV\nZh7FOmnemQKBgFrryAhRTxfdeduny9/Aa0WTNOKVBciA9mvHley4Xr1tj9YUHiia\n6431kKVj7dElJbYrYIQ3YrqzyrePiGVIKhvJd6aRGe9zz0OIAWVAgaFLhR6P4Ovt\n8JtJ/NnuTUVs8zwVc+J7Y47IAXv1ChQKZ6g/gVADMefdAKPSYXbSXa6BAoGAOjKc\nTSwiAJJK9RMREjuw/LyYsHP//B/6YhPDleWDARg3/5bYMjdcpW1EcV1kGlBhRq+/\nKIZ5iI4TScSXIVnyfZj2hb2N2fvn9KJ4wz/domZYKXc/7KpKc0CibMr2vxQNKh2b\n1jeliZ6kKr7lJgvxjsTLD9gr4o3T6IRvXy9kC6kCgYEA4yjXlNDvHR+tAJr/OHjf\niQbBAowUlXBVacCaU+YpDDqrd+ai49mOT0lSirxk9gM9oKQF23p0dNSRdHumV5tO\nhl3apz04AfC9vJ1w8jwZGlMPZfsdLAVoXf+Kj2bPoo9ZnVU3KJBUh9va8AsOlUt8\n3E4nnebg+Ku6ikWx2t/EaRg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-3f61i@the-sew-story.iam.gserviceaccount.com",
+  "client_id": "100909441301331306806",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-3f61i%40the-sew-story.iam.gserviceaccount.com"
+}

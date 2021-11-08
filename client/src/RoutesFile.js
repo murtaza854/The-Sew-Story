@@ -1,14 +1,14 @@
 import React from 'react';
 import {
-    Routes,
-    // Route,
+    Switch,
+    Route,
     useLocation,
 } from "react-router-dom";
-// import { MainNavbar, IconBanner, Footer } from './components';
-// import { Home, Signup, Login, Setup, Businesses, Business, PackageSelection, Premium, ForgotPassword } from './pages';
-// import Auth from './auth/Auth';
+import { MainNavbar, Footer, BlackBar } from './components';
+import { Home, Story, Products, ProductPage, Signup, Login, ForgotPassword } from './pages';
+import Auth from './auth/Auth';
 // import { ComingSoon } from './pages';
-// import { Dashboard } from './dashboard';
+import { Dashboard } from './dashboard';
 // import CartContext from './contexts/cart';
 // import DiscountContext from './contexts/discount';
 // import api from './api';
@@ -29,6 +29,9 @@ function RoutesFile(props) {
 
     let location = useLocation();
 
+    let positionStyle = 'relative';
+    if (location.pathname === '/') positionStyle = 'absolute';
+
     return (
         // <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
         //   <DiscountContext.Provider value={discountState}>
@@ -37,6 +40,7 @@ function RoutesFile(props) {
         //     <SearchNavbar options={navOptions} />
         // {/* <div className="margin-global-top-1" /> */}
         <div>
+            {/* <MainNavbar /> */}
             <TransitionGroup>
                 <CSSTransition
                     key={location.key}
@@ -44,32 +48,38 @@ function RoutesFile(props) {
                     timeout={300}
                 >
                     <div className="page">
-                        <Routes location={location}>
-                            {/* <Route path="/__/auth/action">
-                                <MainNavbar />
+                        <MainNavbar positionStyle={positionStyle} />
+                        <Switch location={location}>
+                            <Route path="/__/auth/action">
                                 <Auth />
-                            </Route> */}
-                            {/* <Route path="/dashboard/account">
-                                <MainNavbar />
+                            </Route>
+                            <Route path="/dashboard/account">
                                 <Dashboard />
-                            </Route> */}
-                            {/* <Route path="/forgot-password">
-                                <MainNavbar />
+                            </Route>
+                            <Route path="/forgot-password">
                                 <ForgotPassword />
-                            </Route> */}
-                            {/* <Route path="/signup">
-                                <MainNavbar />
+                            </Route>
+                            <Route path="/signup">
                                 <Signup />
-                            </Route> */}
-                            {/* <Route path="/login">
-                                <MainNavbar />
+                            </Route>
+                            <Route path="/login">
                                 <Login />
-                            </Route> */}
-                            {/* <Route path="/">
-                                <MainNavbar />
+                            </Route>
+                            <Route path="/products">
+                                <Products />
+                            </Route>
+                            <Route path="/our-story">
+                                <Story />
+                            </Route>
+                            <Route path="/:slug">
+                                <ProductPage />
+                            </Route>
+                            <Route path="/">
                                 <Home />
-                            </Route> */}
-                        </Routes>
+                            </Route>
+                        </Switch>
+                        <Footer />
+                        <BlackBar />
                     </div>
                 </CSSTransition>
             </TransitionGroup>

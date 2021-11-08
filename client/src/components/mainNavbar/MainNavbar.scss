@@ -1,0 +1,62 @@
+@import '../../global';
+
+.main-navbar {
+    width: 100%;
+    z-index: 9999;
+    padding-top: 2rem;
+    img {
+        width: 12rem;
+    }
+    .main-navbar-bottom-line {
+        background-color: black;
+        height: 1px;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .nav-icons {
+        display: flex;
+        align-items: center;
+    }
+    .flag-cont {
+        width: 6rem;
+        display: flex;
+        border: 1px solid black;
+        border-radius: 5px;
+        p {
+            position: relative;
+            top: 50%;
+            margin-top: 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: $font-weight-regular;
+            font-family: $font-urbanist;
+        }
+        img {
+            width: 100%;
+            object-fit: contain;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+    .user-icon {
+        margin: 0 0.5rem;
+        font-size: $font-size-medium;
+        color: black;
+    }
+    .cart-icon {
+        font-size: $font-size-medium;
+        border-radius: 100%;
+        color: black;
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .main-navbar {
+        .flag-cont {
+            display: none;
+        }
+    }
+}

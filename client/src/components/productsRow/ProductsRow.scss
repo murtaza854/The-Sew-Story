@@ -1,0 +1,15 @@
+@import '../../global.scss';
+
+.products-row {
+    padding: 5rem 0;
+  .three-products {
+      background-color: $secondary-color;
+  } 
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+  .products-row {
+      padding: 3rem 0;
+  }
+}

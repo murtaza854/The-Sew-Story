@@ -1,0 +1,15 @@
+@import '../global.scss';
+
+.auth {
+    text-align: center;
+    height: 50vh;
+    font-family: $font-urbanist;
+    img {
+        width: 18rem;
+    }
+    a {
+        font-weight: 700;
+        color: black;
+        text-decoration: none;
+    }
+}

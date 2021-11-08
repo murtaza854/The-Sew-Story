@@ -1,0 +1,70 @@
+@import "../../../../global.scss";
+
+.intro {
+    img {
+        width: 100%;
+        height: $image-height-xl;
+        filter: grayscale(100%);
+        object-fit: cover;
+    }
+    .bottom-line {
+        background-color: black;
+        height: 1px;
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .intro {
+        img {
+            height: $image-height-large;
+        }
+        .margin-global-top-13 {
+            margin-top: 10rem;
+        }
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .intro {
+        img {
+            height: $image-height-xl;
+        }
+        .col-lg-4 {
+            padding: $padding-image-large;
+        }
+        .link-button {
+            margin-bottom: 3rem;
+        }
+        .description-text {
+            text-align: center;
+        }
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+    .intro {
+        .col-lg-4 {
+            padding: $padding-image-medium;
+        }
+    }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+    .intro {
+        padding: $padding-image-small;
+        .col-lg-4 {
+            padding-right: calc(var(--bs-gutter-x) * 0.5);
+            padding-left: calc(var(--bs-gutter-x) * 0.5);
+        }
+    }
+}

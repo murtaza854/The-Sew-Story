@@ -1,0 +1,46 @@
+@import "../../global.scss";
+
+.product-page {
+    .product-back {
+        background: $secondary-color;
+    }
+    .our-products-back {
+        background-color: $secondary-color;
+        padding-bottom: 2rem;
+        .collection-link {
+            text-decoration: none;
+            font-family: $font-urbanist;
+            font-weight: $font-weight-normal;
+            font-size: $font-size-small;
+            color: black;
+            width: 100%;
+            display: block;
+            text-transform: uppercase;
+            transition: all 0.3s ease-in-out;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        .bottom-line {
+            background-color: black;
+            height: 1px;
+            width: 100%;
+            margin-top: 10px;
+        }
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+    .product-page {
+        .our-products-back {
+            padding: $padding-image-small;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+    }
+}

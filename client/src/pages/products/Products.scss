@@ -1,0 +1,20 @@
+@import '../../global.scss';
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .products {
+        .col-md-4 {
+            width: 50%;
+        }
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+    .products {
+        padding: $padding-image-small;
+        .col-md-4 {
+            width: 100%;
+        }
+    }
+}
