@@ -9,6 +9,7 @@ function Footer(props) {
                 <h3><span>theSewStory</span></h3>
                 <p className="footer-links">
                     <Link to="/" className="link-1">Home</Link>
+                    <Link to="/our-story" className="link-2">Our Story</Link>
                     {/* <a href="/diy">DIY</a> */}
                     {/* <a href="/contact-us">Contact Us</a> */}
                 </p>

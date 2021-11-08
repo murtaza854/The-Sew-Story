@@ -10,10 +10,10 @@ function StoryInfo(props) {
                 {
                     props.order === 'imageFirst' ? (
                         <>
-                            <Col lg={4}>
+                            <Col className="order-change-2" lg={4}>
                                 <img src={props.image} alt={props.title} />
                             </Col>
-                            <Col lg={8}>
+                            <Col className="order-change-1" lg={8}>
                                 <DescriptionText
                                     text={props.description}
                                     className="center-relative-vertical padding-left"
@@ -22,13 +22,13 @@ function StoryInfo(props) {
                         </>
                     ) : (
                         <>
-                            <Col className="order-2" lg={8}>
+                            <Col className="order-change-1" lg={8}>
                                 <DescriptionText
                                     text={props.description}
                                     className="center-relative-vertical padding-right"
                                 />
                             </Col>
-                            <Col className="image-margin-top order-1" lg={4}>
+                            <Col className="image-margin-top order-change-2" lg={4}>
                                 <img src={props.image} alt={props.title} />
                             </Col>
                         </>

@@ -35,21 +35,21 @@ function ProductPage(props) {
                     name: 'Product 1',
                     slug: 'product-1',
                     price: '$100',
-                    image: 'https://picsum.photos/200/300',
+                    image: '/Products/Product 2.jpeg',
                 },
                 {
                     id: 2,
                     name: 'Product 2',
                     slug: 'product-2',
                     price: '$200',
-                    image: 'https://picsum.photos/200/300',
+                    image: '/Products/Product 1.jpeg',
                 },
                 {
                     id: 3,
                     name: 'Product 3',
                     slug: 'product-3',
                     price: '$300',
-                    image: 'https://picsum.photos/200/300',
+                    image: '/Products/Product 3.jpeg',
                 },
             ]);
             // }
@@ -72,13 +72,18 @@ function ProductPage(props) {
             try {
                 setProduct({
                     id: 1,
-                    name: 'Product 1',
+                    name: 'Kaneez',
                     slug: 'product-1',
-                    price: '$100',
-                    image: 'https://picsum.photos/200/300',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                    location: 'New York',
-                    story: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                    price: '24.99',
+                    image: '/Products/Product 7.jpeg',
+                    description1: 'Pack of 2 Kitchen Towels',
+                    description2: 'Colors: White, Turquoise Blue, Sea Green',
+                    description3: 'Made with 100% cotton',
+                    description4: 'Weight: 4.00 lbs/Dozen',
+                    description5: 'Size: 20 x 30 inches',
+                    description6: 'Made in Pakistan',
+                    location: 'Interior Sindh',
+                    story: 'Kaneez belongs to a small village in interior Sindh. She moved to Karachi with her husband and four kids five years ago in search of better work opportunities and life style. She currently resides in a rented small one-bedroom house. Her husband works as an electrician and welder with a construction team and is paid Rs.350 (approximately $2 USD) per day which is just enough to manage to get food on the table each day. Kaneez manages to contribute to the household expenses sometimes if she is able to get sewing or embroidery work from her neighborhood and society women. Her kids aged 4,5,7 and 9 all used to go to school but earlier this year due to insufficient funds, the two older kids were withdrawn from school and were asked to help work along their parents to contribute to the household income.Kaneez met The Sew Story tea, in August 2021 and has been an integral member of our team since then. She has been able to enroll all her kids back in school and The Sew Story team has taken up the responsibility to pay their education expenses',
                 });
             } catch (error) {
                 console.log(error);
@@ -93,11 +98,12 @@ function ProductPage(props) {
             </div>
             <Heading
                 text="More Products"
-                className="text-center margin-global-top-8"
+                className="text-center margin-global-top-3"
             />
-            <div className="our-products-back">
+            <div className="white-background our-products-back">
                 <ProductsRow
                     products={products}
+                    className="white-background"
                 />
                 <div className="center-relative-horizontal-fit-content">
                     <Link className="collection-link" to="/products">View Collection</Link>

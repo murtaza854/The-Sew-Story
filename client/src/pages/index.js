@@ -5,3 +5,4 @@ export { default as ProductPage } from './productPage/ProductPage';
 export { default as Signup } from './signup/Signup';
 export { default as Login } from './login/Login';
 export { default as ForgotPassword } from './forgotPassword/ForgotPassword';
+export { default as Cart } from './cart/Cart';

@@ -31,8 +31,8 @@ const createServer = async (callback) => {
     ));
     app.use(cors({
         credentials: true,
-        origin: [process.env.API_URL1, process.env.API_URL2]
-        // origin: [process.env.API_URL3]
+        // origin: [process.env.API_URL1, process.env.API_URL2]
+        origin: [process.env.API_URL3]
         // origin: '*'
     }));
     app.use(express.static('./build'));
@@ -81,10 +81,10 @@ const createServer = async (callback) => {
             res.json({ data: null, error: error });
         }
     });
-    // app.get('*', function (req, res) {
-    //     // res.sendFile('./build/index.html');
-    //     res.sendFile(path.resolve('./build/index.html'));
-    // });
+    app.get('*', function (req, res) {
+        // res.sendFile('./build/index.html');
+        res.sendFile(path.resolve('./build/index.html'));
+    });
     // app.use('/api/orders', orderRoutes);
     // app.get('/login', (req, res) => {
     //   firebase.auth().signInWithEmailAndPassword('murtazashafi11@gmail.com', 'test123')

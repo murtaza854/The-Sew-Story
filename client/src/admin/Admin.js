@@ -57,11 +57,11 @@ function Admin(props) {
     return (
         <ThemeProvider theme={currentTheme}>
             {/* <Login setToken={setToken} title="Mzushi: Admin Login" /> */}
-            {/* {!user.userState ? ( */}
+            {!user.userState ? (
                 <Login user={user} title="The Sew Story: Admin Login" />
-            {/* // ) : (
-            //     <AdminLayout user={user} darkState={darkState} setDarkState={setDarkState} title="Mzushi: Dashboard" />
-            // )} */}
+            ) : (
+                <AdminLayout user={user} darkState={darkState} setDarkState={setDarkState} title="Mzushi: Dashboard" />
+            )}
         </ThemeProvider>
     );
 }

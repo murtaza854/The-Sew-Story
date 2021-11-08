@@ -6,7 +6,7 @@ import './ProductsRow.scss';
 function ProductsRow(props) {
     return (
         <>
-            <Container className="products-row" fluid>
+            <Container className={`products-row ${props.className}`} fluid>
                 <Container>
                     <Row>
                         {

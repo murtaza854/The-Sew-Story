@@ -18,10 +18,10 @@ function MainNavbar(props) {
                         </Link>
                     </div>
                     <div className="nav-icons">
-                        <div className="flag-cont">
+                        {/* <div className="flag-cont">
                             <img src="/flag.png" alt="USA Flag" />
                             <p>USD</p>
-                        </div>
+                        </div> */}
                         {
                             user?.userState ? (
                                 <Link to="/dashboard/account">

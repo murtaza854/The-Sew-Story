@@ -1,6 +1,7 @@
 @import '../../global.scss';
 
 .story-info {
+    font-family: $font-urbanist;
     img {
         width: 100%;
         height: $image-height-xl;
@@ -44,16 +45,22 @@
             padding: 0;
         }
         .padding-left {
-            margin-top: 3rem;
+            margin-bottom: 3rem;
         }
         .padding-right {
-            margin-top: 3rem;
+            margin-bottom: 3rem;
         }
-        .image-margin-top {
-            margin-top: 3rem;
-        }
+        // .image-margin-top {
+        //     // margin-bottom: 3rem;
+        // }
         .margin-global-top-3 {
             margin-top: 0;
+        }
+        .order-change-2 {
+            order: 2;
+        }
+        .order-change-2 {
+            order: 1;
         }
     }
 }

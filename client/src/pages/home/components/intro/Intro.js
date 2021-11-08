@@ -28,7 +28,7 @@ function Intro(props) {
                     {/* <div className="margin-global-top-3" /> */}
                     <Row className="hide-992">
                         <DescriptionText
-                            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                            text="The proceeds from every sale will be directly allotted to the designer so that she can make a fair living wage to emerge with confidence from the strife of poverty."
                             className="margin-global-top-6"
                         />
                     </Row>

@@ -32,22 +32,22 @@ function Home(props) {
                     id: 1,
                     name: 'Product 1',
                     slug: 'product-1',
-                    price: '$100',
-                    image: 'https://picsum.photos/200/300',
+                    price: '100',
+                    image: '/Products/Product 2.jpeg',
                 },
                 {
                     id: 2,
                     name: 'Product 2',
                     slug: 'product-2',
-                    price: '$200',
-                    image: 'https://picsum.photos/200/300',
+                    price: '200',
+                    image: '/Products/Product 1.jpeg',
                 },
                 {
                     id: 3,
                     name: 'Product 3',
                     slug: 'product-3',
-                    price: '$300',
-                    image: 'https://picsum.photos/200/300',
+                    price: '300',
+                    image: '/Products/Product 3.jpeg',
                 },
             ]);
             // }
@@ -77,8 +77,8 @@ function Home(props) {
             </div>
             <SomeText
                 className="text-center"
-                text1="Lorem ipsum dolor sit amet,"
-                text2="consectetur adipiscing elit"
+                text1="The Sew Story has become a Passion Project"
+                text2="founded to promote Women Empowerment"
             />
         </div>
     );

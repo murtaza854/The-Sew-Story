@@ -1,15 +1,18 @@
-@import '../../global.scss';
+@import "../../global.scss";
 
 .products-row {
-    padding: 5rem 0;
+  padding: 5rem 0;
   .three-products {
-      background-color: $secondary-color;
-  } 
+    background-color: $secondary-color;
+  }
+}
+.white-background {
+  background-color: white !important;
 }
 
 // X-Small devices (portrait phones, less than 576px)
 @media (max-width: 35.99875em) {
   .products-row {
-      padding: 3rem 0;
+    padding: 3rem 0;
   }
 }

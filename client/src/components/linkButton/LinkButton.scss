@@ -17,4 +17,7 @@
         background-color: transparent;
         color: black;
     }
+    &:focus, &:active {
+        box-shadow: none;
+    }
 }

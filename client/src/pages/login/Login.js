@@ -58,15 +58,7 @@ function Login(props) {
             } else {
                 const { displayName, email, emailVerified, admin } = content.data;
                 user.setUserState({ displayName, email, emailVerified, admin });
-                // else history.push("/packages");
-                // history.push("/packages");
             }
-            // if (userLoggedin === null) {
-            //     setEmail(prevState => ({ ...prevState, name: '', errorText: 'Invalid Credentials!', error: true }));
-            //     setPassword(prevState => ({ ...prevState, name: '', errorText: 'Invalid Credentials!', error: true, showPassword: false }));
-            // } else {
-            //     user.setUserState(userLoggedin);
-            // }
         } catch (error) {
             setDisable(false);
         }
@@ -77,6 +69,7 @@ function Login(props) {
             history.push('/');
         }
     }, [history, user.userState]);
+    
     return (
         <Container>
             <Row>

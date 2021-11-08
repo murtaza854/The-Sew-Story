@@ -27,6 +27,15 @@
     }
 }
 
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .story {
+        .margin-global-top-3 {
+            margin-top: 0;
+        }
+    }
+}
+
 // X-Small devices (portrait phones, less than 576px)
 @media (max-width: 35.99875em) {
     .story {

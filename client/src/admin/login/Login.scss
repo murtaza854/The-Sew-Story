@@ -36,6 +36,9 @@
     .admin-card-formcontrol {
         margin: 10px 0;
         width: 100%;
+        label {
+            transform: translate(0, -9px) scale(0.75);
+        }
     }
     .admin-login-base {
         padding: 50px 30px;
