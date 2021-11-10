@@ -8,6 +8,7 @@ import './App.scss';
 import RoutesFile from './RoutesFile';
 // import { Admin } from './admin';
 import UserContext from "./contexts/userContext";
+import CartCountContext from './contexts/cartCountContext';
 import api from './api';
 import { Admin } from './admin';
 // import Auth from './auth/Auth';
@@ -15,6 +16,7 @@ import { Admin } from './admin';
 
 function App() {
   const [userState, setUserState] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,6 +47,7 @@ function App() {
 
   return (
     <UserContext.Provider value={{ userState: userState, setUserState: setUserState }}>
+      <CartCountContext.Provider value={{ cartCount: cartCount, setCartCount: setCartCount }}>
       <Router>
         <Switch>
           <Route path="/admin">
@@ -55,6 +58,7 @@ function App() {
           </Route>
         </Switch>
       </Router>
+      </CartCountContext.Provider>
     </UserContext.Provider>
   );
 }

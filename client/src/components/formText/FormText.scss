@@ -1,5 +1,8 @@
+@import '../../global.scss';
+
 .form-text {
     font-size: 1rem;
+    font-family: $font-urbanist;
     color: black;
     font-weight: 300;
     a {

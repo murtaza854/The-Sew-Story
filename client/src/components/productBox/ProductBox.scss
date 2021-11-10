@@ -5,6 +5,25 @@
     .product-box-link {
         position: relative;
         .product-box__image {
+            position: relative;
+            .product-box__category {
+                position: absolute;
+                z-index: 1;
+                width: 100%;
+                color: #000;
+                font-size: $font-size-large;
+                font-family: $font-urbanist;
+                text-align: center;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                padding: 0 0.5rem;
+                h3 {
+                    font-weight: $font-weight-regular;
+                    opacity: 0;
+                    transition: opacity 0.3s ease-in-out;
+                }
+            }
             img {
                 width: 100%;
                 height: $image-height-xl;
@@ -15,7 +34,12 @@
         }
         &:hover {
             img {
-                filter: grayscale(100%);
+                filter: grayscale(100%) blur(2px);
+            }
+            .product-box__category {
+                h3 {
+                    opacity: 1;
+                }
             }
         }
     }

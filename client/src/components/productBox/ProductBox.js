@@ -5,11 +5,14 @@ import './ProductBox.scss';
 function ProductBox(props) {
     return (
         <div className={`product-box ${props.className}`}>
-        <Link to={`/${props.product.slug}`} className={`product-box-link`}>
-            <div className="product-box__image">
-                <img src={props.product.image} alt={props.product.name} />
-            </div>
-        </Link>
+            <Link to={`/${props.product.slug}`} className={`product-box-link`}>
+                <div className="product-box__image">
+                    <div className="product-box__category">
+                        <h3>{props.product.category.name}</h3>
+                    </div>
+                    <img src={props.product.image} alt={props.product.name} />
+                </div>
+            </Link>
         </div>
     );
 }

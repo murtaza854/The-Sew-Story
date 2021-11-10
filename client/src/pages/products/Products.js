@@ -30,6 +30,11 @@ function Products(props) {
                     slug: 'product-1',
                     price: '$100',
                     image: '/Products/Product 1.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 2,
@@ -37,6 +42,11 @@ function Products(props) {
                     slug: 'product-2',
                     price: '$200',
                     image: '/Products/Product 2.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 3,
@@ -44,6 +54,11 @@ function Products(props) {
                     slug: 'product-3',
                     price: '$300',
                     image: '/Products/Product 3.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 4,
@@ -51,6 +66,11 @@ function Products(props) {
                     slug: 'product-4',
                     price: '$400',
                     image: '/Products/Product 4.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 5,
@@ -58,6 +78,11 @@ function Products(props) {
                     slug: 'product-5',
                     price: '$500',
                     image: '/Products/Product 5.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 6,
@@ -65,6 +90,11 @@ function Products(props) {
                     slug: 'product-6',
                     price: '$600',
                     image: '/Products/Product 6.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 7,
@@ -72,6 +102,11 @@ function Products(props) {
                     slug: 'product-7',
                     price: '$700',
                     image: '/Products/Product 7.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 8,
@@ -79,6 +114,11 @@ function Products(props) {
                     slug: 'product-8',
                     price: '$800',
                     image: '/Products/Product 1.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 9,
@@ -86,6 +126,11 @@ function Products(props) {
                     slug: 'product-9',
                     price: '$900',
                     image: '/Products/Product 2.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 10,
@@ -93,6 +138,11 @@ function Products(props) {
                     slug: 'product-10',
                     price: '$1000',
                     image: '/Products/Product 3.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 11,
@@ -107,6 +157,11 @@ function Products(props) {
                     slug: 'product-12',
                     price: '$1200',
                     image: '/Products/Product 5.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 13,
@@ -114,6 +169,11 @@ function Products(props) {
                     slug: 'product-13',
                     price: '$1300',
                     image: '/Products/Product 6.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 14,
@@ -121,6 +181,11 @@ function Products(props) {
                     slug: 'product-14',
                     price: '$1400',
                     image: '/Products/Product 7.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
             ];
             var i, j, temporary, chunk = 9;

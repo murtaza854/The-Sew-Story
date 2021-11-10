@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Heading, ProductsRow } from '../../components';
+import CartCountContext from '../../contexts/cartCountContext';
 import { ProductCard } from './components';
 import './ProductPage.scss';
 
@@ -10,6 +11,10 @@ function ProductPage(props) {
     const [product, setProduct] = useState(null)
     const { slug } = useParams();
     const [products, setProducts] = useState([]);
+    const cartCountFromContext = useContext(CartCountContext);
+    const [disable, setDisable] = useState(false);
+
+    const [message, setMessage] = useState({ display: false, text: '' });
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -36,6 +41,11 @@ function ProductPage(props) {
                     slug: 'product-1',
                     price: '$100',
                     image: '/Products/Product 2.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 2,
@@ -43,6 +53,11 @@ function ProductPage(props) {
                     slug: 'product-2',
                     price: '$200',
                     image: '/Products/Product 1.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 3,
@@ -50,6 +65,11 @@ function ProductPage(props) {
                     slug: 'product-3',
                     price: '$300',
                     image: '/Products/Product 3.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
             ]);
             // }
@@ -91,10 +111,47 @@ function ProductPage(props) {
         };
         fetchProduct();
     }, [slug])
+
+    const addToCart = (product) => {
+        var cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
+        if (cartProducts) {
+            const productExists = cartProducts.find(item => item.product.id === product.id);
+            if (productExists) {
+                productExists.quantity += 1;
+                setDisable(true);
+                setMessage({ display: true, text: 'Quantity updated!' })
+                setTimeout(() => {
+                    setDisable(false);
+                    setMessage({ display: false, text: '' });
+                }, 2500);
+            } else {
+                cartProducts.push({ product, quantity: 1 });
+                cartCountFromContext.setCartCount(cartCountFromContext.cartCount + 1);
+                setDisable(true);
+                setMessage({ display: true, text: 'Added to cart!' })
+                setTimeout(() => {
+                    setDisable(false);
+                    setMessage({ display: false, text: '' });
+                }, 2500);
+            }
+        } else {
+            cartProducts = [{ product, quantity: 1 }];
+            cartCountFromContext.setCartCount(cartCountFromContext.cartCount + 1);
+            setDisable(true);
+            setMessage({ display: true, text: 'Added to cart!' })
+            setTimeout(() => {
+                setDisable(false);
+                setMessage({ display: false, text: '' });
+            }, 2500);
+        }
+        localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
+    }
+
+
     return (
         <div className="product-page">
             <div className="product-back margin-global-top-5">
-                <ProductCard product={product} />
+                <ProductCard addToCart={addToCart} product={product} message={message} disable={disable} />
             </div>
             <Heading
                 text="More Products"

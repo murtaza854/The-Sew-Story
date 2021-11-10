@@ -2,7 +2,7 @@
 
 .home {
     .intro-back {
-        background: linear-gradient(to bottom, $primary-color 70%, white 30%);
+        background: linear-gradient(to bottom, $primary-color 55%, white 35%);
     }
     .our-products-back {
         background-color: $secondary-color;
@@ -26,6 +26,14 @@
             height: 1px;
             width: 100%;
             margin-top: 10px;
+        }
+    }
+}
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .home {
+        .intro-back {
+            background: linear-gradient(to bottom, $primary-color 50%, white 50%);
         }
     }
 }

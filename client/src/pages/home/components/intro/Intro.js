@@ -28,7 +28,7 @@ function Intro(props) {
                     {/* <div className="margin-global-top-3" /> */}
                     <Row className="hide-992">
                         <DescriptionText
-                            text="The proceeds from every sale will be directly allotted to the designer so that she can make a fair living wage to emerge with confidence from the strife of poverty."
+                            text="The Sew Story has become a Passion Project. Buying something at our store means buying something truly unique with a conscious mind to help sustain and empower a woman with mouths to feed and extraordinary skill of creating artistic handwork pieces. A percentage of all our sales would be invested back into the community to help improve the quality of life of these skilled women."
                             className="margin-global-top-6"
                         />
                     </Row>
@@ -36,7 +36,13 @@ function Intro(props) {
                 </Col>
                 <Col lg={4}>
                     <Row>
-                        <img src="/image.jpeg" alt="Test" />
+                        <Col>
+                            <div className="slider1">
+                                <img src="/image.jpeg" alt="Test" />
+                                <img src="/Story/Story 1.jpg" alt="Test" />
+                                <img src="/Story/Story 2.jpg" alt="Test" />
+                            </div>
+                        </Col>
                     </Row>
                     <Row className="margin-global-top-1">
                         <Col>
@@ -47,7 +53,7 @@ function Intro(props) {
             </Row>
             <Row className="unhide-992">
                 <DescriptionText
-                    text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                    text="The Sew Story has become a Passion Project. Buying something at our store means buying something truly unique with a conscious mind to help sustain and empower a woman with mouths to feed and extraordinary skill of creating artistic handwork pieces. A percentage of all our sales would be invested back into the community to help improve the quality of life of these skilled women."
                     className="margin-global-top-3"
                 />
             </Row>

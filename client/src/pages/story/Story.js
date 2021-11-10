@@ -32,6 +32,11 @@ function Story(props) {
                     slug: 'product-1',
                     price: '$100',
                     image: '/Products/Product 2.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 2,
@@ -39,6 +44,11 @@ function Story(props) {
                     slug: 'product-2',
                     price: '$200',
                     image: '/Products/Product 1.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 3,
@@ -46,6 +56,11 @@ function Story(props) {
                     slug: 'product-3',
                     price: '$300',
                     image: '/Products/Product 3.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
             ]);
             // }

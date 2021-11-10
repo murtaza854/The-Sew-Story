@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 // import api from '../../api';
 import { Heading, ProductsRow } from '../../components';
-import { Intro, SomeText } from './components';
+import { Intro, SomeText, EmailForm } from './components';
 import './Home.scss';
 
 function Home(props) {
@@ -34,6 +34,11 @@ function Home(props) {
                     slug: 'product-1',
                     price: '100',
                     image: '/Products/Product 2.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 2,
@@ -41,6 +46,11 @@ function Home(props) {
                     slug: 'product-2',
                     price: '200',
                     image: '/Products/Product 1.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 3,
@@ -48,6 +58,11 @@ function Home(props) {
                     slug: 'product-3',
                     price: '300',
                     image: '/Products/Product 3.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Category 1',
+                        slug: 'category-1',
+                    },
                 },
             ]);
             // }
@@ -77,9 +92,10 @@ function Home(props) {
             </div>
             <SomeText
                 className="text-center"
-                text1="The Sew Story has become a Passion Project"
-                text2="founded to promote Women Empowerment"
+                text1="Sewing today for a better tomorow"
+                text2="join our mission"
             />
+            <EmailForm />
         </div>
     );
 }

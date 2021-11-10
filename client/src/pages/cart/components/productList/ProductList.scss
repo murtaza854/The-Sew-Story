@@ -1,0 +1,58 @@
+@import "../../../../global.scss";
+
+.product-list {
+    background-color: $secondary-color;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    font-family: $font-urbanist;
+    img {
+        width: 100%;
+    }
+    .product-price {
+        font-size: $font-size-medium;
+        font-weight: $font-weight-normal;
+    }
+    h2 {
+        font-size: $font-size-medium;
+        font-weight: $font-weight-normal;
+    }
+    .product-description {
+        font-size: $font-size-small;
+        font-weight: $font-weight-normal;
+        line-height: 1.2;
+    }
+    .form-style {
+        padding: 0;
+        .arrow-row {
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+    }
+    .quantity-input {
+        input {
+            text-align: center;
+            background-color: transparent !important;
+            font-family: $font-urbanist;
+        }
+    }
+    .increase-button, .decrease-button {
+        text-align: center;
+        cursor: pointer;
+        font-size: $font-size-medium;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            color: $primary-color;
+        }
+    }
+    .empty-cart {
+        text-align: center;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        font-family: $font-urbanist;
+        font-size: $font-size-medium;
+        h1 {
+            font-weight: $font-weight-light;
+        }
+    }
+}

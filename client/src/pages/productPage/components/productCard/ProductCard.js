@@ -1,11 +1,16 @@
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { Heading } from '../../../../components';
+import { DescriptionText, Heading } from '../../../../components';
 import { ImLocation } from 'react-icons/im';
 import './ProductCard.scss';
 
 function ProductCard(props) {
     const { product } = props;
+
+    const addToCart = () => {
+        props.addToCart(product);
+    };
+
     return (
         <>
             {
@@ -13,7 +18,12 @@ function ProductCard(props) {
                     <Container className="product-card">
                         <Row className="justify-content-center">
                             <Col lg={4}>
-                                <img src={product.image} alt={product.name} />
+                                {/* <img src={product.image} alt={product.name} /> */}
+                                <div className="slider1">
+                                    <img src="/image.jpeg" alt="Test" />
+                                    <img src="/Story/Story 1.jpg" alt="Test" />
+                                    <img src="/Story/Story 2.jpg" alt="Test" />
+                                </div>
                             </Col>
                             <Col className="product-details margin-global-top-2" lg={7}>
                                 <Heading
@@ -30,7 +40,20 @@ function ProductCard(props) {
                                 <p className="product-description margin-bottom-0">{product.description5}</p>
                                 <p className="product-description">{product.description6}</p>
                                 <p className="product-price">$ {product.price}</p>
-                                <button className="btn product-button">Add to cart</button>
+                                <button disabled={props.disable} onClick={addToCart} type="button" className="btn product-button">Add to cart</button>{
+                                    props.message.display ? (
+                                        <Row className="margin-global-top-1">
+                                            <Col>
+                                                <DescriptionText
+                                                    text={props.message.text}
+                                                    link=""
+                                                    to="/"
+                                                    classes="text-center bold-300"
+                                                />
+                                            </Col>
+                                        </Row>
+                                    ) : null
+                                }
                             </Col>
                         </Row>
                         <Row className="justify-content-center margin-global-top-3">
