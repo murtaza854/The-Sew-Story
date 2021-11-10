@@ -13,8 +13,8 @@ function ProductPage(props) {
     const [products, setProducts] = useState([]);
     const cartCountFromContext = useContext(CartCountContext);
     const [disable, setDisable] = useState(false);
-
-    const [message, setMessage] = useState({ display: false, text: '' });
+    const [buttonText, setButtonText] = useState('Add to cart');
+    const [quantity, setQuantity] = useState(1);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -43,7 +43,7 @@ function ProductPage(props) {
                     image: '/Products/Product 2.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -55,7 +55,7 @@ function ProductPage(props) {
                     image: '/Products/Product 1.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -67,7 +67,7 @@ function ProductPage(props) {
                     image: '/Products/Product 3.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -92,15 +92,16 @@ function ProductPage(props) {
             try {
                 setProduct({
                     id: 1,
+                    productCode: 'KZSS010',
                     name: 'Kaneez',
                     slug: 'product-1',
                     price: '24.99',
                     image: '/Products/Product 7.jpeg',
                     description1: 'Pack of 2 Kitchen Towels',
-                    description2: 'Colors: White, Turquoise Blue, Sea Green',
+                    description2: 'White, Turquoise Blue, Sea Green',
                     description3: 'Made with 100% cotton',
-                    description4: 'Weight: 4.00 lbs/Dozen',
-                    description5: 'Size: 20 x 30 inches',
+                    description4: '4.00 lbs/Dozen',
+                    description5: '20 x 30 inches',
                     description6: 'Made in Pakistan',
                     location: 'Interior Sindh',
                     story: 'Kaneez belongs to a small village in interior Sindh. She moved to Karachi with her husband and four kids five years ago in search of better work opportunities and life style. She currently resides in a rented small one-bedroom house. Her husband works as an electrician and welder with a construction team and is paid Rs.350 (approximately $2 USD) per day which is just enough to manage to get food on the table each day. Kaneez manages to contribute to the household expenses sometimes if she is able to get sewing or embroidery work from her neighborhood and society women. Her kids aged 4,5,7 and 9 all used to go to school but earlier this year due to insufficient funds, the two older kids were withdrawn from school and were asked to help work along their parents to contribute to the household income.Kaneez met The Sew Story tea, in August 2021 and has been an integral member of our team since then. She has been able to enroll all her kids back in school and The Sew Story team has taken up the responsibility to pay their education expenses',
@@ -117,31 +118,29 @@ function ProductPage(props) {
         if (cartProducts) {
             const productExists = cartProducts.find(item => item.product.id === product.id);
             if (productExists) {
-                productExists.quantity += 1;
+                productExists.quantity += quantity;
                 setDisable(true);
-                setMessage({ display: true, text: 'Quantity updated!' })
+                setButtonText('Added to cart');
                 setTimeout(() => {
                     setDisable(false);
-                    setMessage({ display: false, text: '' });
+                    setButtonText('Add to cart');
                 }, 2500);
             } else {
-                cartProducts.push({ product, quantity: 1 });
+                cartProducts.push({ product, quantity: quantity });
                 cartCountFromContext.setCartCount(cartCountFromContext.cartCount + 1);
                 setDisable(true);
-                setMessage({ display: true, text: 'Added to cart!' })
+                setButtonText('Added to cart');
                 setTimeout(() => {
                     setDisable(false);
-                    setMessage({ display: false, text: '' });
+                    setButtonText('Add to cart');
                 }, 2500);
             }
         } else {
-            cartProducts = [{ product, quantity: 1 }];
+            cartProducts = [{ product, quantity: quantity }];
             cartCountFromContext.setCartCount(cartCountFromContext.cartCount + 1);
             setDisable(true);
-            setMessage({ display: true, text: 'Added to cart!' })
             setTimeout(() => {
                 setDisable(false);
-                setMessage({ display: false, text: '' });
             }, 2500);
         }
         localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
@@ -151,7 +150,7 @@ function ProductPage(props) {
     return (
         <div className="product-page">
             <div className="product-back margin-global-top-5">
-                <ProductCard addToCart={addToCart} product={product} message={message} disable={disable} />
+                <ProductCard addToCart={addToCart} buttonText={buttonText} quantity={quantity} setQuantity={setQuantity} product={product} disable={disable} />
             </div>
             <Heading
                 text="More Products"

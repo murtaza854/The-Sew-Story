@@ -4,31 +4,59 @@
     padding-top: 7rem;
     padding-bottom: 7rem;
     font-family: $font-urbanist;
+    .story-image {
+        width: 100%;
+        object-fit: cover;
+    }
     .row {
         position: relative;
         .slider1 {
             position: relative;
             height: $image-height-xl;
+            .sliding-img {
+                width: 100%;
+                position: absolute;
+                height: $image-height-xl;
+                object-fit: cover;
+                padding-right: inherit;
+                // animation-name: multiple-image-crossfade;
+                // animation-timing-function: ease-in-out;
+                // animation-iteration-count: infinite;
+                // animation-duration: 8s;
+                &:nth-child(1) {
+                    animation: xfade 15s 10s infinite;
+                }
+                &:nth-child(2) {
+                    animation:xfade 15s 5s infinite;
+                }
+                &:nth-child(3) {
+                    animation: xfade 15s 0s infinite;
+                }
+            }
         }
-        img {
-            width: 100%;
-            position: absolute;
-            height: $image-height-xl;
-            object-fit: cover;
-            padding-right: inherit;
-            // animation-name: multiple-image-crossfade;
-            // animation-timing-function: ease-in-out;
-            // animation-iteration-count: infinite;
-            // animation-duration: 8s;
-            &:nth-child(1) {
-                animation: xfade 15s 10s infinite;
-            }
-            &:nth-child(2) {
-                animation:xfade 15s 5s infinite;
-            }
-            &:nth-child(3) {
-                animation: xfade 15s 0s infinite;
-            }
+    }
+    .form-style {
+        padding: 0;
+        // .arrow-row {
+        //     position: absolute;
+        //     left: 0;
+        //     right: 0;
+        // }
+    }
+    .quantity-input {
+        input {
+            text-align: center;
+            background-color: transparent !important;
+            font-family: $font-urbanist;
+        }
+    }
+    .increase-button, .decrease-button {
+        text-align: center;
+        cursor: pointer;
+        font-size: $font-size-medium;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            color: $primary-color;
         }
     }
     // img {
@@ -37,6 +65,9 @@
     //     object-fit: cover;
     //     // filter: grayscale(100%);
     // }
+    .padding-right {
+        padding-right: 2rem;
+    }
     .product-details {
         padding-left: 2rem;
         .location {
@@ -57,16 +88,28 @@
     .product-price {
         font-size: $font-size-xl;
         font-weight: $font-weight-normal;
+        width: fit-content;
     }
     .product-description {
         font-size: $font-size-small;
         font-weight: $font-weight-normal;
         line-height: 1.2;
     }
+    .product-details-2 {
+        position: relative;
+        .row {
+            &:nth-child(2) {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+            }
+        }
+    }
     .product-button {
-        margin-top: 2rem;
+        // margin-top: 2rem;
         font-size: $font-size-small;
         font-weight: $font-weight-normal;
+        width: fit-content;
         padding: 0.5rem 2rem;
         background-color: $primary-color;
         border: 1px solid $primary-color;
@@ -90,7 +133,7 @@
 // Large devices (desktops, less than 1200px)
 @media (max-width: 74.99875em) {
     .product-card {
-        img {
+        .sliding-img {
             height: $image-height-large;
         }
         .product-button {
@@ -102,7 +145,7 @@
 // Medium devices (tablets, less than 992px)
 @media (max-width: 61.99875em) {
     .product-card {
-        img {
+        .sliding-img {
             height: $image-height-xl;
         }
         .product-button {
@@ -113,6 +156,16 @@
         .product-details {
             padding-right: calc(var(--bs-gutter-x) * 0.5);
             padding-left: calc(var(--bs-gutter-x) * 0.5);
+        }
+        .padding-right {
+            padding-right: 0rem;
+        }
+        .story-image {
+            margin-top: 1rem;
+            position: relative;
+            width: 50%;
+            left: 50%;
+            transform: translateX(-50%);
         }
     }
 }
@@ -127,5 +180,8 @@
         padding: $padding-image-small;
         padding-top: 3rem;
         padding-bottom: 3rem;
+        .story-image {
+            width: 80%;
+        }
     }
 }

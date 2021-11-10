@@ -32,7 +32,7 @@ function Products(props) {
                     image: '/Products/Product 1.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -44,7 +44,7 @@ function Products(props) {
                     image: '/Products/Product 2.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -56,7 +56,7 @@ function Products(props) {
                     image: '/Products/Product 3.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -68,7 +68,7 @@ function Products(props) {
                     image: '/Products/Product 4.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -80,7 +80,7 @@ function Products(props) {
                     image: '/Products/Product 5.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -92,7 +92,7 @@ function Products(props) {
                     image: '/Products/Product 6.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -104,7 +104,7 @@ function Products(props) {
                     image: '/Products/Product 7.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -116,7 +116,7 @@ function Products(props) {
                     image: '/Products/Product 1.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -128,7 +128,7 @@ function Products(props) {
                     image: '/Products/Product 2.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -140,7 +140,7 @@ function Products(props) {
                     image: '/Products/Product 3.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -150,6 +150,11 @@ function Products(props) {
                     slug: 'product-11',
                     price: '$1100',
                     image: '/Products/Product 4.jpeg',
+                    category: {
+                        id: 1,
+                        name: 'Kitchen Towels',
+                        slug: 'category-1',
+                    },
                 },
                 {
                     id: 12,
@@ -159,7 +164,7 @@ function Products(props) {
                     image: '/Products/Product 5.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -171,7 +176,7 @@ function Products(props) {
                     image: '/Products/Product 6.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -183,7 +188,7 @@ function Products(props) {
                     image: '/Products/Product 7.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },

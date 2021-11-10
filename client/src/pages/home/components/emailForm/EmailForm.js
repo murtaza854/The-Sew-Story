@@ -28,7 +28,7 @@ function EmailForm(props) {
                     'Content-Type': 'application/json',
                     'Cache-Control': 'no-store'
                 },
-                body: JSON.stringify({ email: email.name }),
+                body: JSON.stringify({ email: email.name, subscribed: true }),
             });
             const content = await response.json();
             if (content.data) {
@@ -89,7 +89,7 @@ function EmailForm(props) {
                                         text={message.text}
                                         link=""
                                         to="/"
-                                        classes="text-center"
+                                        className="text-center bold-300"
                                     />
                                 </Col>
                             </Row>

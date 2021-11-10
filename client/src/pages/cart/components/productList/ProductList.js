@@ -6,7 +6,6 @@ import './ProductList.scss';
 
 function ProductList(props) {
     const { products, setCartProducts } = props;
-    console.log(products);
 
     const [cartProductList, setCartProductList] = useState([]);
     const cartCountFromContext = useContext(CartCountContext);
@@ -42,7 +41,7 @@ function ProductList(props) {
     return (
         <Container className="product-list">
             {
-                cartProductList.length > 0 ? (
+                cartProductList?.length > 0 ? (
                     <>
                         {
                             cartProductList.map((value, index) => {

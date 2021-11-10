@@ -29,12 +29,15 @@
                 height: $image-height-xl;
                 object-fit: cover;
                 filter: grayscale(0%);
-                transition: filter 0.3s ease-in-out;
+                opacity: 1;
+                // transition: opacity 0.3s ease-in-out;
+                transition: all 0.3s ease-in-out;
             }
         }
         &:hover {
             img {
                 filter: grayscale(100%) blur(2px);
+                opacity: 0.7;
             }
             .product-box__category {
                 h3 {

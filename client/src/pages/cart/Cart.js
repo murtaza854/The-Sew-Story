@@ -11,7 +11,6 @@ function Cart(props) {
 
     useEffect(() => {
         const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
-        console.log(cartProducts);
         setCartProducts(cartProducts);
     }, []);
 
@@ -29,7 +28,7 @@ function Cart(props) {
             </div>
             <div className="margin-global-top-3" />
             {
-                cartProducts.length > 0 ? (
+                cartProducts?.length > 0 ? (
                     <>
                         <LinkButton
                             text="Proceed"

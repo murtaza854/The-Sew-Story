@@ -36,7 +36,7 @@ function Home(props) {
                     image: '/Products/Product 2.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -48,7 +48,7 @@ function Home(props) {
                     image: '/Products/Product 1.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
@@ -60,7 +60,7 @@ function Home(props) {
                     image: '/Products/Product 3.jpeg',
                     category: {
                         id: 1,
-                        name: 'Category 1',
+                        name: 'Kitchen Towels',
                         slug: 'category-1',
                     },
                 },
