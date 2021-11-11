@@ -8,8 +8,8 @@ import { ProductCard } from './components';
 import './ProductPage.scss';
 
 function ProductPage(props) {
-    const [product, setProduct] = useState(null)
-    const { slug } = useParams();
+    const [product, setProduct] = useState(null);
+    const { categorySlug, productSlug } = useParams();
     const [products, setProducts] = useState([]);
     const cartCountFromContext = useContext(CartCountContext);
     const [disable, setDisable] = useState(false);
@@ -111,7 +111,7 @@ function ProductPage(props) {
             }
         };
         fetchProduct();
-    }, [slug])
+    }, [productSlug, categorySlug])
 
     const addToCart = (product) => {
         var cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
@@ -159,10 +159,11 @@ function ProductPage(props) {
             <div className="white-background our-products-back">
                 <ProductsRow
                     products={products}
+                    categories={null}
                     className="white-background"
                 />
                 <div className="center-relative-horizontal-fit-content">
-                    <Link className="collection-link" to="/products">View Collection</Link>
+                    <Link className="collection-link" to={`/${categorySlug}`}>View Collection</Link>
                 </div>
                 <Container>
                     <div className="bottom-line center-relative-horizontal" />

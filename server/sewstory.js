@@ -44,8 +44,8 @@ app.use(cookieParser(
 ));
 app.use(cors({
     credentials: true,
-    // origin: [API_URL1, API_URL2]
-    origin: [API_URL3]
+    origin: [API_URL1, API_URL2]
+    // origin: [API_URL3]
     // origin: '*'
 }));
 app.use(express.static('./build'));

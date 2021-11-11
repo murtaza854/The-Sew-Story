@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+// import { useParams } from 'react-router';
 import { Heading, ProductBox } from '../../components';
 import { Pagination } from './components';
 import './Products.scss';
 
 function Products(props) {
     const [products, setProducts] = useState([]);
+    // const { categorySlug } = useParams();
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
@@ -225,6 +227,7 @@ function Products(props) {
                                     <ProductBox
                                         className="margin-global-bottom-4"
                                         product={product}
+                                        category={null}
                                     />
                                 </Col>
                             );

@@ -10,19 +10,45 @@ function ProductsRow(props) {
                 <Container>
                     <Row>
                         {
-                            props.products.map((product, index) => {
-                                let hideClass = '';
-                                if (index === 2) hideClass = 'hide-992';
-                                else if (index === 1) hideClass = 'hide-768';
-                                return (
-                                    <Col className={hideClass} key={index}>
-                                        <ProductBox
-                                            className=""
-                                            product={product}
-                                        />
-                                    </Col>
-                                );
-                            })
+                            props.products ? (
+                                <>
+                                    {
+                                        props.products.map((product, index) => {
+                                            let hideClass = '';
+                                            if (index === 2) hideClass = 'hide-992';
+                                            else if (index === 1) hideClass = 'hide-768';
+                                            return (
+                                                <Col className={hideClass} key={index}>
+                                                    <ProductBox
+                                                        className=""
+                                                        product={product}
+                                                        category={null}
+                                                    />
+                                                </Col>
+                                            );
+                                        })
+                                    }
+                                </>
+                            ) : (
+                                <>
+                                {
+                                    props.categories.map((category, index) => {
+                                        let hideClass = '';
+                                        if (index === 2) hideClass = 'hide-992';
+                                        else if (index === 1) hideClass = 'hide-768';
+                                        return (
+                                            <Col className={hideClass} key={index}>
+                                                <ProductBox
+                                                    className=""
+                                                    product={null}
+                                                    category={category}
+                                                />
+                                            </Col>
+                                        );
+                                    })
+                                }
+                                </>
+                            )
                         }
                     </Row>
                 </Container>

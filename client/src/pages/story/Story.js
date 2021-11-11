@@ -5,14 +5,14 @@ import { Heading, ProductsRow, StoryInfo } from '../../components';
 import './Story.scss';
 
 function Story(props) {
-    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchCategories = async () => {
             // try {
             //     console.log('fetching products');
             //     const response = await fetch(`${api}/products/get-three`, {
@@ -25,47 +25,32 @@ function Story(props) {
             //     setProducts(json.data);
             // } catch (error) {
             //     console.log(error);
-            setProducts([
+            setCategories([
                 {
                     id: 1,
-                    name: 'Product 1',
-                    slug: 'product-1',
-                    price: '$100',
+                    name: 'Kitchen Towels',
+                    slug: 'category-1',
                     image: '/Products/Product 2.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
+                    comingSoon: false,
                 },
                 {
                     id: 2,
-                    name: 'Product 2',
-                    slug: 'product-2',
-                    price: '$200',
+                    name: 'Cushions',
+                    slug: 'category-2',
                     image: '/Products/Product 1.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
+                    comingSoon: true,
                 },
                 {
                     id: 3,
-                    name: 'Product 3',
-                    slug: 'product-3',
-                    price: '$300',
+                    name: 'Aprons',
+                    slug: 'category-3',
                     image: '/Products/Product 3.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
+                    comingSoon: true,
                 },
             ]);
             // }
         };
-        fetchProducts();
+        fetchCategories();
     }, [])
 
     return (
@@ -100,12 +85,13 @@ function Story(props) {
                 />
             </div>
             <Heading
-                text="Shop & Support"
+                text="View our Hand-Embroidered Collections"
                 className="text-center margin-global-top-8"
             />
             <div className="our-products-back">
                 <ProductsRow
-                    products={products}
+                    products={null}
+                    categories={categories}
                 />
                 <div className="center-relative-horizontal-fit-content">
                     <Link className="collection-link" to="/products">View Collection</Link>

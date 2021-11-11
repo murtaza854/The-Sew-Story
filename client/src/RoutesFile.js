@@ -56,6 +56,9 @@ function RoutesFile(props) {
                             <Route path="/dashboard/account">
                                 <Dashboard />
                             </Route>
+                            <Route path="/:categorySlug/:productSlug">
+                                <ProductPage />
+                            </Route>
                             <Route path="/payment">
                                 <Payment />
                             </Route>
@@ -74,14 +77,14 @@ function RoutesFile(props) {
                             <Route path="/login">
                                 <Login />
                             </Route>
-                            <Route path="/products">
+                            {/* <Route path="/products">
                                 <Products />
-                            </Route>
+                            </Route> */}
                             <Route path="/our-story">
                                 <Story />
                             </Route>
-                            <Route path="/:slug">
-                                <ProductPage />
+                            <Route path="/:productSlug">
+                                <Products />
                             </Route>
                             <Route path="/">
                                 <Home />
