@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Heading, LinkButton } from '../../components';
-import { ProductList } from './components';
+import { Heading } from '../../components';
+import { Delivery, ProductList } from './components';
 
 function Cart(props) {
     const [cartProducts, setCartProducts] = useState([]);
@@ -27,7 +27,8 @@ function Cart(props) {
                 />
             </div>
             <div className="margin-global-top-3" />
-            {
+            <Delivery />
+            {/* {
                 cartProducts?.length > 0 ? (
                     <>
                         <LinkButton
@@ -40,7 +41,7 @@ function Cart(props) {
                 ) : (
                     null
                 )
-            }
+            } */}
         </div>
     );
 }

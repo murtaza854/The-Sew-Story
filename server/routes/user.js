@@ -1,11 +1,8 @@
 const router = require('express').Router();
-// const User = require('../schema').user;
-const dotenv = require('dotenv');
 const firebaseFile = require('../firebase');
 const firebase = firebaseFile.firebase;
 const firebaseAdmin = firebaseFile.admin;
 const userController = require('../controllers').user;
-dotenv.config();
 
 router.get('/table-data', async (req, res) => {
     const users = await User.find({}, { uid: 0 });

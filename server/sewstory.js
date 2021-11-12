@@ -52,10 +52,12 @@ app.use(express.static('./build'));
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const stateRoutes = require('./routes/state');
 
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/state', stateRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     try {

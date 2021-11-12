@@ -5,6 +5,8 @@
     padding-top: 3rem;
     padding-bottom: 3rem;
     font-family: $font-urbanist;
+    max-height: 50rem;
+    overflow-y: scroll;
     img {
         width: 100%;
     }
