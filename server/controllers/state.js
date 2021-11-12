@@ -10,13 +10,35 @@ module.exports = {
                 return data;
             });
     },
+    getById(id) {
+        return States.findById(id)
+            .then(function (data) {
+                return data;
+            });
+    },
     findBySlug(params) {
         return States.findOne({
             attributes: ['id', 'name', 'slug', 'active'],
             where: {
                 slug: params.slug,
+                active: true
             },
             raw: true
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    getSearch(params) {
+        return States.findAll({
+            attributes: ['name', 'slug', 'active'],
+            where: {
+                name: {
+                    [params.sequelize.Op.like]: '%' + params.search + '%'
+                },
+                active: true
+                // name: params.sequelize.where(params.sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + params.search.toLowerCase() + '%'),
+            }
         })
             .then(function (data) {
                 return data;

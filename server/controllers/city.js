@@ -22,6 +22,22 @@ module.exports = {
                 return data;
             });
     },
+    getSearch(params) {
+        return Cities.findAll({
+            attributes: ['name', 'county_id', 'slug', 'active'],
+            where: {
+                name: {
+                    [params.sequelize.Op.like]: '%' + params.search + '%'
+                },
+                county_id: params.county_id,
+                active: 1
+                // name: params.sequelize.where(params.sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + params.search.toLowerCase() + '%'),
+            }
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     getAll() {
         return Cities.findAll({
             attributes: ['id', 'name', 'slug', 'county_id', 'active'],

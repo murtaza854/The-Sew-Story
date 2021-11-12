@@ -6,4 +6,4 @@ export { default as Signup } from './signup/Signup';
 export { default as Login } from './login/Login';
 export { default as ForgotPassword } from './forgotPassword/ForgotPassword';
 export { default as Cart } from './cart/Cart';
-export { default as Payment } from './payment/Payment';
+export { default as CheckoutForm } from './checkoutForm/CheckoutForm';

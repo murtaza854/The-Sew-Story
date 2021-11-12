@@ -111,6 +111,17 @@
             border: 1px solid black;
         }
     }
+    input[type="radio"] {
+        background-color: white;
+        border: 1px solid black;
+        border-radius: 0;
+        font-size: 1rem;
+        &:focus {
+            box-shadow: none;
+            background-color: white;
+            border: 1px solid black;
+        }
+    }
     .input-group {
         input[type="text"],
         input[type="email"],

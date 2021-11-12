@@ -22,13 +22,16 @@ module.exports = {
                 return data;
             });
     },
-    getStatesSearch(params) {
+    getSearch(params) {
         return Counties.findAll({
-            attributes: ['id', 'name', 'state_id', 'slug', 'active'],
+            attributes: ['name', 'state_id', 'slug', 'active'],
             where: {
                 name: {
-                    $like: '%' + params.search + '%'
-                }
+                    [params.sequelize.Op.like]: '%' + params.search + '%'
+                },
+                state_id: params.state_id,
+                active: 1
+                // name: params.sequelize.where(params.sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + params.search.toLowerCase() + '%'),
             }
         })
             .then(function (data) {

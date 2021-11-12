@@ -3,9 +3,8 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
-const dotenv = require('dotenv');
 const path = require('path');
-// const stripe = require("stripe")("Add your secret key");
+const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
 
@@ -53,11 +52,17 @@ app.use(express.static('./build'));
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const stateRoutes = require('./routes/state');
+const countyRoutes = require('./routes/county');
+const cityRoutes = require('./routes/city');
+const cartRoutes = require('./routes/cart');
 
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/state', stateRoutes);
+app.use('/api/county', countyRoutes);
+app.use('/api/city', cityRoutes);
+app.use('/api/cart', cartRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     try {
