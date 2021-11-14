@@ -7,3 +7,4 @@ export { default as Login } from './login/Login';
 export { default as ForgotPassword } from './forgotPassword/ForgotPassword';
 export { default as Cart } from './cart/Cart';
 export { default as CheckoutForm } from './checkoutForm/CheckoutForm';
+export { default as OrderMessage } from './orderMessage/OrderMessage';

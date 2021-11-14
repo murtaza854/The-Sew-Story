@@ -1,0 +1,12 @@
+@import '../../global.scss';
+
+.order-message {
+    p {
+        font-family: $font-urbanist;
+    }
+    a {
+        color: black;
+        text-decoration: none;
+        font-weight: 500;
+    }
+}

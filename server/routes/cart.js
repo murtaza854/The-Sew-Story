@@ -44,6 +44,7 @@ router.post("/payment", async (req, res) => {
 });
 
 const calculateOrderAmount = (items) => {
+    console.log(items);
     // Replace this constant with a calculation of the order's amount
     // Calculate the order total on the server to prevent
     // people from directly manipulating the amount on the client

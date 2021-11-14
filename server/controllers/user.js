@@ -32,12 +32,27 @@ module.exports = {
                 return data;
             });
     },
-    getAll() {
+    getAll(usersList) {
         return Users.findAll({
             attributes: ['id', 'firstName', 'lastName', 'email', 'uid', 'subscribed']
         })
             .then(function (data) {
-                return data;
+                const users = [];
+                data.forEach(function (user) {
+                    const userData = usersList.users.find(element => element.uid === user.uid);
+                    if (userData) {
+                        users.push({
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            email: user.email,
+                            uid: user.uid,
+                            admin: userData.customClaims.admin,
+                            emailVerified: userData.emailVerified,
+                        });
+                    }
+                });
+                return users;
             });
     },
     updateByEmail(params) {

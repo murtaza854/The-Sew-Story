@@ -5,7 +5,7 @@ import {
     useLocation,
 } from "react-router-dom";
 import { MainNavbar, Footer, BlackBar } from './components';
-import { Home, Story, Products, ProductPage, Signup, Login, ForgotPassword, Cart, CheckoutForm } from './pages';
+import { Home, Story, Products, ProductPage, Signup, Login, ForgotPassword, Cart, CheckoutForm, OrderMessage } from './pages';
 import Auth from './auth/Auth';
 // import { ComingSoon } from './pages';
 import { Dashboard } from './dashboard';
@@ -52,6 +52,9 @@ function RoutesFile(props) {
                         <Switch location={location}>
                             <Route path="/__/auth/action">
                                 <Auth />
+                            </Route>
+                            <Route path="/order/:orderNumber/status">
+                                <OrderMessage />
                             </Route>
                             <Route path="/dashboard/account">
                                 <Dashboard />

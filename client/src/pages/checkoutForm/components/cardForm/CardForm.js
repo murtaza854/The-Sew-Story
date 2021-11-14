@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useElements, useStripe, PaymentElement } from '@stripe/react-stripe-js';
 import { Col, Container, Form, Row, Button } from 'react-bootstrap';
 import { Heading } from '../../../../components';
+import url from '../../../../url';
 
 function CardForm(props) {
     const stripe = useStripe();
@@ -11,32 +12,6 @@ function CardForm(props) {
     const [isLoading, setIsLoading] = useState(false);
 
     // const [disable, setDisable] = useState(true);
-
-    useEffect(() => {
-        if (!stripe) {
-            return;
-        }
-        const clientSecret = new URLSearchParams(window.location.search).get("payment_intent_client_secret");
-        if (!clientSecret) {
-            return;
-        }
-        stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-            switch (paymentIntent.status) {
-                case "succeeded":
-                    setMessage("Payment succeeded!");
-                    break;
-                case "processing":
-                    setMessage("Your payment is processing.");
-                    break;
-                case "requires_payment_method":
-                    setMessage("Your payment was not successful, please try again.");
-                    break;
-                default:
-                    setMessage("Something went wrong.");
-                    break;
-            }
-        });
-    }, [stripe]);
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -50,7 +25,7 @@ function CardForm(props) {
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:3000",
+                return_url: `${url}order/530/status`,
             },
         });
         // This point will only be reached if there is an immediate error when

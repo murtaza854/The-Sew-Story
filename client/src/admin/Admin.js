@@ -9,6 +9,7 @@ import UserContext from '../contexts/userContext';
 function Admin(props) {
     const [darkState, setDarkState] = useState(false);
     const user = useContext(UserContext);
+    console.log(user);
     const darkTheme = createTheme({
         palette: {
             type: 'dark',

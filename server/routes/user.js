@@ -4,8 +4,8 @@ const firebase = firebaseFile.firebase;
 const firebaseAdmin = firebaseFile.admin;
 const userController = require('../controllers').user;
 
-router.get('/table-data', async (req, res) => {
-    const users = await User.find({}, { uid: 0 });
+router.get('/getAllUsers', async (req, res) => {
+    const users = await userController.getAll(await firebaseAdmin.auth().listUsers());
     if (!users) res.json({ data: [] });
     else res.json({ data: users });
 });

@@ -1,0 +1,11 @@
+.search-bar-toolbar {
+    padding-right: 2rem !important;
+    width: 20rem !important;
+    display: flex;
+    #standard-basic {
+        width: 16rem !important;
+    }
+}
+.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows {
+    margin-bottom: 0 !important;
+}
