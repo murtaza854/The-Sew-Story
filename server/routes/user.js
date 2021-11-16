@@ -1,8 +1,11 @@
 const router = require('express').Router();
 const firebaseFile = require('../firebase');
-const firebase = firebaseFile.firebase;
 const firebaseAdmin = firebaseFile.admin;
+const { signInWithEmailAndPassword, signOut, getAuth, signInWithCredential, createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, FacebookAuthProvider, EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail, updateProfile, sendPasswordResetEmail } = require('firebase/auth');
+const firebaseFile = require('../firebase');
 const userController = require('../controllers').user;
+
+const auth = getAuth();
 
 router.get('/getAllUsers', async (req, res) => {
     const users = await userController.getAll(await firebaseAdmin.auth().listUsers());
@@ -12,14 +15,16 @@ router.get('/getAllUsers', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        const response = await firebase.auth().signInWithEmailAndPassword(req.body.email.name, req.body.password.name);
+        const response = await signInWithEmailAndPassword(auth, req.body.email.name, req.body.password.name);
         const user = response.user;
-        const idTokenResult = await user.getIdTokenResult();
-        const displayName = user.displayName;
-        const email = user.email;
-        const emailVerified = user.emailVerified;
-        const admin = idTokenResult.claims.admin;
-        res.json({ data: { displayName: displayName, email: email, emailVerified: emailVerified, admin: admin } });
+        if (!user.emailVerified) sendEmailVerification(user);
+        const idToken = await user.getIdToken();
+        const expiresIn = 60 * 60 * 24 * 5 * 1000;
+        const sessionCookie = await firebaseAdmin.auth().createSessionCookie(idToken, { expiresIn });
+        const options = { maxAge: expiresIn, httpOnly: true };
+        res.cookie("session", sessionCookie, options);
+        signOut(auth);
+        res.json({ data: true });
     } catch (error) {
         res.json({ data: null, error: error });
     }
@@ -27,10 +32,9 @@ router.post('/login', async (req, res) => {
 
 router.get('/get-logged-in', async (req, res) => {
     try {
-        const user = firebase.auth().currentUser;
+        const sessionCookie = req.cookies.session;
+        const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
         if (user) {
-            const idTokenResult = await user.getIdTokenResult();
-            const admin = idTokenResult.claims.admin;
             const uid = user.uid;
             // const dbUser = await User.findOne({ uid: uid });
             const dbUser = await await userController.findByUid({ uid });
@@ -43,23 +47,24 @@ router.get('/get-logged-in', async (req, res) => {
 
 router.get('/logout', async (req, res) => {
     try {
-        await firebase.auth().signOut();
-        res.json({ loggedIn: false });
+        await signOut();
+        res.json({ data: null });
     } catch (error) {
-        res.json({ loggedIn: false, error: error });
+        res.json({ data: null, error: error });
     }
 });
 
 router.post('/change-password', async (req, res) => {
     try {
-        const user = firebase.auth().currentUser;
+        const sessionCookie = req.cookies.session;
+        const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
         const email = user.email;
-        const credential = firebase.auth.EmailAuthProvider.credential(
+        const credential = EmailAuthProvider.credential(
             email,
             req.body.oldPassword
         );
-        await user.reauthenticateWithCredential(credential);
-        await user.updatePassword(req.body.password);
+        await reauthenticateWithCredential(user, credential);
+        await updatePassword(user, req.body.password);
         res.json({ data: true });
     } catch (error) {
         console.log(error);
@@ -69,19 +74,19 @@ router.post('/change-password', async (req, res) => {
 
 router.post('/change-email', async (req, res) => {
     try {
-        const user = firebase.auth().currentUser;
+        const sessionCookie = req.cookies.session;
+        const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
         const email = user.email;
         const newEmail = req.body.email;
-        const credential = firebase.auth.EmailAuthProvider.credential(
+        const credential = EmailAuthProvider.credential(
             email,
             req.body.password
         );
-        await user.reauthenticateWithCredential(credential);
-        // const dbUser = await User.findOne({ uid: user.uid });
+        await reauthenticateWithCredential(user, credential);
         if (email !== newEmail) {
-            await user.updateEmail(newEmail);
-            user.sendEmailVerification();
-            await await userController.update({ email: newEmail, uid: user.uid });
+            await updateEmail(user, newEmail);
+            sendEmailVerification(user);
+            await userController.update({ email: newEmail, uid: user.uid });
             // dbUser.email = newEmail;
             // dbUser.save();
         }
@@ -94,20 +99,19 @@ router.post('/change-email', async (req, res) => {
 
 router.post('/change-owner-info', async (req, res) => {
     try {
-        const user = firebase.auth().currentUser;
-        // const dbUser = await Startup.findOne({ uid: user.uid });
-        await user.updateProfile({
-            displayName: req.body.firstName
+        const sessionCookie = req.cookies.session;
+        const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
+        await updateProfile(user, {
+            displayName: req.body.firstName,
         })
         await userController.update({ firstName: req.body.firstName, lastName: req.body.lastName, uid: user.uid });
         // dbUser.firstName = req.body.firstName;
         // dbUser.lastName = req.body.lastName;
         // dbUser.save();
-        const idTokenResult = await user.getIdTokenResult();
-        const admin = idTokenResult.claims.admin;
-        const displayName = user.displayName;
+        const displayName = user.name;
         const email = user.email;
-        const emailVerified = user.emailVerified;
+        const emailVerified = user.emailVerified || user.email_verified;
+        const admin = user.admin;
         res.json({ data: { displayName, email, emailVerified, admin }, check: true });
     } catch (error) {
         console.log(error);
@@ -127,7 +131,7 @@ router.post('/subscribe', async (req, res) => {
 
 router.post('/send-password-reset-link', async (req, res) => {
     try {
-        await firebase.auth().sendPasswordResetEmail(req.body.email);
+        await sendPasswordResetEmail(auth, req.body.email);
         res.json({ data: true });
     } catch (error) {
         console.log(error);
@@ -138,13 +142,13 @@ router.post('/send-password-reset-link', async (req, res) => {
 router.post('/signup', async (req, res) => {
     try {
         const { firstName, lastName, email, password } = req.body;
-        const response = await firebase.auth().createUserWithEmailAndPassword(email.name, password.name);
+        const response = await createUserWithEmailAndPassword(auth, email.name, password.name);
         const user = response.user;
         await firebaseAdmin.auth().setCustomUserClaims(user.uid, { admin: false });
-        user.sendEmailVerification();
-        await user.updateProfile({
+        sendEmailVerification(user);
+        await updateProfile(user, {
             displayName: firstName.name,
-        });
+        })
         await userController.create({
             firstName: firstName.name,
             lastName: lastName.name,
@@ -158,7 +162,7 @@ router.post('/signup', async (req, res) => {
         //     uid: user.uid,
         // });
         // newUser.save();
-        await firebase.auth().signOut();
+        await signOut();
         res.json({ data: true });
     } catch (error) {
         console.log(error);
@@ -166,25 +170,25 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
-    try {
-        const response = await firebase.auth().signInWithEmailAndPassword(req.body.email.name, req.body.password.name);
-        const user = response.user;
-        const idTokenResult = await user.getIdTokenResult();
-        const admin = idTokenResult.claims.admin;
-        const displayName = user.displayName;
-        const email = user.email;
-        const emailVerified = user.emailVerified;
-        if (!emailVerified) {
-            user.sendEmailVerification();
-            await firebase.auth().signOut();
-            throw "Email not verified";
-        } else res.json({ data: { displayName, email, emailVerified, admin } });
-    } catch (error) {
-        console.log(error);
-        res.json({ data: null, error: error });
-    }
-});
+// router.post('/login', async (req, res) => {
+//     try {
+//         const response = await signInWithEmailAndPassword(auth, req.body.email.name, req.body.password.name)
+//         const user = response.user;
+//         const idTokenResult = await user.getIdTokenResult();
+//         const admin = idTokenResult.claims.admin;
+//         const displayName = user.displayName;
+//         const email = user.email;
+//         const emailVerified = user.emailVerified;
+//         if (!emailVerified) {
+//             user.sendEmailVerification();
+//             await firebase.auth().signOut();
+//             throw "Email not verified";
+//         } else res.json({ data: { displayName, email, emailVerified, admin } });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ data: null, error: error });
+//     }
+// });
 
 // router.get('/get-by-ids', async (req, res) => {
 //     try {

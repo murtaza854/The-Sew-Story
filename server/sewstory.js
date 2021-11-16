@@ -66,14 +66,21 @@ app.use('/api/cart', cartRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     try {
-        const user = firebase.auth().currentUser;
-        if (user) {
-            const idTokenResult = await user.getIdTokenResult();
-            const displayName = user.displayName;
-            const email = user.email;
-            const emailVerified = user.emailVerified;
-            const admin = idTokenResult.claims.admin;
-            res.json({ data: { displayName, email, emailVerified, admin } });
+        const sessionCookie = req.cookies.session || "";
+        if (sessionCookie) {
+            const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
+            if (user) {
+                const displayName = user.name;
+                const email = user.email;
+                const emailVerified = user.emailVerified || user.email_verified;
+                const admin = user.admin;
+                if (!emailVerified) {
+                    res.clearCookie("session");
+                    res.json({ data: { displayName, email, emailVerified, admin } });
+                } else {
+                    res.json({ data: { displayName, email, emailVerified, admin } });
+                }
+            } else res.json({ data: null })
         } else res.json({ data: null })
     } catch (error) {
         res.json({ data: null, error: error });
