@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const productController = require('../controllers').product;
+const categoryController = require('../controllers').category;
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
@@ -7,7 +7,7 @@ const slugify = require('slugify');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.resolve('../client/public/productUploads'))
+        cb(null, path.resolve('../client/public/categoryUploads'))
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -17,10 +17,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get('/getAllProducts', async (req, res) => {
+router.get('/getAllCategories', async (req, res) => {
     try {
-        const products = await productController.getAll();
-        res.json({ data: products });
+        const categories = await categoryController.getAll();
+        res.json({ data: categories });
     } catch (error) {
         res.json({ data: [], error: error });
     }
@@ -28,8 +28,8 @@ router.get('/getAllProducts', async (req, res) => {
 
 router.post('/getById', async (req, res) => {
     try {
-        const product = await productController.getById(req.body.id);
-        res.json({ data: product });
+        const category = await categoryController.getById(req.body.id);
+        res.json({ data: category });
     } catch (error) {
         console.log(error);
         res.json({ data: null, error: error });
@@ -39,14 +39,14 @@ router.post('/getById', async (req, res) => {
 router.post('/add', upload.single('image'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
-        const obj = await productController.create(
+        const obj = await categoryController.create(
             {
                 name: data.name,
                 slug: slugify(data.name),
                 active: data.active,
                 comingSoon: data.comingSoon,
                 fileName: req.file.filename,
-                imagePath: '/productUploads/' + req.file.filename
+                imagePath: '/categoryUploads/' + req.file.filename
             }
         );
         res.json({ data: obj });
@@ -59,8 +59,8 @@ router.post('/add', upload.single('image'), async (req, res) => {
 router.post('/updateWithImage', upload.single('image'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
-        fs.unlinkSync(path.resolve('../client/public/productUploads/' + data.oldFileName));
-        await productController.update(
+        fs.unlinkSync(path.resolve('../client/public/categoryUploads/' + data.oldFileName));
+        await categoryController.update(
             {
                 id: data.id,
                 name: data.name,
@@ -68,10 +68,10 @@ router.post('/updateWithImage', upload.single('image'), async (req, res) => {
                 active: data.active,
                 comingSoon: data.comingSoon,
                 fileName: req.file.filename,
-                imagePath: '/productUploads/' + req.file.filename
+                imagePath: '/categoryUploads/' + req.file.filename
             }
         );
-        const editObj = await productController.getById(data.id);
+        const editObj = await categoryController.getById(data.id);
         res.json({ data: editObj });
     } catch (error) {
         console.log(error);
@@ -81,14 +81,14 @@ router.post('/updateWithImage', upload.single('image'), async (req, res) => {
 
 router.post('/updateWithoutImage', async (req, res) => {
     try {
-        await productController.update({
+        await categoryController.update({
             id: req.body.id,
             name: req.body.name,
             slug: slugify(req.body.name),
             active: req.body.active,
             comingSoon: req.body.comingSoon
         });
-        const editObj = await productController.getById(req.body.id);
+        const editObj = await categoryController.getById(req.body.id);
         res.json({ data: editObj });
     } catch (error) {
         console.log(error);

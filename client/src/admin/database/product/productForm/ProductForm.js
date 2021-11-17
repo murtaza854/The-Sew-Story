@@ -12,7 +12,7 @@ function checkIfObjExistsByName(obj, name) {
     return obj.find(o => o.name.toLowerCase() === name.toLowerCase());
 }
 
-function CategoryForm(props) {
+function ProductForm(props) {
     const {
         rows,
         setRows,
@@ -21,7 +21,10 @@ function CategoryForm(props) {
     let history = useHistory();
     const id = parseInt(useParams().id) || null;
 
-    const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Cushions' });
+    const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Kaneez' });
+    const [productCode, setProductCode] = useState({ value: '', error: false, helperText: 'Enter a product code Ex. KZSS010' });
+    const [price, setPrice] = useState({ value: '', error: false, helperText: 'Enter a price Ex. 10.00' });
+    const [quantity, setQuantity] = useState({ value: '', error: false, helperText: 'Enter a quantity Ex. 10' });
     const [image, setImage] = useState({ picturePreview: '', imgURl: '', error: false });
     const [oldFileName, setOldFileName] = useState('');
     const [checkBoxes, setCheckBoxes] = useState({ active: true, comingSoon: false });
@@ -44,7 +47,7 @@ function CategoryForm(props) {
                     const content = await response.json();
                     if (content.data) {
                         const { data } = content;
-                        setName({ value: data.name, error: false, helperText: '' });
+                        setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Kaneez' });
                         setImage({ picturePreview: '', imgURl: data.imagePath, error: false });
                         setOldFileName(data.fileName);
                         setCheckBoxes({ active: data.active, comingSoon: data.comingSoon });
@@ -309,4 +312,4 @@ function CategoryForm(props) {
     );
 }
 
-export default CategoryForm;
+export default ProductForm;

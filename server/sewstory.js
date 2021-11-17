@@ -55,6 +55,9 @@ const stateRoutes = require('./routes/state');
 const countyRoutes = require('./routes/county');
 const cityRoutes = require('./routes/city');
 const cartRoutes = require('./routes/cart');
+// const orderRoutes = require('./routes/order');
+const productRoutes = require('./routes/product');
+const categoryRoutes = require('./routes/category');
 
 
 app.use('/api/auth', authRoutes);
@@ -63,6 +66,9 @@ app.use('/api/state', stateRoutes);
 app.use('/api/county', countyRoutes);
 app.use('/api/city', cityRoutes);
 app.use('/api/cart', cartRoutes);
+// app.use('/api/order', orderRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/category', categoryRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     try {

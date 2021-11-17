@@ -23,6 +23,7 @@
     "nodemon": "^2.0.15",
     "prompt-sync": "^4.2.0",
     "sequelize": "^6.9.0",
+    "sequelize-slugify": "^1.6.0",
     "slugify": "^1.6.2",
     "stripe": "^8.189.0"
   },

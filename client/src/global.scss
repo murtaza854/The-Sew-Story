@@ -246,8 +246,15 @@ $padding-image-large: 0 10rem;
 .margin-global-left-05 {
     margin-left: 0.5rem;
 }
+.margin-global-05 {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
 .margin-global-4 {
     margin: 0 4rem;
+}
+.flex-display {
+    display: flex;
 }
 .spacing {
     width: 0;

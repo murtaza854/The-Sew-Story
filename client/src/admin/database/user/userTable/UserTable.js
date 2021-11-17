@@ -9,52 +9,32 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { TableToolbar } from "../tableToolbar/TableToolbar";
-import { CreateData } from './CreateData';
 import { TableHead } from '../tableHead/TableHead';
 import { stableSort } from '../../stabalizedSort';
 import { getComparator } from '../../comparator';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import api from '../../../../api';
 
-export default function UserTable() {
+export default function UserTable(props) {
+
+    const {
+        rows,
+        filteredRows,
+        setFilteredRows
+    } = props;
+    
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [rows, setRows] = React.useState([]);
-    const [filteredRows, setFilteredRows] = React.useState([]);
     const [searchText, setSearchText] = React.useState('');
-
-    React.useEffect(() => {
-        // const sample = [
-        //     CreateData(1, 'Cupcake', 'Donut', 'example@example.com', false),
-        //     CreateData(2, 'Cupcake', 'Donut', 'example@example.com', true),
-        //     CreateData(3, 'Cupcake', 'Donut', 'example@example.com', false),
-        //     CreateData(4, 'Cupcake', 'Donut', 'example@example.com', false),
-        // ];
-        setRows([]);
-        fetch(`${api}/user/getAllUsers`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-            .then(data => {
-                const rows = data.data.map(user => {
-                    return CreateData(user.id, user.firstName, user.lastName, user.email, user.admin, user.emailVerified);
-                });
-                setRows(rows);
-                setFilteredRows(rows);
-            });
-    }, []);
 
     React.useEffect(() => {
         setFilteredRows(rows.filter(row => {
             return row.name.toLowerCase().includes(searchText.toLowerCase());
         }));
-    }, [searchText, rows]);
+    }, [searchText, rows, setFilteredRows]);
 
     const handleSearch = event => {
         setSearchText(event.target.value);

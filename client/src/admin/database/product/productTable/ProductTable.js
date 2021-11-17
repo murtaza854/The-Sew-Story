@@ -9,52 +9,36 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { TableToolbar } from "../tableToolbar/TableToolbar";
-import { CreateData } from './CreateData';
 import { TableHead } from '../tableHead/TableHead';
 import { stableSort } from '../../stabalizedSort';
 import { getComparator } from '../../comparator';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import api from '../../../../api';
 
-export default function ProductTable() {
+export default function ProductTable(props) {
+
+    const {
+        rows,
+        filteredRows,
+        setFilteredRows,
+        tableOrder,
+        searchField
+    } = props;
+
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('name');
+    const [orderBy, setOrderBy] = React.useState(tableOrder);
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [rows, setRows] = React.useState([]);
-    const [filteredRows, setFilteredRows] = React.useState([]);
     const [searchText, setSearchText] = React.useState('');
 
     React.useEffect(() => {
-        // const sample = [
-        //     CreateData(1, 'Cupcake', 'Donut', 'example@example.com', false),
-        //     CreateData(2, 'Cupcake', 'Donut', 'example@example.com', true),
-        //     CreateData(3, 'Cupcake', 'Donut', 'example@example.com', false),
-        //     CreateData(4, 'Cupcake', 'Donut', 'example@example.com', false),
-        // ];
-        setRows([]);
-        fetch(`${api}/user/getAllUsers`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-            .then(data => {
-                const rows = data.data.map(user => {
-                    return CreateData(user.id, user.firstName, user.lastName, user.email, user.admin, user.emailVerified);
-                });
-                setRows(rows);
-                setFilteredRows(rows);
-            });
-    }, []);
-
-    React.useEffect(() => {
-        setFilteredRows(rows.filter(row => {
-            return row.name.toLowerCase().includes(searchText.toLowerCase());
-        }));
-    }, [searchText, rows]);
+        if (rows.length > 0) {
+            setFilteredRows(rows.filter(row => {
+                return row[searchField].toLowerCase().includes(searchText.toLowerCase());
+            }));
+        }
+    }, [searchText, rows, setFilteredRows, searchField]);
 
     const handleSearch = event => {
         setSearchText(event.target.value);
@@ -113,7 +97,7 @@ export default function ProductTable() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <TableToolbar handleSearch={handleSearch} searchText={searchText} numSelected={selected.length} />
+                <TableToolbar selected={selected} handleSearch={handleSearch} searchText={searchText} numSelected={selected.length} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
