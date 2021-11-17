@@ -1,9 +1,9 @@
-import { Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
+import { Checkbox, TableCell, TableHead as MuiHead, TableRow, TableSortLabel } from "@mui/material";
 import { Box } from "@mui/system";
-import { headCells } from "../userTable/headCells";
+import { headCells } from "../headCells";
 import { visuallyHidden } from '@mui/utils';
 
-export function UserHead(props) {
+export function TableHead(props) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
         props;
     const createSortHandler = (property) => (event) => {
@@ -11,7 +11,7 @@ export function UserHead(props) {
     };
 
     return (
-        <TableHead>
+        <MuiHead>
             <TableRow>
                 <TableCell padding="checkbox">
                     <Checkbox
@@ -46,6 +46,6 @@ export function UserHead(props) {
                     </TableCell>
                 ))}
             </TableRow>
-        </TableHead>
+        </MuiHead>
     );
 }

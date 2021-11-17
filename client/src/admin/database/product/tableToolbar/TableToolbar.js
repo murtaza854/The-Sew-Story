@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 
-export const UserToolbar = (props) => {
+export const TableToolbar = (props) => {
     const { numSelected, handleSearch, searchText } = props;
 
     return (
@@ -34,7 +34,7 @@ export const UserToolbar = (props) => {
                     id="tableTitle"
                     component="div"
                 >
-                    Users
+                    Products
                 </Typography>
             )}
 

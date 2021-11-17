@@ -15,7 +15,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { AppBar, Drawer, DrawerHeader } from './layoutHelpers';
-import { UserTable } from '../database/user';
+import Database from '../database/Database';
+import { Link } from 'react-router-dom';
 
 export default function AdminLayout() {
     const theme = useTheme();
@@ -59,68 +60,76 @@ export default function AdminLayout() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Users" />
-                    </ListItem>
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/user">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Users" />
+                        </ListItem>
+                    </Link>
                 </List>
                 <Divider />
                 <List>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Orders" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Products" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Categories" />
-                    </ListItem>
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/order">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Orders" />
+                        </ListItem>
+                    </Link>
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/product">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Products" />
+                        </ListItem>
+                    </Link>
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/category">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Categories" />
+                        </ListItem>
+                    </Link>
                 </List>
                 <Divider />
                 <List>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="States" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Counties" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Cities" />
-                    </ListItem>
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/state">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="States" />
+                        </ListItem>
+                    </Link>
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/city">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Cities" />
+                        </ListItem>
+                    </Link>
                 </List>
                 <Divider />
                 <List>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Description Types" />
-                    </ListItem>
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/description-types">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Description Types" />
+                        </ListItem>
+                    </Link>
                 </List>
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
-                <UserTable />
+                <div className="margin-global-top-6" />
+                <Database />
             </Box>
         </Box>
     );

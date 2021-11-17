@@ -9,7 +9,7 @@ import UserContext from '../contexts/userContext';
 function Admin(props) {
     const [darkState, setDarkState] = useState(false);
     const user = useContext(UserContext);
-    console.log(user);
+    // console.log(user);
     const darkTheme = createTheme({
         palette: {
             type: 'dark',
@@ -58,7 +58,7 @@ function Admin(props) {
     return (
         <ThemeProvider theme={currentTheme}>
             {/* <Login setToken={setToken} title="Mzushi: Admin Login" /> */}
-            {!user.userState ? (
+            {user.userState ? (
                 <Login user={user} title="The Sew Story: Admin Login" />
             ) : (
                 <AdminLayout user={user} darkState={darkState} setDarkState={setDarkState} title="Mzushi: Dashboard" />

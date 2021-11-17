@@ -2,7 +2,6 @@ const router = require('express').Router();
 const firebaseFile = require('../firebase');
 const firebaseAdmin = firebaseFile.admin;
 const { signInWithEmailAndPassword, signOut, getAuth, signInWithCredential, createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, FacebookAuthProvider, EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail, updateProfile, sendPasswordResetEmail } = require('firebase/auth');
-const firebaseFile = require('../firebase');
 const userController = require('../controllers').user;
 
 const auth = getAuth();
