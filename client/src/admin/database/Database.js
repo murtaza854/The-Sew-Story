@@ -2,9 +2,11 @@ import React from 'react';
 import { UserTable } from './user';
 import { CategoryForm, CategoryTable } from './category';
 import { ProductForm, ProductTable } from './product';
+import { DescriptionTypeForm, DescriptionTypeTable } from './descriptionType'
 import { CreateCategoryData } from './category/categoryTable/CreateCategoryData';
 import { CreateProductData } from './product/productTable/CreateProductData';
 import { CreateUserData } from './user/userTable/CreateUserData';
+import { CreateDescriptionTypeData } from './descriptionType/descriptionTypeTable/CreateDescriptionTypeData';
 import {
     Switch,
     Route,
@@ -27,6 +29,9 @@ function Database(props) {
     } else if (urlPath === '/admin/product' || urlPath === '/admin/product/add' || urlPath.includes('/admin/product/edit')) {
         fetchUrl = 'product/getAllProducts';
         chosenFunction = CreateProductData;
+    } else if (urlPath === '/admin/description-type' || urlPath === '/admin/description-type/add' || urlPath.includes('/admin/description-type/edit')) {
+        fetchUrl = 'type/getAllTypes';
+        chosenFunction = CreateDescriptionTypeData;
     }
 
     React.useEffect(() => {
@@ -54,8 +59,22 @@ function Database(props) {
 
     return (
         <Switch>
+            <Route exact path="/admin/description-type/edit/:id">
+                <DescriptionTypeForm
+                    rows={rows}
+                    setRows={setRows}
+                    setFilteredRows={setFilteredRows}
+                />
+            </Route>
             <Route exact path="/admin/category/edit/:id">
                 <CategoryForm
+                    rows={rows}
+                    setRows={setRows}
+                    setFilteredRows={setFilteredRows}
+                />
+            </Route>
+            <Route exact path="/admin/description-type/add">
+                <DescriptionTypeForm
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
@@ -73,6 +92,15 @@ function Database(props) {
             </Route>
             <Route exact path="/admin/user">
                 <UserTable
+                    rows={rows}
+                    filteredRows={filteredRows}
+                    setFilteredRows={setFilteredRows}
+                    tableOrder="name"
+                    searchField="name"
+                />
+            </Route>
+            <Route exact path="/admin/description-type">
+                <DescriptionTypeTable
                     rows={rows}
                     filteredRows={filteredRows}
                     setFilteredRows={setFilteredRows}

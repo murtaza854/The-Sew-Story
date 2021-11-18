@@ -23,8 +23,9 @@ function CategoryForm(props) {
 
     const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Cushions' });
     const [image, setImage] = useState({ picturePreview: '', imgURl: '', error: false });
-    const [oldFileName, setOldFileName] = useState('');
     const [checkBoxes, setCheckBoxes] = useState({ active: true, comingSoon: false });
+
+    const [oldFileName, setOldFileName] = useState('');
 
     const [disabled, setDisabled] = useState(true);
 
@@ -46,9 +47,10 @@ function CategoryForm(props) {
                         const { data } = content;
                         setName({ value: data.name, error: false, helperText: '' });
                         setImage({ picturePreview: '', imgURl: data.imagePath, error: false });
-                        setOldFileName(data.fileName);
                         setCheckBoxes({ active: data.active, comingSoon: data.comingSoon });
                         setDisabled(false);
+                        
+                        setOldFileName(data.fileName);
                     } else {
                         history.push('/admin/category');
                     }

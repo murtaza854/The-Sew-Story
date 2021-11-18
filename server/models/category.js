@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     fileName: DataTypes.STRING,
     imagePath: DataTypes.STRING,
     comingSoon: DataTypes.BOOLEAN,
+    homePage: DataTypes.BOOLEAN,
+    ourStoryPage: DataTypes.BOOLEAN,
     active: DataTypes.BOOLEAN
   }, {
     sequelize,

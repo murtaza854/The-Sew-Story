@@ -30,6 +30,21 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+      comingSoon: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      homePage: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      ourStoryPage: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       active: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

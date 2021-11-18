@@ -4,6 +4,7 @@ const county = require('./county');
 const city = require('./city');
 const category = require('./category');
 const product = require('./product');
+const type = require('./type');
 
 module.exports = {
     user,
@@ -11,5 +12,6 @@ module.exports = {
     county,
     city,
     category,
-    product
+    product,
+    type
 };

@@ -117,7 +117,7 @@ export default function AdminLayout() {
                 </List>
                 <Divider />
                 <List>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/description-types">
+                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/description-type">
                         <ListItem button>
                             <ListItemIcon>
                                 <InboxIcon />
