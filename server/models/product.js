@@ -18,13 +18,16 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE'
       });
       product.hasMany(models.image, {
+        foreignKey: 'product_id',
         as: 'images',
       });
       product.hasMany(models.detail, {
+        foreignKey: 'product_id',
         as: 'details',
       });
       product.hasMany(models.orderItem, {
         as: 'orderItems',
+        foreignKey: 'product_id',
       });
     }
   };

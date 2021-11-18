@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const productController = require('../controllers').product;
+const imageController = require('../controllers').image;
+const detailController = require('../controllers').detail;
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
@@ -10,6 +12,7 @@ const storage = multer.diskStorage({
         cb(null, path.resolve('../client/public/productUploads'))
     },
     filename: (req, file, cb) => {
+        console.log(file);
         const ext = path.extname(file.originalname);
         cb(null, file.fieldname + '-' + Date.now() + ext);
     }
@@ -36,19 +39,43 @@ router.post('/getById', async (req, res) => {
     }
 });
 
-router.post('/add', upload.single('image'), async (req, res) => {
+router.post('/add', upload.array('images'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
-        const obj = await productController.create(
-            {
-                name: data.name,
-                slug: slugify(data.name),
-                active: data.active,
-                comingSoon: data.comingSoon,
-                fileName: req.file.filename,
-                imagePath: '/productUploads/' + req.file.filename
-            }
-        );
+        const images = req.files;
+        console.log(data);
+        console.log(req.files);
+        const obj = await productController.create({
+            name: data.name,
+            slug: slugify(data.name),
+            productCode: data.productCode,
+            story: data.story,
+            storyImageFileName: images[images.length - 1].filename,
+            storyImagePath: '/productUploads/' + images[images.length - 1].filename,
+            active: data.active,
+            category_id: data.category.id,
+            price: data.price,
+            quantity: data.quantity
+        });
+        console.log(obj);
+        data.details.forEach(async (detail) => {
+            await detailController.create({
+                product_id: obj.id,
+                label: detail.label,
+                text: detail.text,
+                type_id: detail.type
+            });
+        });
+        console.log('detailController');
+        for (let index = 0; index < images.length - 1; index++) {
+            const element = images[index];
+            await imageController.create({
+                product_id: obj.id,
+                fileName: element.filename,
+                path: '/productUploads/' + element.filename
+            });
+        }
+        console.log('imageController');
         res.json({ data: obj });
     } catch (error) {
         console.log(error);

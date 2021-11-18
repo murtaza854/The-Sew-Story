@@ -5,6 +5,8 @@ const city = require('./city');
 const category = require('./category');
 const product = require('./product');
 const type = require('./type');
+const image = require('./image');
+const detail = require('./detail');
 
 module.exports = {
     user,
@@ -13,5 +15,7 @@ module.exports = {
     city,
     category,
     product,
-    type
+    type,
+    image,
+    detail,
 };

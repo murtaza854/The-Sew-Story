@@ -14,6 +14,13 @@ import { stableSort } from '../../stabalizedSort';
 import { getComparator } from '../../comparator';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import Collapse from '@mui/material/Collapse';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Col, Row } from 'react-bootstrap';
+
 
 export default function ProductTable(props) {
 
@@ -31,6 +38,8 @@ export default function ProductTable(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [searchText, setSearchText] = React.useState('');
+
+    const [open, setOpen] = React.useState(false);
 
     React.useEffect(() => {
         if (rows.length > 0) {
@@ -111,19 +120,20 @@ export default function ProductTable(props) {
                             onRequestSort={handleRequestSort}
                             rowCount={filteredRows.length}
                         />
-                        <TableBody>
-                            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+                        {/* <TableBody> */}
+                        {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    filteredRows.slice().sort(getComparator(order, orderBy)) */}
-                            {stableSort(filteredRows, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
-                                    const isItemSelected = isSelected(row.id);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
+                        {stableSort(filteredRows, getComparator(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row, index) => {
+                                const isItemSelected = isSelected(row.id);
+                                const labelId = `enhanced-table-checkbox-${index}`;
 
-                                    return (
+                                return (
+                                    <TableBody key={row.id}>
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.id)}
+                                            onClick={() => setOpen(!open)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
@@ -132,6 +142,7 @@ export default function ProductTable(props) {
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
+                                                    onClick={(event) => handleClick(event, row.id)}
                                                     color="primary"
                                                     checked={isItemSelected}
                                                     inputProps={{ 'aria-labelledby': labelId }}
@@ -146,30 +157,100 @@ export default function ProductTable(props) {
                                             >
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell>{row.email}</TableCell>
+                                            <TableCell>{row.productCode}</TableCell>
+                                            <TableCell>{row.category}</TableCell>
+                                            <TableCell>{row.price}</TableCell>
+                                            <TableCell>{row.quantity}</TableCell>
                                             <TableCell>
-                                                {row.admin ? (
+                                                {row.active ? (
                                                     <CheckIcon />
                                                 ) : (
                                                     <CloseIcon />
                                                 )}
                                             </TableCell>
                                             <TableCell>
-                                                {row.emailVerified ? (
-                                                    <CheckIcon />
-                                                ) : (
-                                                    <CloseIcon />
-                                                )}
+                                                <IconButton
+                                                    aria-label="expand row"
+                                                    size="small"
+                                                >
+                                                    {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                </IconButton>
                                             </TableCell>
                                         </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
+                                        <TableRow>
+                                            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+                                                <Collapse in={open} timeout="auto" unmountOnExit>
+                                                    <Box sx={{ margin: 1 }}>
+                                                        <Typography variant="h5" gutterBottom component="div">
+                                                            Product Details
+                                                        </Typography>
+                                                        <Row>
+                                                            <Col md={6}>
+                                                                <Typography variant="h6" gutterBottom>
+                                                                    Story
+                                                                </Typography>
+                                                                <Typography variant="body2" gutterBottom>
+                                                                    {row.story}
+                                                                </Typography>
+                                                            </Col>
+                                                            <Col md={6}>
+                                                                <Typography variant="h6" gutterBottom>
+                                                                    Story Image
+                                                                </Typography>
+                                                                <Typography variant="body2" gutterBottom>
+                                                                    <img src={row.storyImagePath} alt="storyImage" />
+                                                                </Typography>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col md={6}>
+                                                                <Typography variant="body2" gutterBottom>
+                                                                    {
+                                                                        row.detailsKeys.map((key, index) => {
+                                                                            console.log(key);
+                                                                            return (
+                                                                                <Typography key={index} variant="body2" gutterBottom>
+                                                                                    <Typography variant="h6" gutterBottom>
+                                                                                        {key}
+                                                                                    </Typography>
+                                                                                    {
+                                                                                        row.details[key].map((detail, index) => {
+                                                                                            return (
+                                                                                                <Typography key={index} variant="body2" gutterBottom>
+                                                                                                    {
+                                                                                                        detail.label !== "" ? (
+                                                                                                            <>{detail.label}: {detail.text}</>
+                                                                                                        ) : (
+                                                                                                            <>{detail.text}</>
+                                                                                                        )
+                                                                                                    }
+                                                                                                </Typography>
+                                                                                            )
+                                                                                        })
+                                                                                    }
+                                                                                    {/* <Typography variant="body2" gutterBottom>
+                                                                                        {row.details[key]}
+                                                                                    </Typography> */}
+                                                                                </Typography>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </Typography>
+                                                            </Col>
+                                                        </Row>
+                                                    </Box>
+                                                </Collapse>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                );
+                            })}
+                        {emptyRows > 0 && (
+                            <TableRow>
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
+                        {/* </TableBody> */}
                     </Table>
                 </TableContainer>
                 <TablePagination

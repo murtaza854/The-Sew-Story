@@ -88,7 +88,11 @@ function Database(props) {
                 />
             </Route>
             <Route exact path="/admin/product/add">
-                <ProductForm />
+                <ProductForm
+                    rows={rows}
+                    setRows={setRows}
+                    setFilteredRows={setFilteredRows}
+                    />
             </Route>
             <Route exact path="/admin/user">
                 <UserTable

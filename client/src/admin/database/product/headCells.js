@@ -18,6 +18,18 @@ export const headCells = [
       label: 'Category',
     },
     {
+      id: 'price',
+      numeric: false,
+      disablePadding: false,
+      label: 'Price',
+    },
+    {
+      id: 'quantity',
+      numeric: false,
+      disablePadding: false,
+      label: 'In Stock',
+    },
+    {
       id: 'active',
       numeric: false,
       disablePadding: false,

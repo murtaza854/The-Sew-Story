@@ -1,10 +1,13 @@
-import { FormControl, InputLabel, Typography, Input, FormControlLabel, Checkbox, FormHelperText, Button, TextField, Autocomplete, Select, MenuItem, IconButton, Tooltip } from '@mui/material';
+import { FormControl, InputLabel, Typography, Input, FormControlLabel, Checkbox, FormHelperText, Button, TextField, Autocomplete, Select, MenuItem, Tooltip } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useHistory, useParams } from 'react-router';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 import api from '../../../../api';
+
 
 function gcd(a, b) {
     return (b === 0) ? a : gcd(b, a % b);
@@ -32,12 +35,12 @@ function ProductForm(props) {
     const [images, setImages] = useState([]);
     const [category, setCategory] = useState({ name: '', obj: null, helperText: 'Enter category Ex. Kitchen Towels', error: false });
     const [details, setDetails] = useState([
-        { type: '', label: '', text: '', typeError: false, typeHelperText: 'Select a type Ex. Care Instructions', labelHelperText: 'Enter a label Ex. Weight', textError: false, textHelperText: 'Enter text Ex. 4.00 lbs/Dozen', error: false }
+        { type: '', label: '', text: '', typeError: false, typeHelperText: 'Select a type Ex. Care Instructions', labelHelperText: 'Enter a label Ex. Weight', textError: false, textHelperText: 'Enter text Ex. 4.00 lbs/Dozen', error: false, order: 1, orderError: false, orderHelperText: 'Enter an order Ex. 1' },
     ]);
     const [checkBoxes, setCheckBoxes] = useState({ active: true });
 
     const [storyOldFileName, setStoryOldFileName] = useState('');
-    const [imagesOldFileNames, setImagesOldFileNames] = useState([]);
+    // const [imagesOldFileNames, setImagesOldFileNames] = useState([]);
 
     const [categories, setCategories] = useState([]);
     const [detailsTypes, setDetailsTypes] = useState([]);
@@ -68,12 +71,26 @@ function ProductForm(props) {
                         setStoryImage({ picturePreview: '', imgURl: data.imagePath, error: false });
                         setImages(data.images);
                         setCategory({ name: data.category.name, obj: data.category, helperText: 'Enter category Ex. Kitchen Towels', error: false });
-                        setDetails(data.details);
                         setCheckBoxes({ active: data.active });
                         setDisabled(false);
 
+                        // const details = data.details.map(d => {
+                        //     return {
+                        //         type: d.type,
+                        //         label: d.label,
+                        //         text: d.text,
+                        //         typeError: false,
+                        //         typeHelperText: 'Select a type Ex. Care Instructions',
+                        //         labelHelperText: 'Enter a label Ex. Weight',
+                        //         textError: false,
+                        //         textHelperText: 'Enter text Ex. 4.00 lbs/Dozen',
+                        //         error: false
+                        //     }
+                        // });
+                        // setDetails(details);
+
                         setStoryOldFileName(data.fileName);
-                        setImagesOldFileNames(data.images.map(img => img.fileName));
+                        // setImagesOldFileNames(data.images.map(img => img.fileName));
                     } else {
                         history.push('/admin/product');
                     }
@@ -185,11 +202,11 @@ function ProductForm(props) {
                         const w = this.width;
                         const h = this.height;
                         const r = gcd(w, h);
-                        if (w / r < h / r) {
+                        if (w / r === h / r) {
                             setStoryImage(prevState => ({ ...prevState, picturePreview: event.target.files[0], imgURl: objectUrl, error: false }));
                         }
                         else {
-                            alert("Please upload a portrait image.");
+                            alert("Please upload a square image.");
                         }
                     };
                 });
@@ -200,8 +217,38 @@ function ProductForm(props) {
     }
 
     const imagesChange = event => {
-        let reader = new FileReader();
-        console.log(event.target.files);
+        const files = event.target.files;
+        let flag = false;
+        Array.prototype.forEach.call(files, (file, index) => {
+            if (file.size / 1024 < 300) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                const objectUrl = URL.createObjectURL(file);
+                reader.onload = ((theFile) => {
+                    var image = new Image();
+                    image.src = theFile.target.result;
+                    image.onload = function () {
+                        const w = this.width;
+                        const h = this.height;
+                        const r = gcd(w, h);
+                        if (w / r < h / r) {
+                            setImages(prevState => [...prevState, { picturePreview: file, imgURl: objectUrl, error: false }]);
+                        } else {
+                            flag = true;
+                        }
+                    };
+                });
+            } else {
+                alert("Size too large. Must be below 300kb.");
+            }
+        });
+        if (flag) {
+            alert("Only portrait images uploaded");
+        }
+    }
+
+    const handleRemoveImage = (imgURL, index) => {
+        setImages(prevState => prevState.filter((image, i) => i !== index));
     }
 
     const handleCategoryChange = (event) => {
@@ -226,8 +273,27 @@ function ProductForm(props) {
                 newDetails[index].textError = true;
                 newDetails[index].textHelperText = 'Text is required!';
             } else {
+                newDetails[index].text = event.target.value;
                 newDetails[index].textError = false;
                 newDetails[index].textHelperText = 'Enter text Ex. 4.00 lbs/Dozen';
+            }
+        } else if (mode === 'order') {
+            if (event.target.value.length === 0) {
+                newDetails[index].orderError = true;
+                newDetails[index].orderHelperText = 'Order is required!';
+                newDetails[index].order = event.target.value;
+            } else if (isNaN(event.target.value)) {
+                newDetails[index].order = event.target.value;
+                newDetails[index].orderError = true;
+                newDetails[index].orderHelperText = 'Order must be a number!';
+            } else if (event.target.value < 0) {
+                newDetails[index].order = event.target.value;
+                newDetails[index].orderError = true;
+                newDetails[index].orderHelperText = 'Order must be greater than 0!';
+            } else {
+                newDetails[index].order = event.target.value;
+                newDetails[index].orderError = false;
+                newDetails[index].orderHelperText = 'Enter order Ex. 1';
             }
         }
         setDetails(newDetails);
@@ -237,10 +303,6 @@ function ProductForm(props) {
         setCheckBoxes({ ...checkBoxes, active: !checkBoxes.active });
     }
 
-    const handleComingSoonChange = (event) => {
-        setCheckBoxes({ ...checkBoxes, comingSoon: !checkBoxes.comingSoon });
-    }
-
     const handleSubmitAdd = async event => {
         event.preventDefault();
         const formData = new FormData();
@@ -248,12 +310,27 @@ function ProductForm(props) {
             'data',
             JSON.stringify({
                 name: name.value,
+                productCode: productCode.value,
+                price: price.value,
+                quantity: quantity.value,
+                story: story.value,
+                storyImage: storyImage.picturePreview,
+                category: category.obj,
+                details: details.map(detail => ({
+                    type: detail.type,
+                    label: detail.label,
+                    text: detail.text,
+                })),
                 active: checkBoxes.active,
-                comingSoon: checkBoxes.comingSoon
             })
         );
-        formData.append('image', storyImage.picturePreview);
-        const response = await fetch(`${api}/category/add`, {
+        for (let index = 0; index < images.length; index++) {
+            const element = images[index];
+            formData.append('images', element.picturePreview);
+        }
+        formData.append('images', storyImage.picturePreview);
+        console.log(formData.getAll('images'));
+        const response = await fetch(`${api}/product/add`, {
             method: 'POST',
             headers: {
                 'Accept': 'multipart/form-data',
@@ -265,7 +342,7 @@ function ProductForm(props) {
         if (content.data) {
             setRows([...rows, content.data]);
             setFilteredRows([...rows, content.data]);
-            history.push('/admin/category');
+            history.push('/admin/product');
         } else {
             alert("Something went wrong.");
         }
@@ -341,12 +418,19 @@ function ProductForm(props) {
     }
 
     const handleAddDescription = _ => {
-        setDetails([...details, { type: '', label: '', text: '', typeError: false, typeHelperText: 'Select a type Ex. Care Instructions', labelHelperText: 'Enter a label Ex. Weight', textError: false, textHelperText: 'Enter text Ex. 4.00 lbs/Dozen', error: false }]);
+        setDetails([...details, { type: '', label: '', text: '', typeError: false, typeHelperText: 'Select a type Ex. Care Instructions', labelHelperText: 'Enter a label Ex. Weight', textError: false, textHelperText: 'Enter text Ex. 4.00 lbs/Dozen', error: false, order: details.length + 1, orderError: false, orderHelperText: 'Enter an order Ex. 1' }]);
     }
 
     const handleRemoveDescription = index => {
-        const newDetails = [...details];
-        newDetails.splice(index, 1);
+        const newDetails = [];
+        for (let i = 0; i < details.length; i++) {
+            if (i !== index) {
+                newDetails.push(details[i]);
+            }
+        }
+        newDetails.forEach((detail, index) => {
+            detail.order = index + 1;
+        });
         setDetails(newDetails);
     }
 
@@ -453,6 +537,47 @@ function ProductForm(props) {
                 </Row>
                 <div className="margin-global-top-1" />
                 <Row>
+                    <Col md={6}>
+                        <FormControl variant="standard" fullWidth>
+                            {/* <InputLabel error={story.error} htmlFor="story">Story</InputLabel> */}
+                            <TextField
+                                id="story"
+                                label="Story"
+                                variant="standard"
+                                value={story.value}
+                                onChange={handleStoryChange}
+                                onBlur={handleStoryChange}
+                                error={story.error}
+                                multiline
+                                rows={10}
+                            />
+                            <FormHelperText error={story.error}>{story.helperText}</FormHelperText>
+                        </FormControl>
+                    </Col>
+                    <Col md={6}>
+                        <Row>
+                            <label htmlFor="image">
+                                <Input onChange={storyImageChange} hidden accept="image/*" id="image" type="file" />
+                                <Button type="button" variant="contained" component="span">
+                                    Upload Story Image
+                                </Button>
+                            </label>
+                        </Row>
+                        <Row>
+                            {
+                                storyImage.imgURl !== '' ? (
+                                    <Row>
+                                        <div className="margin-global-top-2" />
+                                        <img style={{ width: '30rem' }} src={storyImage.imgURl} alt="Preview" />
+                                        <div className="margin-global-top-1" />
+                                    </Row>
+                                ) : null
+                            }
+                        </Row>
+                    </Col>
+                </Row>
+                <div className="margin-global-top-1" />
+                <Row>
                     <Typography
                         style={{ width: 'fit-content', lineHeight: '2.5' }}
                         variant="h8"
@@ -473,7 +598,7 @@ function ProductForm(props) {
                     details.map((detail, index) => {
                         return (
                             <Row key={index}>
-                                <Col md={3}>
+                                <Col md={2}>
                                     <FormControl variant="standard" fullWidth>
                                         <InputLabel id="demo-simple-select-label">Description Type</InputLabel>
                                         <Select
@@ -494,7 +619,7 @@ function ProductForm(props) {
                                         <FormHelperText error={detail.typeError}>{detail.typeHelperText}</FormHelperText>
                                     </FormControl>
                                 </Col>
-                                <Col md={3}>
+                                <Col md={2}>
                                     <FormControl variant="standard" fullWidth>
                                         <InputLabel id="demo-simple-select-label">Label</InputLabel>
                                         <Input
@@ -510,7 +635,7 @@ function ProductForm(props) {
                                     </FormControl>
                                     <FormHelperText>{detail.labelHelperText}</FormHelperText>
                                 </Col>
-                                <Col md={3}>
+                                <Col md={2}>
                                     <FormControl variant="standard" fullWidth>
                                         <InputLabel id="demo-simple-select-label">Text</InputLabel>
                                         <Input
@@ -519,12 +644,21 @@ function ProductForm(props) {
                                             onChange={e => handleDetailsChange(e, index, 'text')}
                                             onBlur={e => handleDetailsChange(e, index, 'text')}
                                             error={detail.textError}
-                                        // value={quantity.value}
-                                        // onChange={handleQuantityChange}
-                                        // onBlur={handleQuantityChange}
-                                        // error={quantity.error}
                                         />
                                         <FormHelperText error={detail.textError}>{detail.textHelperText}</FormHelperText>
+                                    </FormControl>
+                                </Col>
+                                <Col md={2}>
+                                    <FormControl variant="standard" fullWidth>
+                                        <InputLabel id="order">Order</InputLabel>
+                                        <Input
+                                            id="order"
+                                            value={detail.order}
+                                            onChange={e => handleDetailsChange(e, index, 'order')}
+                                            onBlur={e => handleDetailsChange(e, index, 'order')}
+                                            error={detail.orderError}
+                                        />
+                                        <FormHelperText error={detail.orderError}>{detail.orderHelperText}</FormHelperText>
                                     </FormControl>
                                 </Col>
                                 {
@@ -545,6 +679,54 @@ function ProductForm(props) {
                 <div className="margin-global-top-1" />
                 <Row>
                     <Col md={6}>
+                        <Row>
+                            <label htmlFor="images">
+                                <input name="images" onChange={imagesChange} hidden accept="image/*" id="images" multiple type="file" />
+                                <Button type="button" variant="contained" component="span">
+                                    Upload Images
+                                </Button>
+                            </label>
+                        </Row>
+                    </Col>
+                </Row>
+                {
+                    images.length > 0 ? (
+                        <>
+                            <div className="margin-global-top-1" />
+                            <Row>
+                                <ImageList sx={{ height: 450 }} cols={6}>
+                                    {images.map((item, index) => (
+                                        <ImageListItem key={item.imgURl}>
+                                            <img
+                                                src={item.imgURl}
+                                                srcSet={item.imgURl}
+                                                alt="Preview"
+                                                loading="lazy"
+                                            />
+                                            <Tooltip className="admin-delete-image" title="Remove Image">
+                                                <Button style={{ borderRadius: '100px', padding: '10px', minWidth: '0' }} variant="contained" onClick={() => handleRemoveImage(item.imgURl, index)}>
+                                                    <DeleteIcon />
+                                                </Button>
+                                            </Tooltip>
+                                        </ImageListItem>
+                                    ))}
+                                </ImageList>
+                            </Row>
+                        </>
+                    ) : null
+                }
+                {/* {
+                    storyImage.imgURl !== '' ? (
+                        <Row>
+                            <div className="margin-global-top-2" />
+                            <img style={{ width: '30rem' }} src={storyImage.imgURl} alt="Preview" />
+                            <div className="margin-global-top-1" />
+                        </Row>
+                    ) : null
+                } */}
+                <div className="margin-global-top-1" />
+                <Row>
+                    <Col md={6}>
                         <FormControlLabel
                             control={<Checkbox
                                 checked={checkBoxes.active}
@@ -554,26 +736,6 @@ function ProductForm(props) {
                         />
                     </Col>
                 </Row>
-                <div className="margin-global-top-1" />
-                <Row>
-                    <Col md={6}>
-                        <label htmlFor="image">
-                            <Input onChange={storyImageChange} hidden accept="image/*" id="image" type="file" />
-                            <Button type="button" variant="contained" component="span">
-                                Upload Story Image
-                            </Button>
-                        </label>
-                    </Col>
-                </Row>
-                {
-                    storyImage.imgURl !== '' ? (
-                        <Row>
-                            <div className="margin-global-top-2" />
-                            <img style={{ width: '30rem' }} src={storyImage.imgURl} alt="Preview" />
-                            <div className="margin-global-top-1" />
-                        </Row>
-                    ) : null
-                }
                 <div className="margin-global-top-1" />
                 <Row>
                     <Col className="flex-display">

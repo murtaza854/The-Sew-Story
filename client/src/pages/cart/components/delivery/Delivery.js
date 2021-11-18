@@ -24,8 +24,6 @@ function Delivery(props) {
         setAddressLine2,
         zipCode,
         setZipCode,
-        landmark,
-        setLandmark,
         state,
         setState,
         stateList,
@@ -38,12 +36,6 @@ function Delivery(props) {
         cityLoading,
         setCityList,
         setCityLoading,
-        county,
-        setCounty,
-        countyList,
-        countyLoading,
-        setCountyList,
-        setCountyLoading,
     } = props;
     // const history = useHistory();
 
@@ -81,13 +73,11 @@ function Delivery(props) {
     const changeState = async array => {
         if (array.length === 0) {
             setState({ value: array, error: true, errortext: 'State is required!', readOnly: false });
-            setCounty({ value: [], error: false, errortext: '', readOnly: true });
             setCity({ value: [], error: false, errortext: '', readOnly: true });
         }
         else {
             setState({ value: array, error: false, errortext: '', readOnly: false });
-            setCounty({ value: [], error: false, errortext: '', readOnly: true });
-            setCity({ value: [], error: false, errortext: '', readOnly: true });
+            setCity({ value: [], error: false, errortext: '', readOnly: false });
         }
     }
     const handleStateSearch = async (query) => {
@@ -110,50 +100,18 @@ function Delivery(props) {
     };
     const filterByState = () => true;
 
-    const changeCounty = async array => {
-        if (array.length === 0) {
-            setCounty({ value: array, error: true, errortext: 'County is required!', readOnly: false });
-            setCity({ value: [], error: false, errortext: '', readOnly: false });
-        }
-        else {
-            setCounty({ value: array, error: false, errortext: '', readOnly: false });
-            setCity({ value: [], error: false, errortext: '', readOnly: true });
-        }
-    }
-    const handleCountySearch = async (query) => {
-        setCountyLoading(true);
-        setCountyList([]);
-        const response = await fetch(`${api}/county/get-counties-search?countyText=${query}&states=${JSON.stringify(state.value)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-store'
-            },
-            credentials: 'include',
-            withCredentials: true,
-        });
-        const content = await response.json();
-        setTimeout(() => {
-            setCountyList(content.data);
-            setCountyLoading(false);
-        }, 1000)
-    };
-    const filterByCounty = () => true;
-
     const changeCity = async array => {
         if (array.length === 0) {
             setCity({ value: array, error: true, errortext: 'City is required!', readOnly: false });
-            // setCounty({ value: [], error: false, errortext: '', readOnly: false });
         }
         else {
             setCity({ value: array, error: false, errortext: '', readOnly: false });
-            // setCounty({ value: [], error: false, errortext: '', readOnly: false });
         }
     }
     const handleCitySearch = async (query) => {
         setCityLoading(true);
         setCityList([]);
-        const response = await fetch(`${api}/city/get-cities-search?cityText=${query}&counties=${JSON.stringify(county.value)}`, {
+        const response = await fetch(`${api}/city/get-cities-search?cityText=${query}&states=${JSON.stringify(state.value)}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -176,9 +134,6 @@ function Delivery(props) {
     }
     const handleAddressLine2 = event => {
         setAddressLine2({ text: event.target.value });
-    }
-    const handleLandmark = event => {
-        setLandmark({ text: event.target.value });
     }
     const changeZipCode = event => {
         const zipCodeFormat = /^[0-9]{5}(?:-[0-9]{4})?$/;
@@ -296,32 +251,6 @@ function Delivery(props) {
                             <div className="error-text">{state.errortext}</div>
                         </Form.Group>
                         <div className="margin-global-top-2 unhide-768" />
-                        <Form.Group as={Col} md={6} controlId="county">
-                            <Form.Label>County</Form.Label>
-                            <AsyncTypeahead
-                                filterBy={filterByCounty}
-                                isLoading={countyLoading}
-                                id="county"
-                                labelKey="name"
-                                minLength={2}
-                                onSearch={handleCountySearch}
-                                inputProps={{
-                                    readOnly: county.readOnly,
-                                }}
-                                onChange={changeCounty}
-                                options={countyList}
-                                selected={county.value}
-                                renderMenuItemChildren={(option, props) => (
-                                    <Fragment>
-                                        <span>{option.name}</span>
-                                    </Fragment>
-                                )}
-                            />
-                            <div className="error-text">{county.errortext}</div>
-                        </Form.Group>
-                    </Row>
-                    <div className="margin-global-top-2" />
-                    <Row className="justify-content-between">
                         <Form.Group as={Col} md={6} controlId="city">
                             <Form.Label>City</Form.Label>
                             <AsyncTypeahead
@@ -348,6 +277,19 @@ function Delivery(props) {
                     </Row>
                     <div className="margin-global-top-2" />
                     <Row className="justify-content-between">
+                        <Form.Group className="form-group-rght" as={Col} md={6} controlId="zipCode">
+                            <Form.Label>Zip Code</Form.Label>
+                            <Form.Control
+                                type="text"
+                                onChange={changeZipCode}
+                                onBlur={changeZipCode}
+                                value={zipCode.name}
+                            />
+                            <div className="error-text">{zipCode.errorText}</div>
+                        </Form.Group>
+                    </Row>
+                    <div className="margin-global-top-2" />
+                    <Row className="justify-content-between">
                         <Form.Group as={Col} md={6} controlId="addressLine1">
                             <Form.Label>Address Line 1</Form.Label>
                             <Form.Control
@@ -366,29 +308,6 @@ function Delivery(props) {
                                 onChange={handleAddressLine2}
                                 onBlur={handleAddressLine2}
                                 value={addressLine2.text}
-                            />
-                        </Form.Group>
-                    </Row>
-                    <div className="margin-global-top-2" />
-                    <Row className="justify-content-between">
-                        <Form.Group className="form-group-rght" as={Col} md={6} controlId="zipCode">
-                            <Form.Label>Zip Code</Form.Label>
-                            <Form.Control
-                                type="text"
-                                onChange={changeZipCode}
-                                onBlur={changeZipCode}
-                                value={zipCode.name}
-                            />
-                            <div className="error-text">{zipCode.errorText}</div>
-                        </Form.Group>
-                        <div className="margin-global-top-2 unhide-768" />
-                        <Form.Group as={Col} md={6} controlId="landmark">
-                            <Form.Label>Nearest Landmark [Optional]</Form.Label>
-                            <Form.Control
-                                type="text"
-                                onChange={handleLandmark}
-                                onBlur={handleLandmark}
-                                value={landmark.text}
                             />
                         </Form.Group>
                     </Row>

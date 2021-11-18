@@ -43,7 +43,34 @@ module.exports = {
     },
     getAll() {
         return Product.findAll({
-            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'price', 'quantity', 'active', 'category_id'],
+            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'price', 'quantity', 'active'],
+            where: {
+                active: true
+            },
+            include: [
+                {
+                    model: require('../models').category,
+                    attributes: ['id', 'name', 'slug', 'active'],
+                    as: 'category'
+                },
+                {
+                    model: require('../models').image,
+                    attributes: ['id', 'fileName', 'path'],
+                    as: 'images'
+                },
+                {
+                    model: require('../models').detail,
+                    attributes: ['id', 'label', 'text', 'type_id'],
+                    as: 'details',
+                    include: [
+                        {
+                            model: require('../models').type,
+                            attributes: ['id', 'name'],
+                            as: 'type'
+                        }
+                    ]
+                }
+            ],
         })
             .then(function (data) {
                 return data;

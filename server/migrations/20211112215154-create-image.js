@@ -19,7 +19,6 @@ module.exports = {
         unique: true
       },
       product_id: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'products',

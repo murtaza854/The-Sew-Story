@@ -45,6 +45,7 @@ export function TableHead(props) {
                         </TableSortLabel>
                     </TableCell>
                 ))}
+                <TableCell />
             </TableRow>
         </MuiHead>
     );
