@@ -176,6 +176,20 @@ export default function CategoryTable(props) {
                                                     <CloseIcon />
                                                 )}
                                             </TableCell>
+                                            <TableCell>
+                                                {row.homePage ? (
+                                                    <CheckIcon />
+                                                ) : (
+                                                    <CloseIcon />
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.ourStoryPage ? (
+                                                    <CheckIcon />
+                                                ) : (
+                                                    <CloseIcon />
+                                                )}
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}

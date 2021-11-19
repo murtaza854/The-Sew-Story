@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      city.belongsTo(models.county, {
-        foreignKey: 'county_id',
-        as: 'county',
+      city.belongsTo(models.state, {
+        foreignKey: 'state_id',
+        as: 'state',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     slug: DataTypes.STRING,
     active: DataTypes.BOOLEAN,
-    county_id: DataTypes.INTEGER
+    city_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'city',

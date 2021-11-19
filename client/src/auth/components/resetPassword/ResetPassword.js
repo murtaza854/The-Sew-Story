@@ -18,7 +18,7 @@ function ResetPassword(props) {
 
     useEffect(() => {
         Promise.resolve(resetPasswordCheck(props.actionCode)).then((value) => {
-            console.log(value);
+            // console.log(value);
             if (!value) {
                 history.push("/__/auth/action?mode=resetFailed");
             }

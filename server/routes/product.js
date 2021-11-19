@@ -6,6 +6,17 @@ const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
 const slugify = require('slugify');
+const dotenv = require('dotenv');
+dotenv.config();
+
+const {
+    API_URL1,
+    API_URL2,
+    API_URL3,
+    STRIPE_SECRET_KEY,
+} = process.env;
+
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -43,30 +54,41 @@ router.post('/add', upload.array('images'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
         const images = req.files;
-        console.log(data);
-        console.log(req.files);
+        let slug = slugify(data.name, { lower: true });
+        while (true) {
+            const product = await productController.findBySlug({ slug: slug });
+            if (product) {
+                if (parseInt(product.slug.split('-')[1]) > 0) {
+                    slug = slug + '-' + parseInt(product.slug.split('-')[1]) + 1;
+                } else {
+                    slug = slug + '-1';
+                }
+            } else {
+                break;
+            }
+        }
         const obj = await productController.create({
             name: data.name,
-            slug: slugify(data.name),
+            slug: slug,
             productCode: data.productCode,
             story: data.story,
             storyImageFileName: images[images.length - 1].filename,
             storyImagePath: '/productUploads/' + images[images.length - 1].filename,
+            storyWrittenBy: data.storyWrittenBy,
             active: data.active,
             category_id: data.category.id,
             price: data.price,
             quantity: data.quantity
         });
-        console.log(obj);
         data.details.forEach(async (detail) => {
             await detailController.create({
                 product_id: obj.id,
                 label: detail.label,
                 text: detail.text,
-                type_id: detail.type
+                type_id: detail.type,
+                order: detail.order
             });
         });
-        console.log('detailController');
         for (let index = 0; index < images.length - 1; index++) {
             const element = images[index];
             await imageController.create({
@@ -75,8 +97,32 @@ router.post('/add', upload.array('images'), async (req, res) => {
                 path: '/productUploads/' + element.filename
             });
         }
-        console.log('imageController');
-        res.json({ data: obj });
+        const stripeImages = [];
+        for (let index = 0; index < images.length - 1; index++) {
+            const element = images[index];
+            stripeImages.push(API_URL1 + '/productUploads/' + element.filename);
+            if (index === 7) {
+                break;
+            }
+        }
+        const product = await stripe.products.create({
+            id: obj.id,
+            name: data.name,
+            active: data.active,
+            tax_code: 'txcd_99999999',
+            images: stripeImages,
+            url: `${API_URL1}/${obj.category.slug}/${obj.slug}`,
+            // type: 'good',
+        });
+        const price = await stripe.prices.create({
+            currency: 'USD',
+            product: product.id,
+            unit_amount: data.price * 100,
+          });
+        console.log(product);
+        console.log(price);
+        const productData = await productController.getById(obj.id);
+        res.json({ data: productData });
     } catch (error) {
         console.log(error);
         res.json({ data: null, error: error });

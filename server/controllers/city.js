@@ -5,7 +5,8 @@ module.exports = {
         return Cities.create({
             name: params.name,
             slug: params.slug,
-            county_id: params.county_id,
+            state_id: params.state_id,
+            active: params.active,
         })
             .then(function (data) {
                 return data;
@@ -22,14 +23,38 @@ module.exports = {
                 return data;
             });
     },
+    insertIfnotExist(params) {
+        return Cities.findOne({
+            attributes: ['id', 'name', 'slug', 'state_id', 'active'],
+            where: {
+                name: params.name,
+            },
+            raw: true,
+        })
+            .then(function (data) {
+                if (data) {
+                    return data;
+                } else {
+                    return Cities.create({
+                        name: params.name,
+                        slug: params.slug,
+                        state_id: params.state_id,
+                        active: params.active,
+                    })
+                        .then(function (data) {
+                            return data;
+                        });
+                }
+            });
+    },
     getSearch(params) {
         return Cities.findAll({
-            attributes: ['name', 'county_id', 'slug', 'active'],
+            attributes: ['name', 'state_id', 'slug', 'active'],
             where: {
                 name: {
                     [params.sequelize.Op.like]: '%' + params.search + '%'
                 },
-                county_id: params.county_id,
+                state_id: params.state_id,
                 active: 1
                 // name: params.sequelize.where(params.sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + params.search.toLowerCase() + '%'),
             }
@@ -40,7 +65,7 @@ module.exports = {
     },
     getAll() {
         return Cities.findAll({
-            attributes: ['id', 'name', 'slug', 'county_id', 'active'],
+            attributes: ['id', 'name', 'slug', 'state_id', 'active'],
         })
             .then(function (data) {
                 return data;
@@ -48,7 +73,7 @@ module.exports = {
     },
     update(params) {
         const updateValues = {},
-            updateKeys = ['name', 'slug', 'county_id', 'active'];
+            updateKeys = ['name', 'slug', 'state_id', 'active'];
         updateKeys.forEach(function (key) {
             if (params[key]) {
                 updateValues[key] = params[key];

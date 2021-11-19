@@ -4,7 +4,8 @@ module.exports = {
     create(params) {
         return States.create({
             name: params.name,
-            slug: params.slug
+            slug: params.slug,
+            active: params.active,
         })
             .then(function (data) {
                 return data;

@@ -94,10 +94,10 @@ app.get('/api/logged-in', async (req, res) => {
         res.json({ data: null, error: error });
     }
 });
-app.get('*', function (req, res) {
-    // res.sendFile('./build/index.html');
-    res.sendFile(path.resolve('./build/index.html'));
-});
+// app.get('*', function (req, res) {
+//     // res.sendFile('./build/index.html');
+//     res.sendFile(path.resolve('./build/index.html'));
+// });
 
 app.listen(PORT, () => {
     console.log(`Example app listening at http://localhost:${PORT}`);

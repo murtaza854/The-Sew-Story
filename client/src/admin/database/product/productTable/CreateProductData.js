@@ -1,5 +1,6 @@
 export function CreateProductData(obj) {
     const details = {};
+    // console.log(obj);
     obj.details.forEach(detail => {
         if (details[detail.type.name] === undefined) {
             details[detail.type.name] = [];
@@ -11,7 +12,8 @@ export function CreateProductData(obj) {
             });
         }
     });
-    console.log("CreateProductData", details);
+    // console.log(details);
+    // console.log(Object.keys(details));
     return {
         id: obj.id,
         name: obj.name,

@@ -10,12 +10,15 @@ import { CreateDescriptionTypeData } from './descriptionType/descriptionTypeTabl
 import {
     Switch,
     Route,
+    useHistory
 } from "react-router-dom";
 import api from '../../api';
 
 function Database(props) {
     const [rows, setRows] = React.useState([]);
     const [filteredRows, setFilteredRows] = React.useState([]);
+
+    let history = useHistory()
 
     const urlPath = window.location.pathname;
     let fetchUrl = '';
@@ -34,6 +37,11 @@ function Database(props) {
         chosenFunction = CreateDescriptionTypeData;
     }
 
+    history.listen((location, action) => {
+        setRows([]);
+        setFilteredRows([]);
+  })
+
     React.useEffect(() => {
         // const sample = [
         //     CreateData(1, 'Cupcake', 'Donut', 'example@example.com', false),
@@ -41,21 +49,22 @@ function Database(props) {
         //     CreateData(3, 'Cupcake', 'Donut', 'example@example.com', false),
         //     CreateData(4, 'Cupcake', 'Donut', 'example@example.com', false),
         // ];
-        setRows([]);
-        fetch(`${api}/${fetchUrl}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-            .then(data => {
-                const rows = data.data.map(obj => {
-                    return chosenFunction(obj);
+        if (fetchUrl !== '') {
+            fetch(`${api}/${fetchUrl}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+                .then(data => {
+                    const rows = data.data.map(obj => {
+                        return chosenFunction(obj);
+                    });
+                    setRows(rows);
+                    setFilteredRows(rows);
                 });
-                setRows(rows);
-                setFilteredRows(rows);
-            });
-    }, [fetchUrl]);
+        }
+    }, [fetchUrl, history.location.pathname]);
 
     return (
         <Switch>
@@ -92,7 +101,7 @@ function Database(props) {
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
-                    />
+                />
             </Route>
             <Route exact path="/admin/user">
                 <UserTable

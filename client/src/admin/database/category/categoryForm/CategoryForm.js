@@ -23,7 +23,7 @@ function CategoryForm(props) {
 
     const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Cushions' });
     const [image, setImage] = useState({ picturePreview: '', imgURl: '', error: false });
-    const [checkBoxes, setCheckBoxes] = useState({ active: true, comingSoon: false });
+    const [checkBoxes, setCheckBoxes] = useState({ active: true, comingSoon: false, homePage: false, ourStoryPage: false });
 
     const [oldFileName, setOldFileName] = useState('');
 
@@ -47,7 +47,7 @@ function CategoryForm(props) {
                         const { data } = content;
                         setName({ value: data.name, error: false, helperText: '' });
                         setImage({ picturePreview: '', imgURl: data.imagePath, error: false });
-                        setCheckBoxes({ active: data.active, comingSoon: data.comingSoon });
+                        setCheckBoxes({ active: data.active, comingSoon: data.comingSoon, homePage: data.homePage, ourStoryPage: data.ourStoryPage });
                         setDisabled(false);
                         
                         setOldFileName(data.fileName);
@@ -113,6 +113,14 @@ function CategoryForm(props) {
         setCheckBoxes({ ...checkBoxes, comingSoon: !checkBoxes.comingSoon });
     }
 
+    const handleHomePageChange = (event) => {
+        setCheckBoxes({ ...checkBoxes, homePage: !checkBoxes.homePage });
+    }
+
+    const handleOurStoryPageChange = (event) => {
+        setCheckBoxes({ ...checkBoxes, ourStoryPage: !checkBoxes.ourStoryPage });
+    }
+
     const handleSubmitAdd = async event => {
         event.preventDefault();
         const formData = new FormData();
@@ -121,7 +129,9 @@ function CategoryForm(props) {
             JSON.stringify({
                 name: name.value,
                 active: checkBoxes.active,
-                comingSoon: checkBoxes.comingSoon
+                comingSoon: checkBoxes.comingSoon,
+                homePage: checkBoxes.homePage,
+                ourStoryPage: checkBoxes.ourStoryPage,
             })
         );
         formData.append('image', image.picturePreview);
@@ -156,7 +166,9 @@ function CategoryForm(props) {
                     id: id,
                     name: name.value,
                     active: checkBoxes.active,
-                    comingSoon: checkBoxes.comingSoon
+                    comingSoon: checkBoxes.comingSoon,
+                    homePage: checkBoxes.homePage,
+                    ourStoryPage: checkBoxes.ourStoryPage,
                 })
             });
             const content = await response.json();
@@ -182,6 +194,8 @@ function CategoryForm(props) {
                     name: name.value,
                     active: checkBoxes.active,
                     comingSoon: checkBoxes.comingSoon,
+                    homePage: checkBoxes.homePage,
+                    ourStoryPage: checkBoxes.ourStoryPage,
                     oldFileName
                 })
             );
@@ -271,6 +285,28 @@ function CategoryForm(props) {
                                 onChange={handleActiveChange}
                             />}
                             label="Active"
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}>
+                        <FormControlLabel
+                            control={<Checkbox
+                                checked={checkBoxes.homePage}
+                                onChange={handleHomePageChange}
+                            />}
+                            label="Home Page"
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}>
+                        <FormControlLabel
+                            control={<Checkbox
+                                checked={checkBoxes.ourStoryPage}
+                                onChange={handleOurStoryPageChange}
+                            />}
+                            label="Our Story Page"
                         />
                     </Col>
                 </Row>

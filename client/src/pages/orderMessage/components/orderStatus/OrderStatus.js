@@ -18,7 +18,7 @@ function OrderStatus(props) {
             return;
         }
         stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-            console.log(paymentIntent);
+            // console.log(paymentIntent);
             switch (paymentIntent.status) {
                 case "succeeded":
                     setMessage("Payment succeeded!");

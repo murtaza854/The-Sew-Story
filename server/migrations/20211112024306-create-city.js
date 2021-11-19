@@ -21,12 +21,12 @@ module.exports = {
         defaultValue: true,
         type: Sequelize.BOOLEAN
       },
-      county_id: {
+      state_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: 'counties'
+            tableName: 'states'
           },
           key: 'id'
         },

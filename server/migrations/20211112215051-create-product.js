@@ -30,6 +30,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      storyWrittenBy: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       storyImagePath: {
         allowNull: false,
         type: Sequelize.STRING

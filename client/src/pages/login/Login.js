@@ -48,7 +48,7 @@ function Login(props) {
                 body: JSON.stringify({ email, password })
             });
             const content = await response.json();
-            console.log(content);
+            // console.log(content);
             if (content.error === "Email not verified") {
                 history.push("/__/auth/action?mode=emailNotVerified");
             } else if (content.error) {

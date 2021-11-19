@@ -20,6 +20,7 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Col, Row } from 'react-bootstrap';
+import { ImageList, ImageListItem } from '@mui/material';
 
 
 export default function ProductTable(props) {
@@ -123,7 +124,7 @@ export default function ProductTable(props) {
                         {/* <TableBody> */}
                         {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    filteredRows.slice().sort(getComparator(order, orderBy)) */}
-                        {stableSort(filteredRows, getComparator(order, orderBy))
+                        {filteredRows.length > 0 && stableSort(filteredRows, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
@@ -132,8 +133,6 @@ export default function ProductTable(props) {
                                 return (
                                     <TableBody key={row.id}>
                                         <TableRow
-                                            hover
-                                            onClick={() => setOpen(!open)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
@@ -172,6 +171,7 @@ export default function ProductTable(props) {
                                                 <IconButton
                                                     aria-label="expand row"
                                                     size="small"
+                                                    onClick={() => setOpen(!open)}
                                                 >
                                                     {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                                                 </IconButton>
@@ -205,9 +205,9 @@ export default function ProductTable(props) {
                                                         <Row>
                                                             <Col md={6}>
                                                                 <Typography variant="body2" gutterBottom>
-                                                                    {
+                                                                    {row.detailKeys && row.detailKeys.length > 0 ? (
                                                                         row.detailsKeys.map((key, index) => {
-                                                                            console.log(key);
+                                                                            // console.log(key);
                                                                             return (
                                                                                 <Typography key={index} variant="body2" gutterBottom>
                                                                                     <Typography variant="h6" gutterBottom>
@@ -234,8 +234,39 @@ export default function ProductTable(props) {
                                                                                 </Typography>
                                                                             )
                                                                         })
+                                                                    ) : (
+                                                                        <Typography variant="body2" gutterBottom>
+                                                                            No details
+                                                                        </Typography>
+                                                                    )
                                                                     }
                                                                 </Typography>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col xs={12}>
+                                                                <Typography variant="h6" gutterBottom>
+                                                                    Product Images
+                                                                </Typography>
+                                                                {
+                                                                    row.images && row.images.length > 0 ? (
+                                                                        <>
+                                                                            <div className="margin-global-top-1" />
+                                                                            <ImageList sx={{ height: 450 }} cols={6}>
+                                                                                {row.images.map((item, index) => (
+                                                                                    <ImageListItem key={item.path}>
+                                                                                        <img
+                                                                                            src={item.path}
+                                                                                            srcSet={item.path}
+                                                                                            alt="Preview"
+                                                                                            loading="lazy"
+                                                                                        />
+                                                                                    </ImageListItem>
+                                                                                ))}
+                                                                            </ImageList>
+                                                                        </>
+                                                                    ) : null
+                                                                }
                                                             </Col>
                                                         </Row>
                                                     </Box>

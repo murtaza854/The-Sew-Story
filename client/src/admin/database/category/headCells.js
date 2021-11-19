@@ -29,4 +29,16 @@ export const headCells = [
     disablePadding: false,
     label: 'Active',
   },
+  {
+    id: 'homePage',
+    numeric: false,
+    disablePadding: false,
+    label: 'Home Page',
+  },
+  {
+    id: 'ourStoryPage',
+    numeric: false,
+    disablePadding: false,
+    label: 'Our Story Page',
+  },
 ];

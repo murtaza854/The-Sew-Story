@@ -6,6 +6,8 @@ export function CreateCategoryData(obj) {
         imagePath: obj.imagePath,
         comingSoon: obj.comingSoon,
         active: obj.active,
+        homePage: obj.homePage,
+        ourStoryPage: obj.ourStoryPage,
     };
     return data;
 }

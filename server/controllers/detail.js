@@ -6,7 +6,8 @@ module.exports = {
             label: params.label,
             text: params.text,
             type_id: params.type_id,
-            product_id: params.product_id
+            product_id: params.product_id,
+            order: params.order
         })
             .then(function (data) {
                 return data;
@@ -24,7 +25,7 @@ module.exports = {
     },
     getAll() {
         return Detail.findAll({
-            attributes: ['id', 'label', 'text', 'type_id', 'product_id'],
+            attributes: ['id', 'label', 'text', 'type_id', 'product_id', 'order'],
         })
             .then(function (data) {
                 return data;
@@ -32,7 +33,7 @@ module.exports = {
     },
     update(params) {
         const updateValues = {},
-            updateKeys = ['label', 'text', 'type_id', 'product_id'];
+            updateKeys = ['label', 'text', 'type_id', 'product_id', 'order'];
         updateKeys.forEach(function (key) {
             if (params[key]) {
                 updateValues[key] = params[key];

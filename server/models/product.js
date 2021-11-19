@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     story: DataTypes.TEXT,
     storyImageFileName: DataTypes.STRING,
     storyImagePath: DataTypes.STRING,
+    storyWrittenBy: DataTypes.STRING,
     price: DataTypes.FLOAT,
     quantity: DataTypes.INTEGER,
     active: DataTypes.BOOLEAN,

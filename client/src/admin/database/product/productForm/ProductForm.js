@@ -13,8 +13,8 @@ function gcd(a, b) {
     return (b === 0) ? a : gcd(b, a % b);
 }
 
-function checkIfObjExistsByName(obj, name) {
-    return obj.find(o => o.name.toLowerCase() === name.toLowerCase());
+function checkIfObjExists(obj, string) {
+    return obj.find(o => o.productCode.toLowerCase() === string.toLowerCase());
 }
 
 function ProductForm(props) {
@@ -32,6 +32,7 @@ function ProductForm(props) {
     const [quantity, setQuantity] = useState({ value: '', error: false, helperText: 'Enter a quantity Ex. 10' });
     const [story, setStory] = useState({ value: '', error: false, helperText: 'Enter a story Ex. This is a story...' });
     const [storyImage, setStoryImage] = useState({ picturePreview: '', imgURl: '', error: false });
+    const [storyWrittenBy, setStoryWrittenBy] = useState({ value: '', error: false, helperText: 'Enter a story written by Ex. John Doe' });
     const [images, setImages] = useState([]);
     const [category, setCategory] = useState({ name: '', obj: null, helperText: 'Enter category Ex. Kitchen Towels', error: false });
     const [details, setDetails] = useState([
@@ -69,7 +70,8 @@ function ProductForm(props) {
                         setQuantity({ value: data.quantity, error: false, helperText: 'Enter a quantity Ex. 10' });
                         setStory({ value: data.story, error: false, helperText: 'Enter a story Ex. This is a story...' });
                         setStoryImage({ picturePreview: '', imgURl: data.imagePath, error: false });
-                        setImages(data.images);
+                        setStoryWrittenBy({ value: data.storyWrittenBy, error: false, helperText: 'Enter a story written by Ex. John Doe' });
+                        // setImages(data.images);
                         setCategory({ name: data.category.name, obj: data.category, helperText: 'Enter category Ex. Kitchen Towels', error: false });
                         setCheckBoxes({ active: data.active });
                         setDisabled(false);
@@ -139,15 +141,35 @@ function ProductForm(props) {
         else if (name.value.length === 0) flag = true;
         else if (storyImage.imgURl === '') flag = true;
         else if (storyImage.error === true) flag = true;
-        else flag = false;
+        else if (storyWrittenBy.error === true) flag = true;
+        else if (storyWrittenBy.value.length === 0) flag = true;
+        else if (category.error === true) flag = true;
+        else if (category.obj === null) flag = true;
+        else if (details.length !== 0) {
+            for (let i = 0; i < details.length; i++) {
+                if (details[i].error === true) {
+                    flag = true;
+                    break;
+                } else if (details[i].typeError === true) {
+                    flag = true;
+                    break;
+                } else if (details[i].textError === true) {
+                    flag = true;
+                    break;
+                } else if (details[i].orderError === true) {
+                    flag = true;
+                    break;
+                } else {
+                    flag = false;
+                }
+            }
+        }
         setDisabled(flag);
-    }, [name, storyImage]);
+    }, [name, storyImage, storyWrittenBy, category, details]);
 
     const handleNameChange = (event) => {
         if (event.target.value.length === 0) {
             setName({ value: event.target.value, error: true, helperText: 'Name is required!' });
-        } else if (checkIfObjExistsByName(rows, event.target.value)) {
-            setName({ value: event.target.value, error: true, helperText: 'Product already exists!' });
         } else {
             setName({ value: event.target.value, error: false, helperText: 'Enter a name Ex. Kaneez' });
         }
@@ -156,6 +178,8 @@ function ProductForm(props) {
     const handleProductCodeChange = (event) => {
         if (event.target.value.length === 0) {
             setProductCode({ value: event.target.value, error: true, helperText: 'Product code is required!' });
+        } else if (checkIfObjExists(rows, event.target.value)) {
+            setProductCode({ value: event.target.value, error: true, helperText: 'Product code already exists!' });
         } else {
             setProductCode({ value: event.target.value, error: false, helperText: 'Enter a product code Ex. KZSS010' });
         }
@@ -247,6 +271,14 @@ function ProductForm(props) {
         }
     }
 
+    const handleStoryWrittenByChange = (event) => {
+        if (event.target.value.length === 0) {
+            setStoryWrittenBy({ value: event.target.value, error: true, helperText: 'Story written by is required!' });
+        } else {
+            setStoryWrittenBy({ value: event.target.value, error: false, helperText: 'Enter story written by Ex. John Doe' });
+        }
+    }
+
     const handleRemoveImage = (imgURL, index) => {
         setImages(prevState => prevState.filter((image, i) => i !== index));
     }
@@ -314,12 +346,13 @@ function ProductForm(props) {
                 price: price.value,
                 quantity: quantity.value,
                 story: story.value,
-                storyImage: storyImage.picturePreview,
+                storyWrittenBy: storyWrittenBy.value,
                 category: category.obj,
                 details: details.map(detail => ({
                     type: detail.type,
                     label: detail.label,
                     text: detail.text,
+                    order: detail.order
                 })),
                 active: checkBoxes.active,
             })
@@ -329,7 +362,7 @@ function ProductForm(props) {
             formData.append('images', element.picturePreview);
         }
         formData.append('images', storyImage.picturePreview);
-        console.log(formData.getAll('images'));
+        // console.log(formData.getAll('images'));
         const response = await fetch(`${api}/product/add`, {
             method: 'POST',
             headers: {
@@ -340,6 +373,7 @@ function ProductForm(props) {
         });
         const content = await response.json();
         if (content.data) {
+            console.log(content.data);
             setRows([...rows, content.data]);
             setFilteredRows([...rows, content.data]);
             history.push('/admin/product');
@@ -574,6 +608,22 @@ function ProductForm(props) {
                                 ) : null
                             }
                         </Row>
+                    </Col>
+                </Row>
+                <div className="margin-global-top-1" />
+                <Row>
+                    <Col md={6}>
+                        <FormControl variant="standard" fullWidth>
+                            <InputLabel error={storyWrittenBy.error} htmlFor="storyWrittenBy">Story Written By</InputLabel>
+                            <Input
+                                id="storyWrittenBy"
+                                value={storyWrittenBy.value}
+                                onChange={handleStoryWrittenByChange}
+                                onBlur={handleStoryWrittenByChange}
+                                error={storyWrittenBy.error}
+                            />
+                            <FormHelperText error={storyWrittenBy.error}>{storyWrittenBy.helperText}</FormHelperText>
+                        </FormControl>
                     </Col>
                 </Row>
                 <div className="margin-global-top-1" />

@@ -45,6 +45,8 @@ router.post('/add', upload.single('image'), async (req, res) => {
                 slug: slugify(data.name),
                 active: data.active,
                 comingSoon: data.comingSoon,
+                homePage: data.homePage,
+                ourStoryPage: data.ourStoryPage,
                 fileName: req.file.filename,
                 imagePath: '/categoryUploads/' + req.file.filename
             }
@@ -67,6 +69,8 @@ router.post('/updateWithImage', upload.single('image'), async (req, res) => {
                 slug: slugify(data.name),
                 active: data.active,
                 comingSoon: data.comingSoon,
+                homePage: data.homePage,
+                ourStoryPage: data.ourStoryPage,
                 fileName: req.file.filename,
                 imagePath: '/categoryUploads/' + req.file.filename
             }
@@ -86,7 +90,9 @@ router.post('/updateWithoutImage', async (req, res) => {
             name: req.body.name,
             slug: slugify(req.body.name),
             active: req.body.active,
-            comingSoon: req.body.comingSoon
+            comingSoon: req.body.comingSoon,
+            homePage: req.body.homePage,
+            ourStoryPage: req.body.ourStoryPage,
         });
         const editObj = await categoryController.getById(req.body.id);
         res.json({ data: editObj });

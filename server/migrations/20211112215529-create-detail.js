@@ -9,7 +9,6 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       label: {
-        allowNull: false,
         type: Sequelize.STRING,
       },
       text: {
@@ -35,6 +34,10 @@ module.exports = {
         },
         onUpdate: 'cascade',
         onDelete: 'cascade'
+      },
+      order: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
