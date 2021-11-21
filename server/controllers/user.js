@@ -71,7 +71,7 @@ module.exports = {
         const updateValues = {},
             updateKeys = ['firstName', 'lastName', 'email', 'subscribed'];
         updateKeys.forEach(function (key) {
-            if (params[key]) {
+            if (key in params) {
                 updateValues[key] = params[key];
             }
         });

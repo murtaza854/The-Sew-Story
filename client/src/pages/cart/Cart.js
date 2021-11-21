@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Form, Col } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { CheckoutForm } from '..';
+import api from '../../api';
 import { Heading } from '../../components';
 import CartCountContext from '../../contexts/cartCountContext';
-import { Delivery, Payment, ProductList } from './components';
+import { Delivery, ProductList } from './components';
 
 function Cart(props) {
     const cartCountContext = useContext(CartCountContext);
     const [cartProducts, setCartProducts] = useState([]);
+    const [cartTotal, setCartTotal] = useState(0);
 
     const [disable, setDisable] = useState(true);
 
@@ -23,10 +26,6 @@ function Cart(props) {
     const [cityList, setCityList] = useState([]);
     const [cityLoading, setCityLoading] = useState(false);
 
-    const [county, setCounty] = useState({ value: [], error: false, errortext: '', readOnly: true });
-    const [countyList, setCountyList] = useState([]);
-    const [countyLoading, setCountyLoading] = useState(false);
-
     const [addressLine1, setAddressLine1] = useState({ text: '', error: false, errorText: '' });
     const [addressLine2, setAddressLine2] = useState({ text: '' });
     const [landmark, setLandmark] = useState({ text: '' });
@@ -40,7 +39,90 @@ function Cart(props) {
 
     useEffect(() => {
         const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
-        setCartProducts(cartProducts);
+        if (cartProducts) {
+            const fetchedCartProducts = async _ => {
+                const response = await fetch(`${api}/cart/cartProducts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cartProducts }),
+                });
+                const json = await response.json();
+                const { data } = json;
+                // console.log('cartProducts', [].map.call(data, (product) => {
+                //     const prodQuantity = (cartProducts.find(cartProduct => cartProduct.slug === product.slug)).quantity;
+                //     return {
+                //         product: {
+                //             name: product.name,
+                //             slug: product.slug,
+                //             price: product.prices[0].amount,
+                //             quantity: product.quantity,
+                //             image: product.images[0].path,
+                //             details: product.details,
+                //         },
+                //         quantity: prodQuantity,
+                //     };
+                // }));
+                let totalPrice = 0;
+                setCartProducts([].map.call(data, (product) => {
+                    const prodQuantity = (cartProducts.find(cartProduct => cartProduct.slug === product.slug)).quantity;
+                    if (!product.active) {
+                        localStorage.setItem('cartProducts', JSON.stringify(cartProducts.filter(cartProduct => cartProduct.slug !== product.slug)));
+                        return {
+                            product: {
+                                name: product.name,
+                                slug: product.slug,
+                                price: 0,
+                                quantity: product.quantity,
+                                image: product.images[0].path,
+                                details: [{
+                                    label: 'Unavailable',
+                                    text: 'Will be removed from cart automatically'
+                                }],
+                            },
+                            quantity: product.quantity,
+                        };
+                    }
+                    else if (prodQuantity <= product.quantity) {
+                        totalPrice += product.prices[0].amount * prodQuantity;
+                        return {
+                            product: {
+                                name: product.name,
+                                slug: product.slug,
+                                price: product.prices[0].amount,
+                                quantity: product.quantity,
+                                image: product.images[0].path,
+                                details: product.details,
+                            },
+                            quantity: prodQuantity,
+                        };
+                    } else {
+                        localStorage.setItem('cartProducts', JSON.stringify(cartProducts.filter(cartProduct => cartProduct.slug !== product.slug)));
+                        return {
+                            product: {
+                                name: product.name,
+                                slug: product.slug,
+                                price: 0,
+                                quantity: product.quantity,
+                                image: product.images[0].path,
+                                details: [{
+                                    label: 'Out of Stock',
+                                    text: 'Will be removed from cart automatically'
+                                }],
+                            },
+                            quantity: product.quantity,
+                        };
+                    }
+                }));
+                setCartTotal(totalPrice);
+                // setCartProducts(data);
+            }
+            fetchedCartProducts();
+        } else {
+            setCartProducts([]);
+        }
+        // setCartProducts(cartProducts);
     }, []);
 
     useEffect(() => {
@@ -57,15 +139,13 @@ function Cart(props) {
         else if (state.value.length === 0) flag = true;
         else if (city.error === true) flag = true;
         else if (city.value.length === 0) flag = true;
-        else if (county.error === true) flag = true;
-        else if (county.value.length === 0) flag = true;
         else if (addressLine1.error === true) flag = true;
         else if (addressLine1.text.length === 0) flag = true;
         else if (zipCode.error === true) flag = true;
         else if (zipCode.text.length === 0) flag = true;
         else flag = false;
         setDisable(flag);
-    }, [state, city, county, addressLine1, zipCode, firstName, lastName, contactNumber, email]);
+    }, [state, city, addressLine1, zipCode, firstName, lastName, contactNumber, email]);
 
     return (
         <div>
@@ -77,7 +157,16 @@ function Cart(props) {
                 <ProductList
                     products={cartProducts}
                     setCartProducts={setCartProducts}
+                    cartTotal={cartTotal}
+                    setCartTotal={setCartTotal}
                 />
+                <Heading
+                    text="Total Amount"
+                    className="text-center margin-global-top-1"
+                />
+                <div className="text-center cart-total">
+                    <h3>$ {cartTotal.toFixed(2)}</h3>
+                </div>
             </div>
             {
                 cartCountContext.cartCount > 0 ? (
@@ -104,12 +193,6 @@ function Cart(props) {
                             setCityList={setCityList}
                             cityLoading={cityLoading}
                             setCityLoading={setCityLoading}
-                            county={county}
-                            setCounty={setCounty}
-                            countyList={countyList}
-                            setCountyList={setCountyList}
-                            countyLoading={countyLoading}
-                            setCountyLoading={setCountyLoading}
                             addressLine1={addressLine1}
                             setAddressLine1={setAddressLine1}
                             addressLine2={addressLine2}
@@ -119,14 +202,15 @@ function Cart(props) {
                             zipCode={zipCode}
                             setZipCode={setZipCode}
                         />
-                        <Payment />
+                        {/* <Payment /> */}
+                        <CheckoutForm disable={disable} />
                         <Form className="form-style ">
                             {/* <Row className="justify-content-center"> */}
-                                <Col>
+                            {/* <Col>
                                 <Button className="center-relative-horizontal-fit-content" disabled={disable} type="submit">
                                     Submit
                                 </Button>
-                            </Col>
+                            </Col> */}
                             {/* </Row> */}
                         </Form>
                         {/* {

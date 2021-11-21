@@ -2,10 +2,73 @@
 
 .product-box {
     padding: 0 2rem;
+    .product-box__description {
+        h4 {
+            font-size: $font-size-xl;
+            font-family: $font-retro;
+            font-weight: $font-weight-regular;
+        }
+        p {
+            font-size: $font-size-medium;
+            font-family: $font-urbanist;
+            font-weight: $font-weight-regular;
+        }
+    }
     .product-box-link {
         position: relative;
         .product-box__image {
             position: relative;
+            .ribbon {
+                position: absolute;
+                right: -5px;
+                top: -5px;
+                z-index: 1;
+                overflow: hidden;
+                width: 100px;
+                height: 100px;
+                text-align: right;
+                span {
+                    font-size: 9px;
+                    font-family: $font-urbanist;
+                    font-weight: bold;
+                    color: black;
+                    text-transform: uppercase;
+                    text-align: center;
+                    line-height: 20px;
+                    transform: rotate(45deg);
+                    -webkit-transform: rotate(45deg);
+                    width: 125px;
+                    display: block;
+                    background: #79a70a;
+                    background: linear-gradient(#f4ebe4 0%, #f2f2f1 100%);
+                    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+                    position: absolute;
+                    top: 28px;
+                    right: -25px;
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 0px;
+                        top: 100%;
+                        z-index: -1;
+                        border-left: 3px solid #f2f2f1;
+                        border-right: 3px solid transparent;
+                        border-bottom: 3px solid transparent;
+                        border-top: 3px solid #f2f2f1;
+                    }
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        right: 0px;
+                        top: 100%;
+                        z-index: -1;
+                        border-left: 3px solid transparent;
+                        border-right: 3px solid #f2f2f1;
+                        border-bottom: 3px solid transparent;
+                        border-top: 3px solid #f2f2f1;
+                    }
+                }
+            }
             .product-box__category {
                 position: absolute;
                 z-index: 1;

@@ -8,15 +8,17 @@ function gcd(a, b) {
     return (b === 0) ? a : gcd(b, a % b);
 }
 
-function checkIfObjExistsByName(obj, name) {
-    return obj.find(o => o.name.toLowerCase() === name.toLowerCase());
+function checkIfObjExistsByName(obj, name, id) {
+    if (id) {
+        return obj.find(o => o.name.toLowerCase() === name.toLowerCase() && o.id !== id);
+    } else {
+        return obj.find(o => o.name.toLowerCase() === name.toLowerCase());
+    }
 }
 
 function CategoryForm(props) {
     const {
         rows,
-        setRows,
-        setFilteredRows
     } = props;
     let history = useHistory();
     const id = parseInt(useParams().id) || null;
@@ -45,11 +47,11 @@ function CategoryForm(props) {
                     const content = await response.json();
                     if (content.data) {
                         const { data } = content;
-                        setName({ value: data.name, error: false, helperText: '' });
+                        setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Cushions' });
                         setImage({ picturePreview: '', imgURl: data.imagePath, error: false });
                         setCheckBoxes({ active: data.active, comingSoon: data.comingSoon, homePage: data.homePage, ourStoryPage: data.ourStoryPage });
                         setDisabled(false);
-                        
+
                         setOldFileName(data.fileName);
                     } else {
                         history.push('/admin/category');
@@ -145,8 +147,6 @@ function CategoryForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            setRows([...rows, content.data]);
-            setFilteredRows([...rows, content.data]);
             history.push('/admin/category');
         } else {
             alert("Something went wrong.");
@@ -173,14 +173,6 @@ function CategoryForm(props) {
             });
             const content = await response.json();
             if (content.data) {
-                const newRows = rows.map(row => {
-                    if (row.id === id) {
-                        return content.data;
-                    }
-                    return row;
-                });
-                setRows(newRows);
-                setFilteredRows(newRows);
                 history.push('/admin/category');
             } else {
                 alert("Something went wrong.");
@@ -199,6 +191,7 @@ function CategoryForm(props) {
                     oldFileName
                 })
             );
+            console.log(formData.get('data'));
             formData.append('image', image.picturePreview);
             const response = await fetch(`${api}/category/updateWithImage`, {
                 method: 'POST',
@@ -210,15 +203,6 @@ function CategoryForm(props) {
             });
             const content = await response.json();
             if (content.data) {
-                const newRows = rows.map(row => {
-                    if (row.id === id) {
-                        return content.data;
-                    } else {
-                        return row;
-                    }
-                });
-                setRows(newRows);
-                setFilteredRows(newRows);
                 history.push('/admin/category');
             } else {
                 alert("Something went wrong.");

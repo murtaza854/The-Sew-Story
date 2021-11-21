@@ -1,4 +1,12 @@
 const Product = require('../models').product;
+const Category = require('../models').category;
+const Image = require('../models').image;
+const Price = require('../models').price;
+const Detail = require('../models').detail;
+const Type = require('../models').type;
+const {
+    Op
+} = require('sequelize');
 
 module.exports = {
     create(params) {
@@ -10,7 +18,6 @@ module.exports = {
             storyImageFileName: params.storyImageFileName,
             storyImagePath: params.storyImagePath,
             storyWrittenBy: params.storyWrittenBy,
-            price: params.price,
             quantity: params.quantity,
             active: params.active,
             category_id: params.category_id
@@ -19,36 +26,111 @@ module.exports = {
                 return data;
             })
     },
-    getById(id) {
-        return Product.findOne({
-            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'price', 'quantity', 'active', 'category_id'],
+    getProducts(slugs) {
+        return Product.findAll({
             include: [
                 {
-                    model: require('../models').category,
-                    attributes: ['id', 'name', 'slug', 'active'],
+                    model: Image,
+                    attributes: ['fileName', 'path'],
+                    as: 'images'
+                },
+                {
+                    model: Price,
+                    attributes: ['amount', 'active'],
+                    as: 'prices',
+                    where: {
+                        active: true
+                    }
+                },
+                {
+                    model: Detail,
+                    attributes: ['label', 'text', 'order'],
+                    as: 'details',
+                    include: [
+                        {
+                            model: Type,
+                            attributes: ['name'],
+                            as: 'type',
+                            where: {
+                                name: 'Description'
+                            }
+                        }
+                    ]
+                }
+            ],
+            attributes: ['name', 'slug', 'quantity', 'active', 'shortDescription'],
+            where: {
+                slug: {
+                    [Op.in]: slugs
+                }
+            },
+            order: [
+                [{ model: Detail, as: 'details' }, 'order', 'ASC']
+            ]
+        })
+            .then(function (data) {
+                return data;
+            })
+    },
+    getProductsCart(slugs) {
+        return Product.findAll({
+            include: [
+                {
+                    model: Price,
+                    attributes: ['amount', 'active'],
+                    as: 'prices',
+                    where: {
+                        active: true
+                    }
+                },
+            ],
+            attributes: ['name', 'slug', 'quantity', 'active'],
+            where: {
+                slug: {
+                    [Op.in]: slugs
+                }
+            },
+            raw: true
+        })
+            .then(function (data) {
+                return data;
+            })
+    },
+    getById(id) {
+        return Product.findOne({
+            where: {
+                id: id
+            },
+            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
+            include: [
+                {
+                    model: Category,
+                    attributes: ['id', 'name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'],
                     as: 'category'
                 },
                 {
-                    model: require('../models').image,
+                    model: Image,
                     attributes: ['id', 'fileName', 'path'],
                     as: 'images'
                 },
                 {
-                    model: require('../models').detail,
-                    attributes: ['id', 'label', 'text', 'type_id'],
+                    model: Price,
+                    attributes: ['id', 'amount', 'active'],
+                    as: 'prices'
+                },
+                {
+                    model: Detail,
+                    attributes: ['id', 'label', 'text', 'type_id', 'order'],
                     as: 'details',
                     include: [
                         {
-                            model: require('../models').type,
+                            model: Type,
                             attributes: ['id', 'name'],
                             as: 'type'
                         }
                     ]
                 }
             ],
-            order: [
-                [{ model: require('../models').detail, as: 'details' }, 'order', 'ASC']
-            ]
         })
             .then(function (data) {
                 return data;
@@ -56,12 +138,78 @@ module.exports = {
     },
     findBySlug(params) {
         return Product.findOne({
-            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'price', 'quantity', 'active', 'category_id'],
+            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
             where: {
                 slug: params.slug,
                 active: true
             },
+            include: [
+                {
+                    model: Image,
+                    attributes: ['id', 'fileName', 'path'],
+                    as: 'images'
+                },
+                {
+                    model: Price,
+                    attributes: ['id', 'amount', 'active'],
+                    as: 'prices'
+                },
+                {
+                    model: Detail,
+                    attributes: ['id', 'label', 'text', 'type_id'],
+                    as: 'details',
+                    include: [
+                        {
+                            model: Type,
+                            attributes: ['id', 'name'],
+                            as: 'type'
+                        }
+                    ]
+                }
+            ],
             raw: true
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    findBySlugClient(params) {
+        return Product.findOne({
+            attributes: ['name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'shortDescription'],
+            where: {
+                slug: params.slug,
+                active: true
+            },
+            include: [
+                {
+                    model: Image,
+                    attributes: ['fileName', 'path'],
+                    as: 'images'
+                },
+                {
+                    model: Price,
+                    attributes: ['amount', 'active'],
+                    as: 'prices',
+                    where: {
+                        active: true
+                    }
+                },
+                {
+                    model: Detail,
+                    attributes: ['label', 'text', 'order'],
+                    as: 'details',
+                    include: [
+                        {
+                            model: Type,
+                            attributes: ['name'],
+                            as: 'type'
+                        }
+                    ]
+                }
+            ],
+            order: [
+                [{ model: Detail, as: 'details' }, 'order', 'ASC']
+            ]
         })
             .then(function (data) {
                 return data;
@@ -69,25 +217,33 @@ module.exports = {
     },
     getAll() {
         return Product.findAll({
-            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'price', 'quantity', 'active', 'category_id'],
+            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
             include: [
                 {
-                    model: require('../models').category,
-                    attributes: ['id', 'name', 'slug', 'active'],
+                    model: Category,
+                    attributes: ['id', 'name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'],
                     as: 'category'
                 },
                 {
-                    model: require('../models').image,
+                    model: Image,
                     attributes: ['id', 'fileName', 'path'],
                     as: 'images'
                 },
                 {
-                    model: require('../models').detail,
+                    model: Price,
+                    attributes: ['id', 'amount', 'active'],
+                    as: 'prices',
+                    where: {
+                        active: true
+                    }
+                },
+                {
+                    model: Detail,
                     attributes: ['id', 'label', 'text', 'type_id'],
                     as: 'details',
                     include: [
                         {
-                            model: require('../models').type,
+                            model: Type,
                             attributes: ['id', 'name'],
                             as: 'type'
                         }
@@ -95,18 +251,95 @@ module.exports = {
                 }
             ],
             order: [
-                [{ model: require('../models').detail, as: 'details' }, 'order', 'ASC']
+                [{ model: Detail, as: 'details' }, 'order', 'ASC']
             ]
         })
             .then(function (data) {
                 return data;
             });
     },
+    getAllByCategoryId(params) {
+        if (params.limit) {
+            return Product.findAll({
+                attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
+                where: {
+                    category_id: params.category_id,
+                    active: true
+                },
+                include: [
+                    {
+                        model: Category,
+                        attributes: ['id', 'name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'],
+                        as: 'category'
+                    },
+                    {
+                        model: Image,
+                        attributes: ['id', 'fileName', 'path'],
+                        as: 'images'
+                    },
+                    {
+                        model: Price,
+                        attributes: ['id', 'amount', 'active'],
+                        as: 'prices'
+                    },
+                    {
+                        model: Detail,
+                        attributes: ['id', 'label', 'text', 'type_id'],
+                        as: 'details',
+                        include: [
+                            {
+                                model: Type,
+                                attributes: ['id', 'name'],
+                                as: 'type'
+                            }
+                        ]
+                    }
+                ],
+                order: [
+                    [{ model: Detail, as: 'details' }, 'order', 'ASC']
+                ],
+                limit: parseInt(params.limit),
+            })
+                .then(function (data) {
+                    return data;
+                });
+        } else {
+        return Product.findAll({
+            attributes: ['name', 'slug', 'quantity', 'active', 'shortDescription'],
+            where: {
+                category_id: params.category_id,
+                active: true
+            },
+            include: [
+                {
+                    model: Image,
+                    attributes: ['fileName', 'path'],
+                    as: 'images'
+                },
+                {
+                    model: Price,
+                    attributes: ['amount', 'active'],
+                    as: 'prices',
+                    where: {
+                        active: true
+                    }
+                },
+            ],
+            order: [
+                ['name', 'ASC']
+            ]
+        })
+            .then(function (data) {
+                return data;
+            });
+        }
+    },
     update(params) {
+        // console.log('params', params);
         const updateValues = {},
-            updateKeys = ['name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'price', 'quantity', 'active', 'category_id'];
+            updateKeys = ['name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'];
         updateKeys.forEach(function (key) {
-            if (params[key]) {
+            if (key in params) {
                 updateValues[key] = params[key];
             }
         });

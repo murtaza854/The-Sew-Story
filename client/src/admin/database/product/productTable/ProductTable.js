@@ -39,8 +39,7 @@ export default function ProductTable(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [searchText, setSearchText] = React.useState('');
-
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState([].fill(false, 0, rows.length));
 
     React.useEffect(() => {
         if (rows.length > 0) {
@@ -171,15 +170,19 @@ export default function ProductTable(props) {
                                                 <IconButton
                                                     aria-label="expand row"
                                                     size="small"
-                                                    onClick={() => setOpen(!open)}
+                                                    onClick={() => {
+                                                        const openArray = [...open];
+                                                        openArray[index] = !openArray[index];
+                                                        setOpen(openArray);
+                                                    }}
                                                 >
-                                                    {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                    {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                                                 </IconButton>
                                             </TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-                                                <Collapse in={open} timeout="auto" unmountOnExit>
+                                                <Collapse in={open[index]} timeout="auto" unmountOnExit>
                                                     <Box sx={{ margin: 1 }}>
                                                         <Typography variant="h5" gutterBottom component="div">
                                                             Product Details
@@ -205,7 +208,7 @@ export default function ProductTable(props) {
                                                         <Row>
                                                             <Col md={6}>
                                                                 <Typography variant="body2" gutterBottom>
-                                                                    {row.detailKeys && row.detailKeys.length > 0 ? (
+                                                                    {row.detailsKeys && row.detailsKeys.length > 0 ? (
                                                                         row.detailsKeys.map((key, index) => {
                                                                             // console.log(key);
                                                                             return (

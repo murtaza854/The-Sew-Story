@@ -1,5 +1,7 @@
 import React from 'react';
 import { UserTable } from './user';
+import { StateForm, StateTable } from './state';
+import { CityForm, CityTable } from './city';
 import { CategoryForm, CategoryTable } from './category';
 import { ProductForm, ProductTable } from './product';
 import { DescriptionTypeForm, DescriptionTypeTable } from './descriptionType'
@@ -7,6 +9,8 @@ import { CreateCategoryData } from './category/categoryTable/CreateCategoryData'
 import { CreateProductData } from './product/productTable/CreateProductData';
 import { CreateUserData } from './user/userTable/CreateUserData';
 import { CreateDescriptionTypeData } from './descriptionType/descriptionTypeTable/CreateDescriptionTypeData';
+import { CreateStateData } from './state/stateTable/CreateStateData';
+import { CreateCityData } from './city/cityTable/CreateCityData';
 import {
     Switch,
     Route,
@@ -17,6 +21,7 @@ import api from '../../api';
 function Database(props) {
     const [rows, setRows] = React.useState([]);
     const [filteredRows, setFilteredRows] = React.useState([]);
+    const [historyChange, setHistoryChange] = React.useState(false);
 
     let history = useHistory()
 
@@ -35,12 +40,22 @@ function Database(props) {
     } else if (urlPath === '/admin/description-type' || urlPath === '/admin/description-type/add' || urlPath.includes('/admin/description-type/edit')) {
         fetchUrl = 'type/getAllTypes';
         chosenFunction = CreateDescriptionTypeData;
+    } else if (urlPath === '/admin/state' || urlPath === '/admin/state/add' || urlPath.includes('/admin/state/edit')) {
+        fetchUrl = 'state/getAllStates';
+        chosenFunction = CreateStateData;
+    } else if (urlPath === '/admin/city' || urlPath === '/admin/city/add' || urlPath.includes('/admin/city/edit')) {
+        fetchUrl = 'city/getAllCities';
+        chosenFunction = CreateCityData;
     }
+    console.log(history);
 
     history.listen((location, action) => {
         setRows([]);
         setFilteredRows([]);
-  })
+        setHistoryChange(true);
+        // if (historyChange) setHistoryChange(true);
+        // else setHistoryChange(false);
+    })
 
     React.useEffect(() => {
         // const sample = [
@@ -50,6 +65,7 @@ function Database(props) {
         //     CreateData(4, 'Cupcake', 'Donut', 'example@example.com', false),
         // ];
         if (fetchUrl !== '') {
+            setHistoryChange(false);
             fetch(`${api}/${fetchUrl}`, {
                 method: 'GET',
                 headers: {
@@ -64,10 +80,23 @@ function Database(props) {
                     setFilteredRows(rows);
                 });
         }
-    }, [fetchUrl, history.location.pathname]);
+    }, [fetchUrl, history.location.pathname, historyChange]);
 
     return (
         <Switch>
+            <Route exact path="/admin/state/edit/:id">
+                <StateForm rows={rows} setRows={setRows} />
+            </Route>
+            <Route exact path="/admin/city/edit/:id">
+                <CityForm rows={rows} setRows={setRows} />
+            </Route>
+            <Route exact path="/admin/product/edit/:id">
+                <ProductForm
+                    rows={rows}
+                    setRows={setRows}
+                    setFilteredRows={setFilteredRows}
+                />
+            </Route>
             <Route exact path="/admin/description-type/edit/:id">
                 <DescriptionTypeForm
                     rows={rows}
@@ -81,6 +110,12 @@ function Database(props) {
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
                 />
+            </Route>
+            <Route exact path="/admin/state/add">
+                <StateForm rows={rows} setRows={setRows} />
+            </Route>
+            <Route exact path="/admin/city/add">
+                <CityForm rows={rows} setRows={setRows} />
             </Route>
             <Route exact path="/admin/description-type/add">
                 <DescriptionTypeForm
@@ -101,6 +136,24 @@ function Database(props) {
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
+                />
+            </Route>
+            <Route exact path="/admin/state">
+                <StateTable
+                    rows={rows}
+                    filteredRows={filteredRows}
+                    setFilteredRows={setFilteredRows}
+                    tableOrder="name"
+                    searchField="name"
+                />
+            </Route>
+            <Route exact path="/admin/city">
+                <CityTable
+                    rows={rows}
+                    filteredRows={filteredRows}
+                    setFilteredRows={setFilteredRows}
+                    tableOrder="name"
+                    searchField="name"
                 />
             </Route>
             <Route exact path="/admin/user">

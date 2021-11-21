@@ -6,6 +6,7 @@ const product = require('./product');
 const type = require('./type');
 const image = require('./image');
 const detail = require('./detail');
+const price = require('./price');
 
 module.exports = {
     user,
@@ -16,4 +17,5 @@ module.exports = {
     type,
     image,
     detail,
+    price,
 };

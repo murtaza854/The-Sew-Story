@@ -1,7 +1,13 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import { ProductBox } from '..';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react.js';
+import SwiperCore, {
+    Navigation
+  } from 'swiper';
 import './ProductsRow.scss';
+
+SwiperCore.use([Navigation]);
 
 function ProductsRow(props) {
     return (
@@ -9,22 +15,37 @@ function ProductsRow(props) {
             <Container className={`products-row ${props.className}`} fluid>
                 <Container>
                     <Row>
+                        <Swiper
+                            spaceBetween={30}
+                            slidesPerView={1}
+                            navigation={true}
+                            breakpoints={{
+                                768: {
+                                    slidesPerView: 2,
+                                    centeredSlides: true
+                                },
+                                992: {
+                                    slidesPerView: 3,
+                                    centeredSlides: false
+                                }
+                            }}
+                        >
                         {
                             props.products ? (
                                 <>
                                     {
                                         props.products.map((product, index) => {
-                                            let hideClass = '';
-                                            if (index === 2) hideClass = 'hide-992';
-                                            else if (index === 1) hideClass = 'hide-768';
+                                            // let hideClass = '';
+                                            // if (index === 2) hideClass = 'hide-992';
+                                            // else if (index === 1) hideClass = 'hide-768';
                                             return (
-                                                <Col className={hideClass} key={index}>
+                                                <SwiperSlide key={index}>
                                                     <ProductBox
                                                         className=""
                                                         product={product}
                                                         category={null}
                                                     />
-                                                </Col>
+                                                </SwiperSlide>
                                             );
                                         })
                                     }
@@ -33,23 +54,24 @@ function ProductsRow(props) {
                                 <>
                                 {
                                     props.categories.map((category, index) => {
-                                        let hideClass = '';
-                                        if (index === 2) hideClass = 'hide-992';
-                                        else if (index === 1) hideClass = 'hide-768';
+                                        // let hideClass = '';
+                                        // if (index === 2) hideClass = 'hide-992';
+                                        // else if (index === 1) hideClass = 'hide-768';
                                         return (
-                                            <Col className={hideClass} key={index}>
+                                            <SwiperSlide key={index}>
                                                 <ProductBox
                                                     className=""
                                                     product={null}
                                                     category={category}
                                                 />
-                                            </Col>
+                                            </SwiperSlide>
                                         );
                                     })
                                 }
                                 </>
                             )
                         }
+                        </Swiper>
                     </Row>
                 </Container>
             </Container>

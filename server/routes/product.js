@@ -1,7 +1,10 @@
 const router = require('express').Router();
 const productController = require('../controllers').product;
+const categoryController = require('../controllers').category;
+const priceController = require('../controllers').price;
 const imageController = require('../controllers').image;
 const detailController = require('../controllers').detail;
+const typeController = require('../controllers').type;
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
@@ -23,7 +26,6 @@ const storage = multer.diskStorage({
         cb(null, path.resolve('../client/public/productUploads'))
     },
     filename: (req, file, cb) => {
-        console.log(file);
         const ext = path.extname(file.originalname);
         cb(null, file.fieldname + '-' + Date.now() + ext);
     }
@@ -31,10 +33,46 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+router.get('/getAll-client', async (req, res) => {
+    const { categorySlug, limit } = req.query;
+    try {
+        const category = await categoryController.findBySlug({
+            slug: categorySlug
+        });
+        if (limit) {
+            const products = await productController.getAllByCategoryId({
+                category_id: category.id,
+                limit: limit
+            });
+            res.json({ data: products });
+        } else {
+            const products = await productController.getAllByCategoryId({
+                category_id: category.id
+            });
+            res.json({ data: products });
+        }
+    } catch (error) {
+        res.json({ data: [], error: error });
+    }
+});
+
 router.get('/getAllProducts', async (req, res) => {
     try {
         const products = await productController.getAll();
         res.json({ data: products });
+    } catch (error) {
+        res.json({ data: [], error: error });
+    }
+});
+
+router.get('/getProduct-client', async (req, res) => {
+    const { slug } = req.query;
+    try {
+        const product = await productController.findBySlugClient({
+            slug: slug
+        });
+        const types = await typeController.getAllClient();
+        res.json({ data: product, types: types });
     } catch (error) {
         res.json({ data: [], error: error });
     }
@@ -77,12 +115,12 @@ router.post('/add', upload.array('images'), async (req, res) => {
             storyWrittenBy: data.storyWrittenBy,
             active: data.active,
             category_id: data.category.id,
-            price: data.price,
             quantity: data.quantity
         });
+        // console.log('obj', obj);
         data.details.forEach(async (detail) => {
             await detailController.create({
-                product_id: obj.id,
+                product_id: obj.dataValues.id,
                 label: detail.label,
                 text: detail.text,
                 type_id: detail.type,
@@ -92,7 +130,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
         for (let index = 0; index < images.length - 1; index++) {
             const element = images[index];
             await imageController.create({
-                product_id: obj.id,
+                product_id: obj.dataValues.id,
                 fileName: element.filename,
                 path: '/productUploads/' + element.filename
             });
@@ -105,47 +143,145 @@ router.post('/add', upload.array('images'), async (req, res) => {
                 break;
             }
         }
+        const category = await categoryController.getById(obj.dataValues.category_id);
+        // console.log('category', category);
         const product = await stripe.products.create({
-            id: obj.id,
+            id: obj.dataValues.id,
             name: data.name,
             active: data.active,
             tax_code: 'txcd_99999999',
             images: stripeImages,
-            url: `${API_URL1}/${obj.category.slug}/${obj.slug}`,
+            url: `${API_URL1}/${category.slug}/${obj.dataValues.slug}`,
             // type: 'good',
         });
         const price = await stripe.prices.create({
             currency: 'USD',
             product: product.id,
             unit_amount: data.price * 100,
-          });
-        console.log(product);
-        console.log(price);
-        const productData = await productController.getById(obj.id);
-        res.json({ data: productData });
+            tax_behavior: 'exclusive',
+        });
+        await priceController.create({
+            id: price.id,
+            product_id: obj.dataValues.id,
+            amount: data.price,
+            active: true
+        });
+        res.json({ data: true });
     } catch (error) {
         console.log(error);
         res.json({ data: null, error: error });
     }
 });
 
-router.post('/updateWithImage', upload.single('image'), async (req, res) => {
+router.post('/updateWithImage', upload.array('images'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
-        fs.unlinkSync(path.resolve('../client/public/productUploads/' + data.oldFileName));
-        await productController.update(
-            {
-                id: data.id,
-                name: data.name,
-                slug: slugify(data.name),
-                active: data.active,
-                comingSoon: data.comingSoon,
-                fileName: req.file.filename,
-                imagePath: '/productUploads/' + req.file.filename
+        const images = req.files;
+        let slug = slugify(data.name, { lower: true });
+        while (true) {
+            const product = await productController.findBySlug({ slug: slug });
+            if (product && data.name === product.name) {
+                slug = product.slug;
+                break;
             }
-        );
-        const editObj = await productController.getById(data.id);
-        res.json({ data: editObj });
+            if (product) {
+                if (parseInt(product.slug.split('-')[1]) > 0) {
+                    slug = slug + '-' + parseInt(product.slug.split('-')[1]) + 1;
+                } else {
+                    slug = slug + '-1';
+                }
+            } else {
+                break;
+            }
+        }
+        let storyImageFileName = data.storyOldFileName;
+        let storyImagePath = '';
+        let count = 0;
+        if (data.storyImageToBeDeleted !== '') {
+            count = 1;
+            // console.log('data.storyImageToBeDeleted', data.storyImageToBeDeleted);
+            try {
+                fs.unlinkSync(path.resolve('../client/public/productUploads/' + data.storyOldFileName));
+                storyImageFileName = images[images.length - 1].filename;
+                storyImagePath = '/productUploads/' + images[images.length - 1].filename;
+            } catch (error) {
+                storyImageFileName = images[images.length - 1].filename;
+                storyImagePath = '/productUploads/' + images[images.length - 1].filename;
+            }
+        }
+        await productController.update({
+            id: data.id,
+            name: data.name,
+            slug: slug,
+            productCode: data.productCode,
+            story: data.story,
+            storyImageFileName: storyImageFileName,
+            storyImagePath: storyImagePath,
+            storyWrittenBy: data.storyWrittenBy,
+            active: data.active,
+            category_id: data.category.id,
+            quantity: data.quantity
+        });
+        const obj = await productController.getById(data.id);
+        await detailController.deleteByProductId({ product_id: data.id });
+        data.details.forEach(async (detail) => {
+            await detailController.create({
+                product_id: data.id,
+                label: detail.label,
+                text: detail.text,
+                type_id: detail.type,
+                order: detail.order
+            });
+        });
+        await imageController.deleteByFileNames({ fileNames: data.imagesToBeDeleted });
+        data.imagesToBeDeleted.forEach(async (image) => {
+            fs.unlinkSync(path.resolve('../client/public/productUploads/' + image));
+        });
+        for (let index = 0; index < images.length - count; index++) {
+            const element = images[index];
+            await imageController.create({
+                product_id: data.id,
+                fileName: element.filename,
+                path: '/productUploads/' + element.filename
+            });
+        }
+        const stripeImages = [];
+        for (let index = 0; index < images.length - count; index++) {
+            const element = images[index];
+            stripeImages.push(API_URL1 + '/productUploads/' + element.filename);
+            if (index === 7) {
+                break;
+            }
+        }
+        const category = await categoryController.getById(obj.dataValues.category_id);
+        // console.log('category', category);
+        const product = await stripe.products.update(obj.dataValues.id.toString(), {
+            name: data.name,
+            active: data.active,
+            tax_code: 'txcd_99999999',
+            images: stripeImages,
+            url: `${API_URL1}/${category.slug}/${obj.dataValues.slug}`,
+            // type: 'good',
+        });
+        const priceCurrentCheckActive = await priceController.checkIfAmountIsActive({ product_id: data.id, amount: data.price });
+        if (priceCurrentCheckActive.amount === data.price) {
+            res.json({ data: true });
+        } else {
+            await priceController.updateProductActiveFalse({ product_id: data.id, active: data.active });
+            const price = await stripe.prices.create({
+                currency: 'USD',
+                product: product.id,
+                unit_amount: data.price * 100,
+                tax_behavior: 'exclusive',
+            });
+            await priceController.create({
+                id: price.id,
+                product_id: data.id,
+                amount: data.price,
+                active: true
+            });
+            res.json({ data: true });
+        }
     } catch (error) {
         console.log(error);
         res.json({ data: null, error: error });
@@ -154,15 +290,87 @@ router.post('/updateWithImage', upload.single('image'), async (req, res) => {
 
 router.post('/updateWithoutImage', async (req, res) => {
     try {
+        let slug = slugify(req.body.name, { lower: true });
+        while (true) {
+            const product = await productController.findBySlug({ slug: slug });
+            if (product && req.body.name === product.name) {
+                slug = product.slug;
+                break;
+            }
+            if (product) {
+                if (parseInt(product.slug.split('-')[1]) > 0) {
+                    slug = slug + '-' + parseInt(product.slug.split('-')[1]) + 1;
+                } else {
+                    slug = slug + '-1';
+                }
+            } else {
+                break;
+            }
+        }
+        let storyImageFileName = req.body.storyOldFileName;
+        let storyImagePath = '';
+        if (req.body.storyImageToBeDeleted !== '') {
+            fs.unlinkSync(path.resolve('../client/public/productUploads/' + req.body.storyOldFileName));
+            storyImageFileName = images[images.length - 1].filename;
+            storyImagePath = '/productUploads/' + images[images.length - 1].filename;
+        }
         await productController.update({
             id: req.body.id,
             name: req.body.name,
-            slug: slugify(req.body.name),
+            slug: slug,
+            productCode: req.body.productCode,
+            story: req.body.story,
+            storyImageFileName: storyImageFileName,
+            storyImagePath: storyImagePath,
+            storyWrittenBy: req.body.storyWrittenBy,
             active: req.body.active,
-            comingSoon: req.body.comingSoon
+            category_id: req.body.category.id,
+            quantity: req.body.quantity
         });
-        const editObj = await productController.getById(req.body.id);
-        res.json({ data: editObj });
+        const obj = await productController.getById(req.body.id);
+        // console.log('obj', obj);
+        await detailController.deleteByProductId({ product_id: req.body.id });
+        req.body.details.forEach(async (detail) => {
+            await detailController.create({
+                product_id: req.body.id,
+                label: detail.label,
+                text: detail.text,
+                type_id: detail.type,
+                order: detail.order
+            });
+        });
+        await imageController.deleteByFileNames({ fileNames: req.body.imagesToBeDeleted });
+        req.body.imagesToBeDeleted.forEach(async (image) => {
+            fs.unlinkSync(path.resolve('../client/public/productUploads/' + image));
+        });
+        const category = await categoryController.getById(obj.dataValues.category_id);
+        // console.log('category', category);
+        const product = await stripe.products.update(obj.dataValues.id.toString(), {
+            name: req.body.name,
+            active: req.body.active,
+            tax_code: 'txcd_99999999',
+            url: `${API_URL1}/${category.slug}/${obj.dataValues.slug}`,
+            // type: 'good',
+        });
+        const priceCurrentCheckActive = await priceController.checkIfAmountIsActive({ product_id: req.body.id, amount: req.body.price });
+        if (priceCurrentCheckActive.amount === req.body.price) {
+            res.json({ data: true });
+        } else {
+            await priceController.updateProductActiveFalse({ product_id: req.body.id, active: req.body.active });
+            const price = await stripe.prices.create({
+                currency: 'USD',
+                product: product.id,
+                unit_amount: req.body.price * 100,
+                tax_behavior: 'exclusive',
+            });
+            await priceController.create({
+                id: price.id,
+                product_id: req.body.id,
+                amount: req.body.price,
+                active: true
+            });
+            res.json({ data: true });
+        }
     } catch (error) {
         console.log(error);
         res.json({ data: null, error: error });

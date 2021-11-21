@@ -38,14 +38,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      price: {
-        allowNull: false,
-        type: Sequelize.FLOAT,
-        defaultValue: 0,
-        validate: {
-          min: 0
-        },
-      },
       quantity: {
         allowNull: false,
         type: Sequelize.INTEGER,

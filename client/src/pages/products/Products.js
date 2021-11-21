@@ -1,212 +1,131 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-// import { useParams } from 'react-router';
+import { useParams } from 'react-router';
+import api from '../../api';
 import { Heading, ProductBox } from '../../components';
 import { Pagination } from './components';
 import './Products.scss';
 
 function Products(props) {
     const [products, setProducts] = useState([]);
-    // const { categorySlug } = useParams();
+    const { productSlug } = useParams();
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [headingProd, setHeadingProd] = useState('');
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            // try {
-            //     console.log('fetching products');
-            //     const response = await fetch(`${api}/products/get-three`, {
-            //         method: 'GET',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //     });
-            //     const json = await response.json();
-            //     setProducts(json.data);
-            // } catch (error) {
-            //     console.log(error);
-            const json = [
-                {
-                    id: 1,
-                    name: 'Product 1',
-                    slug: 'product-1',
-                    price: '$100',
-                    image: '/Products/Product 1.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
+        const fetchCategoyName = async () => {
+            const response = await fetch(`${api}/category/getBySlug-client?slug=${productSlug}`, {
+                method: 'GET',
+            });
+            const json = await response.json();
+            const { name } = json.data;
+            document.title = `${name} | The Sew Story`;
+            setHeadingProd(name);
+        };
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch(`${api}/category/getAll-client`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
                     },
-                },
-                {
-                    id: 2,
-                    name: 'Product 2',
-                    slug: 'product-2',
-                    price: '$200',
-                    image: '/Products/Product 2.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 3,
-                    name: 'Product 3',
-                    slug: 'product-3',
-                    price: '$300',
-                    image: '/Products/Product 3.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 4,
-                    name: 'Product 4',
-                    slug: 'product-4',
-                    price: '$400',
-                    image: '/Products/Product 4.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 5,
-                    name: 'Product 5',
-                    slug: 'product-5',
-                    price: '$500',
-                    image: '/Products/Product 5.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 6,
-                    name: 'Product 6',
-                    slug: 'product-6',
-                    price: '$600',
-                    image: '/Products/Product 6.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 7,
-                    name: 'Product 7',
-                    slug: 'product-7',
-                    price: '$700',
-                    image: '/Products/Product 7.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 8,
-                    name: 'Product 8',
-                    slug: 'product-8',
-                    price: '$800',
-                    image: '/Products/Product 1.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 9,
-                    name: 'Product 9',
-                    slug: 'product-9',
-                    price: '$900',
-                    image: '/Products/Product 2.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 10,
-                    name: 'Product 10',
-                    slug: 'product-10',
-                    price: '$1000',
-                    image: '/Products/Product 3.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 11,
-                    name: 'Product 11',
-                    slug: 'product-11',
-                    price: '$1100',
-                    image: '/Products/Product 4.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 12,
-                    name: 'Product 12',
-                    slug: 'product-12',
-                    price: '$1200',
-                    image: '/Products/Product 5.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 13,
-                    name: 'Product 13',
-                    slug: 'product-13',
-                    price: '$1300',
-                    image: '/Products/Product 6.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-                {
-                    id: 14,
-                    name: 'Product 14',
-                    slug: 'product-14',
-                    price: '$1400',
-                    image: '/Products/Product 7.jpeg',
-                    category: {
-                        id: 1,
-                        name: 'Kitchen Towels',
-                        slug: 'category-1',
-                    },
-                },
-            ];
-            var i, j, temporary, chunk = 9;
-            const chunks = [];
-            for (i = 0, j = json.length; i < j; i += chunk) {
-                temporary = json.slice(i, i + chunk);
-                chunks.push(temporary);
+                });
+                const json = await response.json();
+                const data = json.data;
+                data.sort(function (a, b) { return a.comingSoon - b.comingSoon });
+                setProducts([].map.call(data, (category) => {
+                    return {
+                        name: category.name,
+                        slug: category.slug,
+                        comingSoon: category.comingSoon,
+                        image: category.imagePath,
+                    };
+                }));
+            } catch (error) {
             }
-            setProducts(chunks);
-            setTotalPages(chunks.length);
+        };
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch(`${api}/product/getAll-client?categorySlug=${productSlug}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const json = await response.json();
+                const data = [].map.call(json.data, (product) => {
+                    return {
+                        name: product.name,
+                        slug: product.slug,
+                        shortDescription: product.shortDescription,
+                        price: `$ ${product.prices[0].amount}`,
+                        quantity: product.quantity,
+                        image: product.images[0].path,
+                        category: {
+                            slug: productSlug,
+                        },
+                    };
+                })
+                // const json = [
+                //     {
+                //         id: 1,
+                //         name: 'Product 1',
+                //         slug: 'product-1',
+                //         price: '$100',
+                //         image: '/Products/Product 1.jpeg',
+                //         category: {
+                //             id: 1,
+                //             name: 'Kitchen Towels',
+                //             slug: 'category-1',
+                //         },
+                //     },
+                //     {
+                //         id: 2,
+                //         name: 'Product 2',
+                //         slug: 'product-2',
+                //         price: '$200',
+                //         image: '/Products/Product 2.jpeg',
+                //         category: {
+                //             id: 1,
+                //             name: 'Kitchen Towels',
+                //             slug: 'category-1',
+                //         },
+                //     },
+                //     {
+                //         id: 3,
+                //         name: 'Product 3',
+                //         slug: 'product-3',
+                //         price: '$300',
+                //         image: '/Products/Product 3.jpeg',
+                //         category: {
+                //             id: 1,
+                //             name: 'Kitchen Towels',
+                //             slug: 'category-1',
+                //         },
+                //     },
+                // ];
+                var i, j, temporary, chunk = 9;
+                const chunks = [];
+                for (i = 0, j = data.length; i < j; i += chunk) {
+                    temporary = data.slice(i, i + chunk);
+                    chunks.push(temporary);
+                }
+                setProducts(chunks);
+                setTotalPages(chunks.length);
+            } catch (error) {
+                console.log(error);
+            }
             // }
         };
-        fetchProducts();
-    }, []);
+        if (productSlug === 'shop') {
+            document.title = `Shop | The Sew Story`;
+            fetchCategories();
+        } else {
+            fetchCategoyName();
+            fetchProducts();
+        }
+    }, [productSlug]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -214,33 +133,61 @@ function Products(props) {
 
     return (
         <div className="products">
-            <Heading
-                text="Our Collection"
-                className="text-center margin-global-top-3"
-            />
-            <Container className="margin-global-top-3">
-                <Row>
-                    {
-                        products[page]?.map((product, index) => {
-                            return (
-                                <Col md={4} key={index}>
-                                    <ProductBox
-                                        className="margin-global-bottom-4"
-                                        product={product}
-                                        category={null}
-                                    />
-                                </Col>
-                            );
-                        })
-                    }
-                </Row>
-                <Row>
-                    <Pagination
-                        page={page}
-                        setPage={setPage}
-                        totalPages={totalPages}
+            {
+                productSlug === 'shop' ?
+                    <Heading
+                        text="View our Hand-Embroidered Collection"
+                        className="text-center margin-global-top-3"
+                    /> :
+                    <Heading
+                        text={headingProd}
+                        className="text-center margin-global-top-3"
                     />
-                </Row>
+            }
+            <Container className="margin-global-top-3">
+                {
+                    productSlug === 'shop' ?
+                        <Row>
+                            {
+                                products?.map((product, index) => {
+                                    return (
+                                        <Col md={4} key={index}>
+                                            <ProductBox
+                                                className="margin-global-bottom-4"
+                                                product={null}
+                                                category={product}
+                                            />
+                                        </Col>
+                                    );
+                                })
+                            }
+                        </Row>
+                        :
+                        <>
+                            <Row>
+                                {
+                                    products[page]?.map((product, index) => {
+                                        return (
+                                            <Col md={4} key={index}>
+                                                <ProductBox
+                                                    className="margin-global-bottom-4"
+                                                    product={product}
+                                                    category={null}
+                                                />
+                                            </Col>
+                                        );
+                                    })
+                                }
+                            </Row>
+                            <Row>
+                                <Pagination
+                                    page={page}
+                                    setPage={setPage}
+                                    totalPages={totalPages}
+                                />
+                            </Row>
+                        </>
+                }
             </Container>
             <div className="margin-global-top-5" />
         </div>

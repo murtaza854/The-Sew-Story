@@ -8,6 +8,9 @@
         width: 100%;
         object-fit: cover;
     }
+    .carousel-control-prev, .carousel-control-next {
+        display: none;
+    }
     .row {
         position: relative;
         .slider1 {
@@ -23,15 +26,15 @@
                 // animation-timing-function: ease-in-out;
                 // animation-iteration-count: infinite;
                 // animation-duration: 8s;
-                &:nth-child(1) {
-                    animation: xfade 15s 10s infinite;
-                }
-                &:nth-child(2) {
-                    animation:xfade 15s 5s infinite;
-                }
-                &:nth-child(3) {
-                    animation: xfade 15s 0s infinite;
-                }
+                // &:nth-child(1) {
+                //     animation: xfade 15s 10s infinite;
+                // }
+                // &:nth-child(2) {
+                //     animation:xfade 15s 5s infinite;
+                // }
+                // &:nth-child(3) {
+                //     animation: xfade 15s 0s infinite;
+                // }
             }
         }
     }

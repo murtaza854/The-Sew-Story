@@ -13,15 +13,17 @@ function gcd(a, b) {
     return (b === 0) ? a : gcd(b, a % b);
 }
 
-function checkIfObjExists(obj, string) {
-    return obj.find(o => o.productCode.toLowerCase() === string.toLowerCase());
+function checkIfObjExists(obj, string, id) {
+    if (id) {
+        return obj.find(o => o.productCode.toLowerCase() === string.toLowerCase() && o.id !== id);
+    } else {
+        return obj.find(o => o.productCode.toLowerCase() === string.toLowerCase());
+    }
 }
 
 function ProductForm(props) {
     const {
         rows,
-        setRows,
-        setFilteredRows
     } = props;
     let history = useHistory();
     const id = parseInt(useParams().id) || null;
@@ -32,7 +34,7 @@ function ProductForm(props) {
     const [quantity, setQuantity] = useState({ value: '', error: false, helperText: 'Enter a quantity Ex. 10' });
     const [story, setStory] = useState({ value: '', error: false, helperText: 'Enter a story Ex. This is a story...' });
     const [storyImage, setStoryImage] = useState({ picturePreview: '', imgURl: '', error: false });
-    const [storyWrittenBy, setStoryWrittenBy] = useState({ value: '', error: false, helperText: 'Enter a story written by Ex. John Doe' });
+    const [storyWrittenBy, setStoryWrittenBy] = useState({ value: '', error: false, helperText: 'Enter a Hand Embroidered by Ex. John Doe' });
     const [images, setImages] = useState([]);
     const [category, setCategory] = useState({ name: '', obj: null, helperText: 'Enter category Ex. Kitchen Towels', error: false });
     const [details, setDetails] = useState([
@@ -41,64 +43,14 @@ function ProductForm(props) {
     const [checkBoxes, setCheckBoxes] = useState({ active: true });
 
     const [storyOldFileName, setStoryOldFileName] = useState('');
-    // const [imagesOldFileNames, setImagesOldFileNames] = useState([]);
+    const [storyImageToBeDeleted, setStoryImageToBeDeleted] = useState('');
+    const [imagesOldFileNames, setImagesOldFileNames] = useState([]);
+    const [imagesToBeDeleted, setImagesToBeDeleted] = useState([]);
 
     const [categories, setCategories] = useState([]);
     const [detailsTypes, setDetailsTypes] = useState([]);
 
     const [disabled, setDisabled] = useState(true);
-
-    useEffect(() => {
-        (
-            async () => {
-                if (id) {
-                    const response = await fetch(`${api}/product/getById`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            id: id
-                        })
-                    });
-                    const content = await response.json();
-                    if (content.data) {
-                        const { data } = content;
-                        setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Kaneez' });
-                        setProductCode({ value: data.productCode, error: false, helperText: 'Enter a product code Ex. KZSS010' });
-                        setPrice({ value: data.price, error: false, helperText: 'Enter a price Ex. 10.00' });
-                        setQuantity({ value: data.quantity, error: false, helperText: 'Enter a quantity Ex. 10' });
-                        setStory({ value: data.story, error: false, helperText: 'Enter a story Ex. This is a story...' });
-                        setStoryImage({ picturePreview: '', imgURl: data.imagePath, error: false });
-                        setStoryWrittenBy({ value: data.storyWrittenBy, error: false, helperText: 'Enter a story written by Ex. John Doe' });
-                        // setImages(data.images);
-                        setCategory({ name: data.category.name, obj: data.category, helperText: 'Enter category Ex. Kitchen Towels', error: false });
-                        setCheckBoxes({ active: data.active });
-                        setDisabled(false);
-
-                        // const details = data.details.map(d => {
-                        //     return {
-                        //         type: d.type,
-                        //         label: d.label,
-                        //         text: d.text,
-                        //         typeError: false,
-                        //         typeHelperText: 'Select a type Ex. Care Instructions',
-                        //         labelHelperText: 'Enter a label Ex. Weight',
-                        //         textError: false,
-                        //         textHelperText: 'Enter text Ex. 4.00 lbs/Dozen',
-                        //         error: false
-                        //     }
-                        // });
-                        // setDetails(details);
-
-                        setStoryOldFileName(data.fileName);
-                        // setImagesOldFileNames(data.images.map(img => img.fileName));
-                    } else {
-                        history.push('/admin/product');
-                    }
-                }
-            })();
-    }, [history, id]);
 
     useEffect(() => {
         (
@@ -178,7 +130,7 @@ function ProductForm(props) {
     const handleProductCodeChange = (event) => {
         if (event.target.value.length === 0) {
             setProductCode({ value: event.target.value, error: true, helperText: 'Product code is required!' });
-        } else if (checkIfObjExists(rows, event.target.value)) {
+        } else if (checkIfObjExists(rows, event.target.value, id)) {
             setProductCode({ value: event.target.value, error: true, helperText: 'Product code already exists!' });
         } else {
             setProductCode({ value: event.target.value, error: false, helperText: 'Enter a product code Ex. KZSS010' });
@@ -227,6 +179,7 @@ function ProductForm(props) {
                         const h = this.height;
                         const r = gcd(w, h);
                         if (w / r === h / r) {
+                            setStoryImageToBeDeleted(storyOldFileName);
                             setStoryImage(prevState => ({ ...prevState, picturePreview: event.target.files[0], imgURl: objectUrl, error: false }));
                         }
                         else {
@@ -273,13 +226,23 @@ function ProductForm(props) {
 
     const handleStoryWrittenByChange = (event) => {
         if (event.target.value.length === 0) {
-            setStoryWrittenBy({ value: event.target.value, error: true, helperText: 'Story written by is required!' });
+            setStoryWrittenBy({ value: event.target.value, error: true, helperText: 'Hand Embroidered by is required!' });
         } else {
-            setStoryWrittenBy({ value: event.target.value, error: false, helperText: 'Enter story written by Ex. John Doe' });
+            setStoryWrittenBy({ value: event.target.value, error: false, helperText: 'Enter Hand Embroidered by Ex. John Doe' });
         }
     }
 
     const handleRemoveImage = (imgURL, index) => {
+        const imgSplit = imgURL.split('/')[imgURL.split('/').length - 1];
+        if (imagesOldFileNames.includes(imgSplit)) {
+            const imagesDeleted = [];
+            imagesOldFileNames.forEach((fileName, i) => {
+                if (imgSplit === fileName) {
+                    imagesDeleted.push(fileName);
+                }
+            });
+            setImagesToBeDeleted(prevState => [...prevState, ...imagesDeleted]);
+        }
         setImages(prevState => prevState.filter((image, i) => i !== index));
     }
 
@@ -373,9 +336,6 @@ function ProductForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            console.log(content.data);
-            setRows([...rows, content.data]);
-            setFilteredRows([...rows, content.data]);
             history.push('/admin/product');
         } else {
             alert("Something went wrong.");
@@ -384,8 +344,13 @@ function ProductForm(props) {
 
     const handleSubmitEdit = async event => {
         event.preventDefault();
-        if (storyImage.picturePreview === '') {
-            const response = await fetch(`${api}/category/updateWithoutImage`, {
+        let flag = false;
+        if (storyImage.picturePreview === '') flag = true;
+        else flag = false;
+        if (images.length === 0) flag = true;
+        else flag = false;
+        if (flag) {
+            const response = await fetch(`${api}/product/updateWithoutImage`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -394,21 +359,27 @@ function ProductForm(props) {
                 body: JSON.stringify({
                     id: id,
                     name: name.value,
+                    productCode: productCode.value,
+                    price: price.value,
+                    quantity: quantity.value,
+                    story: story.value,
+                    storyWrittenBy: storyWrittenBy.value,
+                    storyOldFileName: storyOldFileName,
+                    category: category.obj,
+                    details: details.map(detail => ({
+                        type: detail.type,
+                        label: detail.label,
+                        text: detail.text,
+                        order: detail.order
+                    })),
                     active: checkBoxes.active,
-                    comingSoon: checkBoxes.comingSoon
+                    imagesToBeDeleted: imagesToBeDeleted,
+                    storyImageToBeDeleted: storyImageToBeDeleted,
                 })
             });
             const content = await response.json();
             if (content.data) {
-                const newRows = rows.map(row => {
-                    if (row.id === id) {
-                        return content.data;
-                    }
-                    return row;
-                });
-                setRows(newRows);
-                setFilteredRows(newRows);
-                history.push('/admin/category');
+                history.push('/admin/product');
             } else {
                 alert("Something went wrong.");
             }
@@ -419,13 +390,35 @@ function ProductForm(props) {
                 JSON.stringify({
                     id: id,
                     name: name.value,
+                    productCode: productCode.value,
+                    price: price.value,
+                    quantity: quantity.value,
+                    story: story.value,
+                    storyWrittenBy: storyWrittenBy.value,
+                    storyOldFileName: storyOldFileName,
+                    category: category.obj,
+                    details: details.map(detail => ({
+                        type: detail.type,
+                        label: detail.label,
+                        text: detail.text,
+                        order: detail.order
+                    })),
                     active: checkBoxes.active,
-                    comingSoon: checkBoxes.comingSoon,
-                    storyOldFileName
+                    imagesToBeDeleted: imagesToBeDeleted,
+                    storyImageToBeDeleted: storyImageToBeDeleted,
                 })
             );
-            formData.append('image', storyImage.picturePreview);
-            const response = await fetch(`${api}/category/updateWithImage`, {
+            for (let index = 0; index < images.length; index++) {
+                const element = images[index];
+                if (element.picturePreview !== '') {
+                    formData.append('images', element.picturePreview);
+                }
+            }
+            if (storyImage.picturePreview !== '') {
+                formData.append('images', storyImage.picturePreview);
+            }
+            console.log(formData.getAll('images'));
+            const response = await fetch(`${api}/product/updateWithImage`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'multipart/form-data',
@@ -435,16 +428,7 @@ function ProductForm(props) {
             });
             const content = await response.json();
             if (content.data) {
-                const newRows = rows.map(row => {
-                    if (row.id === id) {
-                        return content.data;
-                    } else {
-                        return row;
-                    }
-                });
-                setRows(newRows);
-                setFilteredRows(newRows);
-                history.push('/admin/category');
+                history.push('/admin/product');
             } else {
                 alert("Something went wrong.");
             }
@@ -467,6 +451,56 @@ function ProductForm(props) {
         });
         setDetails(newDetails);
     }
+
+    useEffect(() => {
+        (
+            async () => {
+                if (id && detailsTypes.length !== 0) {
+                    const response = await fetch(`${api}/product/getById`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: id
+                        })
+                    });
+                    const content = await response.json();
+                    if (content.data) {
+                        const { data } = content;
+                        console.log(data);
+                        const activePrice = data.prices.find(p => p.active);
+                        setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Kaneez' });
+                        setProductCode({ value: data.productCode, error: false, helperText: 'Enter a product code Ex. KZSS010' });
+                        setPrice({ value: activePrice.amount, error: false, helperText: 'Enter a price Ex. 10.00' });
+                        setQuantity({ value: data.quantity, error: false, helperText: 'Enter a quantity Ex. 10' });
+                        setStory({ value: data.story, error: false, helperText: 'Enter a story Ex. This is a story...' });
+                        setStoryImage({ picturePreview: '', imgURl: data.storyImagePath, error: false });
+                        setStoryOldFileName(data.storyImageFileName);
+                        setStoryWrittenBy({ value: data.storyWrittenBy, error: false, helperText: 'Enter a Hand Embroidered by Ex. John Doe' });
+                        // setImages(data.images);
+                        setCategory({ name: data.category.name, obj: data.category, helperText: 'Enter category Ex. Kitchen Towels', error: false });
+                        setCheckBoxes({ active: data.active });
+                        const dbDetails = [];
+                        data.details.forEach(d => {
+                            dbDetails.push({ type: d.type.id, label: d.label, text: d.text, typeError: false, typeHelperText: 'Select a type Ex. Care Instructions', labelHelperText: 'Enter a label Ex. Weight', textError: false, textHelperText: 'Enter text Ex. 4.00 lbs/Dozen', error: false, order: d.order, orderError: false, orderHelperText: 'Enter an order Ex. 1' });
+                        });
+                        setDetails(dbDetails);
+                        const dbImages = [];
+                        data.images.forEach(i => {
+                            dbImages.push({ picturePreview: '', imgURl: i.path, error: false });
+                        });
+                        setImages(dbImages);
+                        setImagesOldFileNames(data.images.map(i => i.fileName));
+
+                        setDisabled(false);
+
+                    } else {
+                        history.push('/admin/product');
+                    }
+                }
+            })();
+    }, [history, id, detailsTypes]);
 
     let onSubmit = handleSubmitAdd;
     if (id) onSubmit = handleSubmitEdit;
@@ -614,7 +648,7 @@ function ProductForm(props) {
                 <Row>
                     <Col md={6}>
                         <FormControl variant="standard" fullWidth>
-                            <InputLabel error={storyWrittenBy.error} htmlFor="storyWrittenBy">Story Written By</InputLabel>
+                            <InputLabel error={storyWrittenBy.error} htmlFor="storyWrittenBy">Hand Embroidered by</InputLabel>
                             <Input
                                 id="storyWrittenBy"
                                 value={storyWrittenBy.value}

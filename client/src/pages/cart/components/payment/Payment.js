@@ -37,6 +37,7 @@ function Payment(props) {
                             id="inline-checkbox-1"
                             value="Debit/Credit Card"
                             checked={true}
+                            onChange={() => {}}
                         />
                         {/* <Form.Check
                             inline

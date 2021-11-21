@@ -26,6 +26,38 @@ router.get('/getAllCategories', async (req, res) => {
     }
 });
 
+router.get('/getAll-client', async (req, res) => {
+    const { page } = req.query;
+    try {
+        if (page === 'homePage') {
+            const categories = await categoryController.getAllWithCustomCheck({
+                homePage: true
+            });
+            res.json({ data: categories });
+        } else if (page === 'ourStoryPage') {
+            const categories = await categoryController.getAllWithCustomCheck({
+                ourStoryPage: true
+            });
+            res.json({ data: categories });
+        } else {
+            const categories = await categoryController.getAllWithCustomCheck({});
+            res.json({ data: categories });
+        }
+    } catch (error) {
+        res.json({ data: [], error: error });
+    }
+});
+
+router.get('/getBySlug-client', async (req, res) => {
+    const { slug } = req.query;
+    try {
+        const category = await categoryController.getBySlugClient(slug);
+        res.json({ data: category });
+    } catch (error) {
+        res.json({ data: [], error: error });
+    }
+});
+
 router.post('/getById', async (req, res) => {
     try {
         const category = await categoryController.getById(req.body.id);
@@ -42,7 +74,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
         const obj = await categoryController.create(
             {
                 name: data.name,
-                slug: slugify(data.name),
+                slug: slugify(data.name, { lower: true }),
                 active: data.active,
                 comingSoon: data.comingSoon,
                 homePage: data.homePage,
@@ -66,7 +98,7 @@ router.post('/updateWithImage', upload.single('image'), async (req, res) => {
             {
                 id: data.id,
                 name: data.name,
-                slug: slugify(data.name),
+                slug: slugify(data.name, { lower: true }),
                 active: data.active,
                 comingSoon: data.comingSoon,
                 homePage: data.homePage,
@@ -88,7 +120,7 @@ router.post('/updateWithoutImage', async (req, res) => {
         await categoryController.update({
             id: req.body.id,
             name: req.body.name,
-            slug: slugify(req.body.name),
+            slug: slugify(req.body.name, { lower: true }),
             active: req.body.active,
             comingSoon: req.body.comingSoon,
             homePage: req.body.homePage,

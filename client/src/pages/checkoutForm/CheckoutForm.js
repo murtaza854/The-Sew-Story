@@ -22,23 +22,28 @@ function CheckoutForm(props) {
             body: JSON.stringify({ items: cartProducts }),
         })
             .then((res) => res.json())
-            .then((data) => setClientSecret(data.clientSecret));
+            .then((data) => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                setClientSecret(data.clientSecret)
+            });
     }, []);
-
-    // const appearance = {
-    //     theme: 'stripe',
-    // };
+    const appearance = {
+        theme: 'flat',
+    };
 
     const options = {
         clientSecret,
-        // appearance,
+        appearance
     };
 
     return (
         <div className="checkout-form">
             {clientSecret && (
                 <Elements options={options} stripe={stripePromise}>
-                    <CardForm />
+                    <CardForm disable={props.disable} />
                 </Elements>
             )}
         </div>

@@ -32,11 +32,21 @@ module.exports = {
                 return data;
             });
     },
+    deleteByFileNames(params) {
+        return Image.destroy({
+            where: {
+                fileName: params.fileNames
+            }
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     update(params) {
         const updateValues = {},
             updateKeys = ['fileName', 'path', 'product_id'];
         updateKeys.forEach(function (key) {
-            if (params[key]) {
+            if (key in params) {
                 updateValues[key] = params[key];
             }
         });

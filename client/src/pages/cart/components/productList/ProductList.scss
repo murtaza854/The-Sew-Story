@@ -58,3 +58,18 @@
         }
     }
 }
+
+.cart-total {
+    font-family: $font-urbanist;
+    font-size: $font-size-medium;
+}
+
+@media (max-width: 47.99875em) {
+    .product-list {
+        .form-style {
+            .arrow-row {
+                position: relative;
+            }
+        }
+    }
+}

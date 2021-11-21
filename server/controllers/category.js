@@ -39,9 +39,43 @@ module.exports = {
                 return data;
             });
     },
+    getBySlugClient(slug) {
+        return Category.findOne({
+            attributes: ['name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'],
+            where: {
+                slug: slug,
+                active: true
+            },
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     getAll() {
         return Category.findAll({
             attributes: ['id', 'name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'],
+        })
+            .then(function (data) {
+                // console.log('data', data);
+                return data;
+            });
+    },
+    getAllWithCustomCheck(params) {
+        const getValues = {},
+            getKeys = ['name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'];
+        getKeys.forEach(function (key) {
+            if (key in params) {
+                getValues[key] = params[key];
+            } else if (key === 'active') {
+                getValues[key] = true;
+            }
+        });
+        return Category.findAll({
+            attributes: ['name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'],
+            where: getValues,
+            order: [
+                ['name', 'DESC'],
+            ],
         })
             .then(function (data) {
                 return data;
@@ -51,7 +85,7 @@ module.exports = {
         const updateValues = {},
             updateKeys = ['name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'];
         updateKeys.forEach(function (key) {
-            if (params[key]) {
+            if (key in params) {
                 updateValues[key] = params[key];
             }
         });

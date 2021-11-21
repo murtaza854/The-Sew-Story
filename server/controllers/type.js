@@ -27,11 +27,22 @@ module.exports = {
                 return data;
             });
     },
+    getAllClient() {
+        return Type.findAll({
+            attributes: ['name'],
+            order: [
+                ['name', 'DESC']
+            ]
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     update(params) {
         const updateValues = {},
             updateKeys = ['name'];
         updateKeys.forEach(function (key) {
-            if (params[key]) {
+            if (key in params) {
                 updateValues[key] = params[key];
             }
         });

@@ -12,7 +12,11 @@ module.exports = {
             });
     },
     getById(id) {
-        return States.findById(id)
+        return States.findOne({
+            where: {
+                id: id,
+            },
+        })
             .then(function (data) {
                 return data;
             });
@@ -57,7 +61,7 @@ module.exports = {
         const updateValues = {},
             updateKeys = ['name', 'slug', 'active'];
         updateKeys.forEach(function (key) {
-            if (params[key]) {
+            if (key in params) {
                 updateValues[key] = params[key];
             }
         });

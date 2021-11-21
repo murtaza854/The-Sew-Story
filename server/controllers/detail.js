@@ -31,11 +31,21 @@ module.exports = {
                 return data;
             });
     },
+    deleteByProductId(params) {
+        return Detail.destroy({
+            where: {
+                product_id: params.product_id
+            }
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     update(params) {
         const updateValues = {},
             updateKeys = ['label', 'text', 'type_id', 'product_id', 'order'];
         updateKeys.forEach(function (key) {
-            if (params[key]) {
+            if (key in params) {
                 updateValues[key] = params[key];
             }
         });

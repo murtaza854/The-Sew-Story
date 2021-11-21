@@ -5,11 +5,6 @@ import { useHistory, useParams } from 'react-router';
 import api from '../../../../api';
 
 function DescriptionTypeForm(props) {
-    const {
-        rows,
-        setRows,
-        setFilteredRows
-    } = props;
     let history = useHistory();
     const id = parseInt(useParams().id) || null;
 
@@ -72,8 +67,6 @@ function DescriptionTypeForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            setRows([...rows, content.data]);
-            setFilteredRows([...rows, content.data]);
             history.push('/admin/description-type');
         } else {
             alert("Something went wrong.");
@@ -95,14 +88,6 @@ function DescriptionTypeForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            const newRows = rows.map(row => {
-                if (row.id === id) {
-                    return content.data;
-                }
-                return row;
-            });
-            setRows(newRows);
-            setFilteredRows(newRows);
             history.push('/admin/description-type');
         } else {
             alert("Something went wrong.");

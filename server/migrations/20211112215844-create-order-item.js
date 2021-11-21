@@ -20,10 +20,10 @@ module.exports = {
       },
       order_id: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: 'orders',
-          key: 'id'
+          key: 'orderNumber'
         },
         onUpdate: 'cascade',
         onDelete: 'cascade'

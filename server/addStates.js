@@ -62,37 +62,16 @@ sequelize.authenticate().then(() => {
                 console.error(error);
             }
         }
-        // states.forEach(async state => {
-        //     console.log('State: ' + state);
-        //     await stateController.create({
-        //         name: state.name,
-        //         slug: state.slug,
-        //     })
-        //         .then(state => {
-        //             console.log('Added');
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //         });
-        // });
-        cities.forEach(city => {
-            stateController.findBySlug({ slug: city.state })
+        states.forEach(async state => {
+            await stateController.create({
+                name: state.name,
+                slug: state.slug,
+            })
                 .then(state => {
-                    cityController.insertIfnotExist({
-                        name: city.name,
-                        slug: city.slug,
-                        state_id: state.id,
-                        active: true,
-                    })
-                        .then(city => {
-                            console.log('Added');
-                        })
-                        .catch(err => {
-                            // console.log(err);
-                        });
+                    console.log('Added');
                 })
                 .catch(err => {
-                    // console.log(err);
+                    console.log(err);
                 });
         });
     });
