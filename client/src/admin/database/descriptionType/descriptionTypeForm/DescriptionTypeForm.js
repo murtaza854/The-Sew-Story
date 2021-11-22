@@ -1,11 +1,10 @@
 import { FormControl, InputLabel, Typography, Input, FormHelperText, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import api from '../../../../api';
 
 function DescriptionTypeForm(props) {
-    let history = useHistory();
     const id = parseInt(useParams().id) || null;
 
     const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Care Instructions' });
@@ -31,11 +30,11 @@ function DescriptionTypeForm(props) {
                         setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Care Instructions' });
                         setDisabled(false);
                     } else {
-                        history.push('/admin/description-type');
+                        window.location.href = window.location.href.split('/admin')[0] + '/admin/description-type';
                     }
                 }
             })();
-    }, [history, id]);
+    }, [id]);
 
     useEffect(() => {
         let flag = true;
@@ -67,7 +66,7 @@ function DescriptionTypeForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            history.push('/admin/description-type');
+            window.location.href = window.location.href.split('/admin')[0] + '/admin/description-type';
         } else {
             alert("Something went wrong.");
         }
@@ -88,7 +87,7 @@ function DescriptionTypeForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            history.push('/admin/description-type');
+            window.location.href = window.location.href.split('/admin')[0] + '/admin/description-type';
         } else {
             alert("Something went wrong.");
         }

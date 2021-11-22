@@ -1,7 +1,7 @@
 import { FormControl, InputLabel, Typography, Input, FormControlLabel, Checkbox, FormHelperText, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import api from '../../../../api';
 
 function gcd(a, b) {
@@ -20,7 +20,6 @@ function CategoryForm(props) {
     const {
         rows,
     } = props;
-    let history = useHistory();
     const id = parseInt(useParams().id) || null;
 
     const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Cushions' });
@@ -54,11 +53,11 @@ function CategoryForm(props) {
 
                         setOldFileName(data.fileName);
                     } else {
-                        history.push('/admin/category');
+                        window.location.href = window.location.href.split('/admin')[0] + '/admin/category';
                     }
                 }
             })();
-    }, [history, id]);
+    }, [id]);
 
     useEffect(() => {
         let flag = true;
@@ -147,7 +146,7 @@ function CategoryForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            history.push('/admin/category');
+            window.location.href = window.location.href.split('/admin')[0] + '/admin/category';
         } else {
             alert("Something went wrong.");
         }
@@ -173,7 +172,7 @@ function CategoryForm(props) {
             });
             const content = await response.json();
             if (content.data) {
-                history.push('/admin/category');
+                window.location.href = window.location.href.split('/admin')[0] + '/admin/category';
             } else {
                 alert("Something went wrong.");
             }
@@ -191,7 +190,6 @@ function CategoryForm(props) {
                     oldFileName
                 })
             );
-            console.log(formData.get('data'));
             formData.append('image', image.picturePreview);
             const response = await fetch(`${api}/category/updateWithImage`, {
                 method: 'POST',
@@ -203,7 +201,7 @@ function CategoryForm(props) {
             });
             const content = await response.json();
             if (content.data) {
-                history.push('/admin/category');
+                window.location.href = window.location.href.split('/admin')[0] + '/admin/category';
             } else {
                 alert("Something went wrong.");
             }

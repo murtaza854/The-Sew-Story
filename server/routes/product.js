@@ -108,6 +108,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
         const obj = await productController.create({
             name: data.name,
             slug: slug,
+            shortDescription: data.shortDescription,
             productCode: data.productCode,
             story: data.story,
             storyImageFileName: images[images.length - 1].filename,
@@ -213,6 +214,7 @@ router.post('/updateWithImage', upload.array('images'), async (req, res) => {
             id: data.id,
             name: data.name,
             slug: slug,
+            shortDescription: data.shortDescription,
             productCode: data.productCode,
             story: data.story,
             storyImageFileName: storyImageFileName,
@@ -319,6 +321,7 @@ router.post('/updateWithoutImage', async (req, res) => {
             name: req.body.name,
             slug: slug,
             productCode: req.body.productCode,
+            shortDescription: req.body.shortDescription,
             story: req.body.story,
             storyImageFileName: storyImageFileName,
             storyImagePath: storyImagePath,

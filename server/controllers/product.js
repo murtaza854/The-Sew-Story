@@ -13,6 +13,7 @@ module.exports = {
         return Product.create({
             name: params.name,
             slug: params.slug,
+            shortDescription: params.shortDescription,
             productCode: params.productCode,
             story: params.story,
             storyImageFileName: params.storyImageFileName,

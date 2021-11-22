@@ -21,9 +21,13 @@ import api from '../../api';
 function Database(props) {
     const [rows, setRows] = React.useState([]);
     const [filteredRows, setFilteredRows] = React.useState([]);
-    const [historyChange, setHistoryChange] = React.useState(false);
+    const [historyChanged, setHistoryChanged] = React.useState(false);
 
-    let history = useHistory()
+    let history = useHistory();
+
+    const {
+        setLinkDisableObject
+    } = props;
 
     const urlPath = window.location.pathname;
     let fetchUrl = '';
@@ -47,15 +51,20 @@ function Database(props) {
         fetchUrl = 'city/getAllCities';
         chosenFunction = CreateCityData;
     }
-    console.log(history);
 
     history.listen((location, action) => {
         setRows([]);
         setFilteredRows([]);
-        setHistoryChange(true);
+        setHistoryChanged(!historyChanged);
         // if (historyChange) setHistoryChange(true);
         // else setHistoryChange(false);
     })
+
+    // useEffect(() => {
+    //     setRows([]);
+    //     setFilteredRows([]);
+    // }, [])
+        
 
     React.useEffect(() => {
         // const sample = [
@@ -64,8 +73,86 @@ function Database(props) {
         //     CreateData(3, 'Cupcake', 'Donut', 'example@example.com', false),
         //     CreateData(4, 'Cupcake', 'Donut', 'example@example.com', false),
         // ];
+        if (urlPath === '/admin/user') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': true,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': false,
+                'city': false,
+                'description-type': false,
+            });
+        } else if (urlPath === '/admin/category') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': true,
+                'state': false,
+                'city': false,
+                'description-type': false,
+            });
+        } else if (urlPath === '/admin/product') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': true,
+                'category': false,
+                'state': false,
+                'city': false,
+                'description-type': false,
+            });
+        } else if (urlPath === '/admin/description-type') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': false,
+                'city': false,
+                'description-type': true,
+            });
+        } else if (urlPath === '/admin/state') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': true,
+                'city': false,
+                'description-type': false,
+            });
+        } else if (urlPath === '/admin/city') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': false,
+                'city': true,
+                'description-type': false,
+            });
+        } else {
+            setLinkDisableObject({
+                'dashboard': true,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': false,
+                'city': false,
+                'description-type': false,
+            });
+        }
+
         if (fetchUrl !== '') {
-            setHistoryChange(false);
             fetch(`${api}/${fetchUrl}`, {
                 method: 'GET',
                 headers: {
@@ -80,65 +167,66 @@ function Database(props) {
                     setFilteredRows(rows);
                 });
         }
-    }, [fetchUrl, history.location.pathname, historyChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fetchUrl, urlPath, historyChanged]);
 
     return (
         <Switch>
-            <Route exact path="/admin/state/edit/:id">
+            <Route path="/admin/state/edit/:id">
                 <StateForm rows={rows} setRows={setRows} />
             </Route>
-            <Route exact path="/admin/city/edit/:id">
+            <Route path="/admin/city/edit/:id">
                 <CityForm rows={rows} setRows={setRows} />
             </Route>
-            <Route exact path="/admin/product/edit/:id">
+            <Route path="/admin/product/edit/:id">
                 <ProductForm
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
-            <Route exact path="/admin/description-type/edit/:id">
+            <Route path="/admin/description-type/edit/:id">
                 <DescriptionTypeForm
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
-            <Route exact path="/admin/category/edit/:id">
+            <Route path="/admin/category/edit/:id">
                 <CategoryForm
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
-            <Route exact path="/admin/state/add">
+            <Route path="/admin/state/add">
                 <StateForm rows={rows} setRows={setRows} />
             </Route>
-            <Route exact path="/admin/city/add">
+            <Route path="/admin/city/add">
                 <CityForm rows={rows} setRows={setRows} />
             </Route>
-            <Route exact path="/admin/description-type/add">
+            <Route path="/admin/description-type/add">
                 <DescriptionTypeForm
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
-            <Route exact path="/admin/category/add">
+            <Route path="/admin/category/add">
                 <CategoryForm
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
-            <Route exact path="/admin/product/add">
+            <Route path="/admin/product/add">
                 <ProductForm
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
-            <Route exact path="/admin/state">
+            <Route path="/admin/state">
                 <StateTable
                     rows={rows}
                     filteredRows={filteredRows}
@@ -147,7 +235,7 @@ function Database(props) {
                     searchField="name"
                 />
             </Route>
-            <Route exact path="/admin/city">
+            <Route path="/admin/city">
                 <CityTable
                     rows={rows}
                     filteredRows={filteredRows}
@@ -156,7 +244,7 @@ function Database(props) {
                     searchField="name"
                 />
             </Route>
-            <Route exact path="/admin/user">
+            <Route path="/admin/user">
                 <UserTable
                     rows={rows}
                     filteredRows={filteredRows}
@@ -165,7 +253,7 @@ function Database(props) {
                     searchField="name"
                 />
             </Route>
-            <Route exact path="/admin/description-type">
+            <Route path="/admin/description-type">
                 <DescriptionTypeTable
                     rows={rows}
                     filteredRows={filteredRows}
@@ -174,7 +262,7 @@ function Database(props) {
                     searchField="name"
                 />
             </Route>
-            <Route exact path="/admin/category">
+            <Route path="/admin/category">
                 <CategoryTable
                     rows={rows}
                     filteredRows={filteredRows}
@@ -183,7 +271,7 @@ function Database(props) {
                     searchField="name"
                 />
             </Route>
-            <Route exact path="/admin/product">
+            <Route path="/admin/product">
                 <ProductTable
                     rows={rows}
                     filteredRows={filteredRows}

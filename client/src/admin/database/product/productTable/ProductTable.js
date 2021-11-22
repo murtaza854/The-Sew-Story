@@ -207,6 +207,12 @@ export default function ProductTable(props) {
                                                         </Row>
                                                         <Row>
                                                             <Col md={6}>
+                                                                <Typography variant="h6" gutterBottom>
+                                                                    Short Description
+                                                                </Typography>
+                                                                <Typography variant="body2" gutterBottom>
+                                                                    {row.shortDescription}
+                                                                </Typography>
                                                                 <Typography variant="body2" gutterBottom>
                                                                     {row.detailsKeys && row.detailsKeys.length > 0 ? (
                                                                         row.detailsKeys.map((key, index) => {

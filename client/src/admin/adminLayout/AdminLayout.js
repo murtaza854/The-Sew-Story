@@ -21,6 +21,16 @@ import { Link } from 'react-router-dom';
 export default function AdminLayout() {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [linkDisableObject, setLinkDisableObject] = React.useState({
+        'dashboard': false,
+        'user': false,
+        'order': false,
+        'product': false,
+        'category': false,
+        'state': false,
+        'city': false,
+        'description-type': false,
+    });
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -29,6 +39,12 @@ export default function AdminLayout() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+    const handleLinkDisable = (e, link) => {
+        if (linkDisableObject[link]) {
+            e.preventDefault();
+            return;
+        }
+    }
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -60,8 +76,8 @@ export default function AdminLayout() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/user">
-                        <ListItem button>
+                    <Link onClick={e => handleLinkDisable(e, 'user')} style={{color: 'black', textDecoration: 'none'}} to="/admin/user">
+                        <ListItem disabled={linkDisableObject.user} button>
                             <ListItemIcon>
                                 <InboxIcon />
                             </ListItemIcon>
@@ -71,24 +87,24 @@ export default function AdminLayout() {
                 </List>
                 <Divider />
                 <List>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/order">
-                        <ListItem button>
+                    <Link onClick={e => handleLinkDisable(e, 'order')} style={{color: 'black', textDecoration: 'none'}} to="/admin/order">
+                        <ListItem disabled={linkDisableObject.order} button>
                             <ListItemIcon>
                                 <InboxIcon />
                             </ListItemIcon>
                             <ListItemText primary="Orders" />
                         </ListItem>
                     </Link>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/product">
-                        <ListItem button>
+                    <Link onClick={e => handleLinkDisable(e, 'product')} style={{color: 'black', textDecoration: 'none'}} to="/admin/product">
+                        <ListItem disabled={linkDisableObject.product} button>
                             <ListItemIcon>
                                 <InboxIcon />
                             </ListItemIcon>
                             <ListItemText primary="Products" />
                         </ListItem>
                     </Link>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/category">
-                        <ListItem button>
+                    <Link onClick={e => handleLinkDisable(e, 'category')} style={{color: 'black', textDecoration: 'none'}} to="/admin/category">
+                        <ListItem disabled={linkDisableObject.category} button>
                             <ListItemIcon>
                                 <InboxIcon />
                             </ListItemIcon>
@@ -98,16 +114,16 @@ export default function AdminLayout() {
                 </List>
                 <Divider />
                 <List>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/state">
-                        <ListItem button>
+                    <Link onClick={e => handleLinkDisable(e, 'state')} style={{color: 'black', textDecoration: 'none'}} to="/admin/state">
+                        <ListItem disabled={linkDisableObject.state} button>
                             <ListItemIcon>
                                 <InboxIcon />
                             </ListItemIcon>
                             <ListItemText primary="States" />
                         </ListItem>
                     </Link>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/city">
-                        <ListItem button>
+                    <Link onClick={e => handleLinkDisable(e, 'city')} style={{color: 'black', textDecoration: 'none'}} to="/admin/city">
+                        <ListItem disabled={linkDisableObject.city} button>
                             <ListItemIcon>
                                 <InboxIcon />
                             </ListItemIcon>
@@ -117,8 +133,8 @@ export default function AdminLayout() {
                 </List>
                 <Divider />
                 <List>
-                    <Link style={{color: 'black', textDecoration: 'none'}} to="/admin/description-type">
-                        <ListItem button>
+                    <Link onClick={e => handleLinkDisable(e, 'description-type')} style={{color: 'black', textDecoration: 'none'}} to="/admin/description-type">
+                        <ListItem disabled={linkDisableObject['description-type']} button>
                             <ListItemIcon>
                                 <InboxIcon />
                             </ListItemIcon>
@@ -129,7 +145,10 @@ export default function AdminLayout() {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <div className="margin-global-top-6" />
-                <Database />
+                <Database
+                    linkDisableObject={linkDisableObject}
+                    setLinkDisableObject={setLinkDisableObject}
+                />
             </Box>
         </Box>
     );

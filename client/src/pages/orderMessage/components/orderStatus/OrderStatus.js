@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Heading } from '../../../../components';
+import api from '../../../../api';
 
 function OrderStatus(props) {
     const stripe = useStripe();
@@ -13,12 +14,25 @@ function OrderStatus(props) {
         if (!stripe) {
             return;
         }
+        const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
+        console.log(cartProducts);
+        const confirmOrder = async () => {
+            const response = await fetch(`${api}/cart/confirmOrder`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cartProducts }),
+            });
+            const data = await response.json();
+            console.log(data);
+        };
+        confirmOrder();
+        console.log(123);
         const clientSecret = new URLSearchParams(window.location.search).get("payment_intent_client_secret");
         if (!clientSecret) {
             return;
         }
         stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-            // console.log(paymentIntent);
+            console.log(paymentIntent);
             switch (paymentIntent.status) {
                 case "succeeded":
                     setMessage("Payment succeeded!");

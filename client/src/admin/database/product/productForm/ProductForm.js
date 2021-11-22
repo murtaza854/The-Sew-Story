@@ -1,7 +1,7 @@
 import { FormControl, InputLabel, Typography, Input, FormControlLabel, Checkbox, FormHelperText, Button, TextField, Autocomplete, Select, MenuItem, Tooltip } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageList from '@mui/material/ImageList';
@@ -25,11 +25,11 @@ function ProductForm(props) {
     const {
         rows,
     } = props;
-    let history = useHistory();
     const id = parseInt(useParams().id) || null;
 
     const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Kaneez' });
     const [productCode, setProductCode] = useState({ value: '', error: false, helperText: 'Enter a product code Ex. KZSS010' });
+    const [shortDescription, setShortDescription] = useState({ value: '', error: false, helperText: 'Enter a short description Ex. Pack of 2 Kitchen Towels' });
     const [price, setPrice] = useState({ value: '', error: false, helperText: 'Enter a price Ex. 10.00' });
     const [quantity, setQuantity] = useState({ value: '', error: false, helperText: 'Enter a quantity Ex. 10' });
     const [story, setStory] = useState({ value: '', error: false, helperText: 'Enter a story Ex. This is a story...' });
@@ -91,6 +91,8 @@ function ProductForm(props) {
         let flag = true;
         if (name.error === true) flag = true;
         else if (name.value.length === 0) flag = true;
+        else if (shortDescription.error === true) flag = true;
+        else if (shortDescription.value.length === 0) flag = true;
         else if (storyImage.imgURl === '') flag = true;
         else if (storyImage.error === true) flag = true;
         else if (storyWrittenBy.error === true) flag = true;
@@ -117,13 +119,21 @@ function ProductForm(props) {
             }
         }
         setDisabled(flag);
-    }, [name, storyImage, storyWrittenBy, category, details]);
+    }, [name, shortDescription, storyImage, storyWrittenBy, category, details]);
 
     const handleNameChange = (event) => {
         if (event.target.value.length === 0) {
             setName({ value: event.target.value, error: true, helperText: 'Name is required!' });
         } else {
             setName({ value: event.target.value, error: false, helperText: 'Enter a name Ex. Kaneez' });
+        }
+    }
+
+    const handleShortDescriptionChange = (event) => {
+        if (event.target.value.length === 0) {
+            setShortDescription({ value: event.target.value, error: true, helperText: 'Short description is required!' });
+        } else {
+            setShortDescription({ value: event.target.value, error: false, helperText: 'Enter a short description Ex. Pack of 2 Kitchen Towels' });
         }
     }
 
@@ -305,6 +315,7 @@ function ProductForm(props) {
             'data',
             JSON.stringify({
                 name: name.value,
+                shortDescription: shortDescription.value,
                 productCode: productCode.value,
                 price: price.value,
                 quantity: quantity.value,
@@ -336,7 +347,7 @@ function ProductForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            history.push('/admin/product');
+            window.location.href = window.location.href.split('/admin')[0] + '/admin/product';
         } else {
             alert("Something went wrong.");
         }
@@ -359,6 +370,7 @@ function ProductForm(props) {
                 body: JSON.stringify({
                     id: id,
                     name: name.value,
+                    shortDescription: shortDescription.value,
                     productCode: productCode.value,
                     price: price.value,
                     quantity: quantity.value,
@@ -379,7 +391,7 @@ function ProductForm(props) {
             });
             const content = await response.json();
             if (content.data) {
-                history.push('/admin/product');
+                window.location.href = window.location.href.split('/admin')[0] + '/admin/product';
             } else {
                 alert("Something went wrong.");
             }
@@ -390,6 +402,7 @@ function ProductForm(props) {
                 JSON.stringify({
                     id: id,
                     name: name.value,
+                    shortDescription: shortDescription.value,
                     productCode: productCode.value,
                     price: price.value,
                     quantity: quantity.value,
@@ -417,7 +430,6 @@ function ProductForm(props) {
             if (storyImage.picturePreview !== '') {
                 formData.append('images', storyImage.picturePreview);
             }
-            console.log(formData.getAll('images'));
             const response = await fetch(`${api}/product/updateWithImage`, {
                 method: 'POST',
                 headers: {
@@ -428,7 +440,7 @@ function ProductForm(props) {
             });
             const content = await response.json();
             if (content.data) {
-                history.push('/admin/product');
+                window.location.href = window.location.href.split('/admin')[0] + '/admin/product';
             } else {
                 alert("Something went wrong.");
             }
@@ -471,6 +483,7 @@ function ProductForm(props) {
                         console.log(data);
                         const activePrice = data.prices.find(p => p.active);
                         setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Kaneez' });
+                        setShortDescription({ value: data.shortDescription, error: false, helperText: 'Enter a short description Ex. Pack of 2 Kitchen Towels' });
                         setProductCode({ value: data.productCode, error: false, helperText: 'Enter a product code Ex. KZSS010' });
                         setPrice({ value: activePrice.amount, error: false, helperText: 'Enter a price Ex. 10.00' });
                         setQuantity({ value: data.quantity, error: false, helperText: 'Enter a quantity Ex. 10' });
@@ -496,11 +509,11 @@ function ProductForm(props) {
                         setDisabled(false);
 
                     } else {
-                        history.push('/admin/product');
+                        window.location.href = window.location.href.split('/admin')[0] + '/admin/product';
                     }
                 }
             })();
-    }, [history, id, detailsTypes]);
+    }, [id, detailsTypes]);
 
     let onSubmit = handleSubmitAdd;
     if (id) onSubmit = handleSubmitEdit;
@@ -515,7 +528,7 @@ function ProductForm(props) {
                         id="tableTitle"
                         component="div"
                     >
-                        Category
+                        Product
                     </Typography>
                 </Col>
             </Row>
@@ -571,6 +584,18 @@ function ProductForm(props) {
                                 renderInput={(params) => <TextField error={category.error} {...params} variant="standard" label="Category" />}
                             />
                             <FormHelperText error={category.error}>{category.helperText}</FormHelperText>
+                        </FormControl>
+                    </Col>
+                    <Col md={6}>
+                        <FormControl variant="standard" fullWidth>
+                            <InputLabel error={shortDescription.error} htmlFor="shortDescription">Short Description</InputLabel>
+                            <Input id="shortDescription"
+                                value={shortDescription.value}
+                                onChange={handleShortDescriptionChange}
+                                onBlur={handleShortDescriptionChange}
+                                error={shortDescription.error}
+                            />
+                            <FormHelperText error={shortDescription.error}>{shortDescription.helperText}</FormHelperText>
                         </FormControl>
                     </Col>
                 </Row>

@@ -30,12 +30,15 @@ module.exports = (sequelize, DataTypes) => {
   };
   order.init({
     orderNumber: DataTypes.STRING,
+    orderStatus: DataTypes.STRING,
     orderDate: DataTypes.DATE,
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     email: DataTypes.STRING,
     contactNumber: DataTypes.STRING,
     city_id: DataTypes.INTEGER,
+    zipCode: DataTypes.STRING,
+    orderTotal: DataTypes.FLOAT,
     user_id: DataTypes.INTEGER
   }, {
     sequelize,

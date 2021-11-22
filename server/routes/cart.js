@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const productController = require('../controllers').product;
+const orderController = require('../controllers').order;
+var crypto = require("crypto");
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -55,6 +57,41 @@ router.post("/payment", async (req, res) => {
     // });
     res.json({ id: session.id });
 });
+
+router.post('/confirmOrder', async (req, res) => {
+    const {
+        cartProducts,
+    } = req.body;
+    const cartTotal = await calculateOrderAmount(items);
+    while (true) {
+        const orderNumber = generateOrderNumber();
+        const existingOrder = await orderController.checkOrderNumber({
+            orderNumber,
+        });
+        if (!existingOrder) {
+            break;
+        }
+    }
+    const order = await orderController.create({
+        orderNumber,
+        orderStatus: 'Payment Confirmed',
+        orderDate: new Date(),
+        orderTotal: cartTotal,
+        user_id: null,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        contactNumber: req.body.contactNumber,
+        city_id: req.body.city_id,
+        zipCode: req.body.zipCode,
+    });
+    if (order) {
+        
+});
+
+const generateOrderNumber = () => {
+    return crypto.randomBytes(8).toString('hex');
+};
 
 const calculateOrderAmount = async items => {
     console.log('items', items);

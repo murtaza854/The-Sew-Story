@@ -17,6 +17,7 @@ export function CreateProductData(obj) {
         name: obj.name,
         productCode: obj.productCode,
         category: obj.category.name,
+        shortDescription: obj.shortDescription,
         active: obj.active,
         price: `$ ${price.amount}`,
         quantity: obj.quantity,

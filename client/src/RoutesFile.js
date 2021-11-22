@@ -53,11 +53,11 @@ function RoutesFile(props) {
                             <Route path="/__/auth/action">
                                 <Auth />
                             </Route>
-                            <Route path="/order/:orderNumber/status">
-                                <OrderMessage />
-                            </Route>
                             <Route path="/dashboard/account">
                                 <Dashboard />
+                            </Route>
+                            <Route path="/order/status">
+                                <OrderMessage />
                             </Route>
                             <Route path="/:categorySlug/:productSlug">
                                 <ProductPage />

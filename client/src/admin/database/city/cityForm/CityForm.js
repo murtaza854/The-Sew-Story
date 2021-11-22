@@ -1,11 +1,10 @@
 import { FormControl, InputLabel, Typography, Input, FormHelperText, Button, Checkbox, FormControlLabel } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import api from '../../../../api';
 
 function CityForm(props) {
-    let history = useHistory();
     const id = parseInt(useParams().id) || null;
 
     const [name, setName] = useState({ value: '', error: false, helperText: 'Enter a name Ex. Eldridge' });
@@ -34,11 +33,11 @@ function CityForm(props) {
                         setCheckBoxes({ active: data.active });
                         setDisabled(false);
                     } else {
-                        history.push('/admin/city');
+                        window.location.href = window.location.href.split('/admin')[0] + '/admin/city';
                     }
                 }
             })();
-    }, [history, id]);
+    }, [id]);
 
     useEffect(() => {
         let flag = true;
@@ -75,7 +74,7 @@ function CityForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            history.push('/admin/city');
+            window.location.href = window.location.href.split('/admin')[0] + '/admin/city';
         } else {
             alert("Something went wrong.");
         }
@@ -97,7 +96,7 @@ function CityForm(props) {
         });
         const content = await response.json();
         if (content.data) {
-            history.push('/admin/city');
+            window.location.href = window.location.href.split('/admin')[0] + '/admin/city';
         } else {
             alert("Something went wrong.");
         }
