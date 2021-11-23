@@ -2,11 +2,20 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('orders', {
-      orderNumber: {
+      id: {
         allowNull: false,
         type: Sequelize.STRING,
-        primaryKey: true,
-        unique: true
+        primaryKey: true
+      },
+      orderStatus: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: 'Pending'
+      },
+      orderTotal: {
+        allowNull: false,
+        type: Sequelize.FLOAT,
+        defaultValue: 0
       },
       orderDate: {
         allowNull: false,
@@ -52,8 +61,12 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade'
       },
-      user_id: {
+      zipCode: {
         allowNull: false,
+        type: Sequelize.STRING,
+      },
+      user_id: {
+        allowNull: true,
         type: Sequelize.INTEGER,
         references: {
           model: 'users',

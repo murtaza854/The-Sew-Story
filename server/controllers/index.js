@@ -8,6 +8,7 @@ const image = require('./image');
 const detail = require('./detail');
 const price = require('./price');
 const order = require('./order');
+const orderItem = require('./orderItem');
 
 module.exports = {
     user,
@@ -20,4 +21,5 @@ module.exports = {
     detail,
     price,
     order,
+    orderItem,
 };

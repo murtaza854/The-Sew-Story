@@ -14,19 +14,17 @@ function OrderStatus(props) {
         if (!stripe) {
             return;
         }
-        const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
-        console.log(cartProducts);
         const confirmOrder = async () => {
-            const response = await fetch(`${api}/cart/confirmOrder`, {
+            const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
+            const params = new URLSearchParams(window.location.search);
+            const deliveryDetails = JSON.parse(params.get('array'));
+            await fetch(`${api}/cart/confirmOrder`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ cartProducts }),
+                body: JSON.stringify({ cartProducts, deliveryDetails }),
             });
-            const data = await response.json();
-            console.log(data);
+            localStorage.removeItem('cartProducts');
         };
-        confirmOrder();
-        console.log(123);
         const clientSecret = new URLSearchParams(window.location.search).get("payment_intent_client_secret");
         if (!clientSecret) {
             return;
@@ -35,6 +33,7 @@ function OrderStatus(props) {
             console.log(paymentIntent);
             switch (paymentIntent.status) {
                 case "succeeded":
+                    confirmOrder();
                     setMessage("Payment succeeded!");
                     break;
                 case "processing":
@@ -56,7 +55,10 @@ function OrderStatus(props) {
                 text="Order Status"
                 className="text-center margin-global-top-3"
             />
-            <p className="text-center">{message}</p>
+            <div className="text-center">
+                {message && <p>{message}</p>}
+                {message && <p>Your invoice has been emailed to you!</p>}
+            </div>
             <p className="text-uppercase text-center">Please click <Link to="/">here</Link> to go back to Home page.</p>
         </Row>
     );

@@ -10,35 +10,56 @@ function CardForm(props) {
 
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const {
+        firstName,
+        lastName,
+        email,
+        contactNumber,
+        city,
+        addressLine1,
+        addressLine2,
+        zipCode,
+        cartTotal
+    } = props;
 
     // const [disable, setDisable] = useState(true);
 
     const handleSubmit = async e => {
         e.preventDefault();
-        // if (!stripe || !elements) {
-        //     // Stripe.js has not yet loaded.
-        //     // Make sure to disable form submission until Stripe.js has loaded.
-        //     return;
-        // }
-        // setIsLoading(true);
-        // const { error } = await stripe.confirmPayment({
-        //     elements,
-        //     confirmParams: {
-        //         // Make sure to change this to your payment completion page
-        //         return_url: `${url}order/530/status`,
-        //     },
-        // });
-        // // This point will only be reached if there is an immediate error when
-        // // confirming the payment. Otherwise, your customer will be redirected to
-        // // your `return_url`. For some payment methods like iDEAL, your customer will
-        // // be redirected to an intermediate site first to authorize the payment, then
-        // // redirected to the `return_url`.
-        // if (error.type === "card_error" || error.type === "validation_error") {
-        //     setMessage(error.message);
-        // } else {
-        //     setMessage("An unexpected error occured.");
-        // }
-        // setIsLoading(false);
+        if (!stripe || !elements) {
+            // Stripe.js has not yet loaded.
+            // Make sure to disable form submission until Stripe.js has loaded.
+            return;
+        }
+        setIsLoading(true);
+        const { error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                // Make sure to change this to your payment completion page
+                return_url: `${url}order/status?array=${JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
+                    contactNumber,
+                    city,
+                    addressLine1,
+                    addressLine2,
+                    zipCode,
+                })}`,
+                receipt_email: email,
+            },
+        });
+        // This point will only be reached if there is an immediate error when
+        // confirming the payment. Otherwise, your customer will be redirected to
+        // your `return_url`. For some payment methods like iDEAL, your customer will
+        // be redirected to an intermediate site first to authorize the payment, then
+        // redirected to the `return_url`.
+        if (error.type === "card_error" || error.type === "validation_error") {
+            setMessage(error.message);
+        } else {
+            setMessage("An unexpected error occured.");
+        }
+        setIsLoading(false);
     };
 
     return (
@@ -52,11 +73,20 @@ function CardForm(props) {
                 </Col>
             </Row>
             <Row>
+                <Heading
+                    text="Total Amount"
+                    className="text-center margin-global-top-1"
+                />
+                <div className="text-center cart-total">
+                    <h3>$ {cartTotal.toFixed(2)}</h3>
+                </div>
+            </Row>
+            <Row>
                 <Form className="form-style margin-global-top-1" id="payment-form" onSubmit={handleSubmit}>
                     <PaymentElement id="payment-element" />
                     <div className="margin-global-top-2" />
                     <Row className="justify-content-center">
-                        <Button disabled={props.disable} type="submit">
+                        <Button disabled={isLoading} type="submit">
                             Pay Now
                         </Button>
                     </Row>

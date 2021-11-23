@@ -36,9 +36,9 @@ function Footer(props) {
             Mzushi, your online local directory for the finest listings of food, clothes and all things homemade. Search for businesses, list your own, review site products or services and make the shift from yellow pages, today!
           </p> */}
                 <div className="footer-icons">
-                    <a rel="noreferrer" target="_blank" href="https://www.facebook.com/fefsmp"><i className="fa fa-facebook" /></a>
-                    <a rel="noreferrer" target="_blank" href="https://wa.me/+923089602202"><i className="fa fa-whatsapp" /></a>
-                    <a rel="noreferrer" target="_blank" href="https://www.instagram.com/fefsmp/"><i className="fa fa-instagram" /></a>
+                    <a rel="noreferrer" target="_blank" href="https://www.facebook.com/thesewstory"><i className="fa fa-facebook" /></a>
+                    <a rel="noreferrer" target="_blank" href="https://pinterest.com/thesewstory"><i className="fa fa-pinterest" /></a>
+                    <a rel="noreferrer" target="_blank" href="https://www.instagram.com/thesewstory/"><i className="fa fa-instagram" /></a>
                 </div>
             </div>
         </footer>

@@ -1,0 +1,62 @@
+@import '../../global.scss';
+
+.client-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 300px;
+    background-color: $secondary-color;
+    z-index: 1;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-100%);
+    .top-row {
+        padding-top: 2rem;
+    }
+    a {
+        color: #000;
+        width: fit-content;
+        text-decoration: none;
+        padding: 10px;
+        display: block;
+        transition: all 0.3s ease-in-out;
+        font-family: $font-urbanist;
+        font-size: $font-size-small;
+        margin-left: auto;
+        margin-right: auto;
+        &:hover {
+            color: $primary-color;
+        }
+    }
+}
+
+.client-sidebar-open {
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-100%);
+    animation: slide-in-left 0.3s ease-in-out forwards;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.client-sidebar-closed {
+    transition: all 0.3s ease-in-out;
+    transform: translateX(0);
+    animation: slide-out-left 0.3s ease-in-out forwards;
+}
+
+@keyframes slide-in-left {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-out-left {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}

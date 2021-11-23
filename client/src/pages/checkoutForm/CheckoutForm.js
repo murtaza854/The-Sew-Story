@@ -10,6 +10,19 @@ import { CardForm } from "./components";
 const stripePromise = loadStripe("pk_test_51JPiNNLwoMdHyWvl7tJOrbTGR1JAvyVb12zAsQMmsKVCnMbl7wm33WMi08YCXKuR2OMluzVxks4zVk3wUlCWPPJn00nnGX8xe7");
 
 function CheckoutForm(props) {
+    const params = new URLSearchParams(window.location.search);
+    const deliveryDetails = JSON.parse(params.get('array'));
+    const {
+        firstName,
+        lastName,
+        email,
+        contactNumber,
+        city,
+        addressLine1,
+        addressLine2,
+        zipCode,
+        cartTotal
+    } = deliveryDetails;
 
     const [clientSecret, setClientSecret] = useState("");
 
@@ -19,7 +32,7 @@ function CheckoutForm(props) {
         fetch(`${api}/cart/create-payment-intent`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items: cartProducts }),
+            body: JSON.stringify({ items: cartProducts, email }),
         })
             .then((res) => res.json())
             .then((data) => {
@@ -30,6 +43,7 @@ function CheckoutForm(props) {
                 }
                 setClientSecret(data.clientSecret)
             });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const appearance = {
         theme: 'flat',
@@ -44,7 +58,17 @@ function CheckoutForm(props) {
         <div className="checkout-form">
             {clientSecret && (
                 <Elements options={options} stripe={stripePromise}>
-                    <CardForm disable={props.disable} />
+                    <CardForm
+                        firstName={firstName}
+                        lastName={lastName}
+                        email={email}
+                        contactNumber={contactNumber}
+                        city={city}
+                        addressLine1={addressLine1}
+                        addressLine2={addressLine2}
+                        zipCode={zipCode}
+                        cartTotal={cartTotal}
+                    />
                 </Elements>
             )}
         </div>

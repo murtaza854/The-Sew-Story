@@ -3,11 +3,13 @@ import { Navbar, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { RiShoppingBag2Fill } from 'react-icons/ri';
 import { FaUser } from 'react-icons/fa';
+import { GiHamburgerMenu } from 'react-icons/gi';
 import Badge from '@mui/material/Badge';
 import { withStyles } from '@mui/styles';
 import UserContext from '../../contexts/userContext';
 import CartCountContext from '../../contexts/cartCountContext';
 import './MainNavbar.scss';
+import Sidebar from '../sidebar/Sidebar';
 
 const styles = _ => ({
     customBadge: {
@@ -24,7 +26,7 @@ function SimpleBadge(props) {
                 classes={{ badge: classes.customBadge }}
                 badgeContent={count}
             >
-            <RiShoppingBag2Fill className="cart-icon" />
+                <RiShoppingBag2Fill className="cart-icon" />
             </Badge>
         </div>
     );
@@ -36,13 +38,25 @@ function MainNavbar(props) {
     const user = useContext(UserContext);
     const cartCountFromContext = useContext(CartCountContext);
     // const [cartCount] = useState(cartCountFromContext.cartCount);
-    
+
     useEffect(() => {
         const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
         if (cartProducts) {
             cartCountFromContext.setCartCount(cartProducts.length);
         }
     }, [cartCountFromContext])
+
+    const onClickHamburger = () => {
+        const check = document.getElementById('client-sidebar').classList.contains('client-sidebar-closed');
+        if (check) {
+            document.getElementById('client-sidebar').classList.remove('client-sidebar-closed');
+            document.getElementById('client-sidebar').classList.add('client-sidebar-open');
+        } else {
+            document.getElementById('client-sidebar').classList.add('client-sidebar-closed');
+            document.getElementById('client-sidebar').classList.remove('client-sidebar-open');
+        }
+    }
+
     return (
         <div style={{ position: props.positionStyle }} className="main-navbar">
             <Navbar bg="transparent">
@@ -69,7 +83,7 @@ function MainNavbar(props) {
                             )
                         }
                         <Link to="/cart">
-                        <StyledBadge count={cartCountFromContext.cartCount} />
+                            <StyledBadge count={cartCountFromContext.cartCount} />
                             {/* <Badge badgeContent={4} color="primary">
                                 <RiShoppingBag2Fill className="cart-icon" />
                             </Badge> */}
@@ -80,6 +94,10 @@ function MainNavbar(props) {
             <Container>
                 <div className="main-navbar-bottom-line center-relative-horizontal" />
             </Container>
+            <Container>
+                <GiHamburgerMenu onClick={onClickHamburger} style={{fontSize: '3rem'}} className="hamburger-icon" />
+            </Container>
+            <Sidebar />
         </div>
     );
 }

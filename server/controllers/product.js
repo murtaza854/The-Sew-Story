@@ -27,6 +27,17 @@ module.exports = {
                 return data;
             })
     },
+    updateQuantity(id, quantity) {
+        return Product.update({
+            quantity: quantity
+        }, {
+            where: {
+                id: id
+            }
+        }).then(function (data) {
+            return data;
+        })
+    },
     getProducts(slugs) {
         return Product.findAll({
             include: [
@@ -68,6 +79,30 @@ module.exports = {
             order: [
                 [{ model: Detail, as: 'details' }, 'order', 'ASC']
             ]
+        })
+            .then(function (data) {
+                return data;
+            })
+    },
+    getProductsCartID(slugs) {
+        return Product.findAll({
+            include: [
+                {
+                    model: Price,
+                    attributes: ['amount', 'active'],
+                    as: 'prices',
+                    where: {
+                        active: true
+                    }
+                },
+            ],
+            attributes: ['id', 'name', 'slug', 'quantity', 'active'],
+            where: {
+                slug: {
+                    [Op.in]: slugs
+                }
+            },
+            raw: true
         })
             .then(function (data) {
                 return data;

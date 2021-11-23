@@ -40,6 +40,19 @@ module.exports = {
                 return data;
             });
     },
+    getIdbySlug(params) {
+        console.log(params);
+        return City.findOne({
+            attributes: ['id'],
+            where: {
+                slug: params[0].slug,
+            },
+            raw: true,
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     insertIfnotExist(params) {
         return City.findOne({
             attributes: ['id', 'name', 'slug', 'state_id', 'active'],

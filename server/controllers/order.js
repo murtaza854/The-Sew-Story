@@ -3,7 +3,7 @@ const Order = require('../models').order;
 module.exports = {
     create(params) {
         return Order.create({
-            orderNumber: params.orderNumber,
+            id: params.orderNumber,
             orderStatus: params.orderStatus,
             orderDate: params.orderDate,
             orderTotal: params.orderTotal,
@@ -12,6 +12,8 @@ module.exports = {
             lastName: params.lastName,
             email: params.email,
             contactNumber: params.contactNumber,
+            addressLine1: params.addressLine1,
+            addressLine2: params.addressLine2,
             city_id: params.city_id,
             zipCode: params.zipCode,
         })
@@ -21,8 +23,9 @@ module.exports = {
     },
     checkOrderNumber(params) {
         return Order.findOne({
+            attributes: ['id'],
             where: {
-                orderNumber: params.orderNumber
+                id: params.orderNumber
             }
         })
             .then(function (data) {

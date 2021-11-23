@@ -23,10 +23,18 @@ module.exports = {
         type: Sequelize.STRING,
         references: {
           model: 'orders',
-          key: 'orderNumber'
+          key: 'id'
         },
         onUpdate: 'cascade',
         onDelete: 'cascade'
+      },
+      quantity: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      price_per_unit: {
+        allowNull: false,
+        type: Sequelize.FLOAT
       },
       createdAt: {
         allowNull: false,

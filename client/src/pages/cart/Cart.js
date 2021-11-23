@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
-import { CheckoutForm } from '..';
+import { Col, Form, Row, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router';
+// import { CheckoutForm } from '..';
 import api from '../../api';
 import { Heading } from '../../components';
 import CartCountContext from '../../contexts/cartCountContext';
 import { Delivery, ProductList } from './components';
 
 function Cart(props) {
+    let history = useHistory();
     const cartCountContext = useContext(CartCountContext);
     const [cartProducts, setCartProducts] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
@@ -147,6 +149,21 @@ function Cart(props) {
         setDisable(flag);
     }, [state, city, addressLine1, zipCode, firstName, lastName, contactNumber, email]);
 
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        history.push(`/checkout?array=${JSON.stringify({
+            firstName: firstName.name,
+            lastName: lastName.name,
+            email: email.name,
+            contactNumber: contactNumber.name,
+            city: city.value,
+            addressLine1: addressLine1.text,
+            addressLine2: addressLine2.text,
+            zipCode: zipCode.text,
+            cartTotal
+        })}`);
+    }
+
     return (
         <div>
             <Heading
@@ -203,15 +220,25 @@ function Cart(props) {
                             setZipCode={setZipCode}
                         />
                         {/* <Payment /> */}
-                        <CheckoutForm disable={disable} />
-                        <Form className="form-style ">
-                            {/* <Row className="justify-content-center"> */}
-                            {/* <Col>
+                        {/* <CheckoutForm 
+                            disable={disable}
+                            firstName={firstName.name}
+                            lastName={lastName.name}
+                            contactNumber={contactNumber.name}
+                            email={email.name}
+                            city={city.value}
+                            addressLine1={addressLine1.text}
+                            addressLine2={addressLine2.text}
+                            zipCode={zipCode.text}
+                        /> */}
+                        <Form onSubmit={onSubmit} className="form-style ">
+                            <Row className="justify-content-center">
+                            <Col>
                                 <Button className="center-relative-horizontal-fit-content" disabled={disable} type="submit">
-                                    Submit
+                                    Checkout
                                 </Button>
-                            </Col> */}
-                            {/* </Row> */}
+                            </Col>
+                            </Row>
                         </Form>
                         {/* {
                 cartProducts?.length > 0 ? (

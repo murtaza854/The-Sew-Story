@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const productController = require('../controllers').product;
 const orderController = require('../controllers').order;
+const orderItemController = require('../controllers').orderItem;
+const cityController = require('../controllers').city;
 var crypto = require("crypto");
 const dotenv = require('dotenv');
 dotenv.config();
@@ -61,10 +63,11 @@ router.post("/payment", async (req, res) => {
 router.post('/confirmOrder', async (req, res) => {
     const {
         cartProducts,
+        deliveryDetails
     } = req.body;
-    const cartTotal = await calculateOrderAmount(items);
+    let orderNumber = 0;
     while (true) {
-        const orderNumber = generateOrderNumber();
+        orderNumber = generateOrderNumber();
         const existingOrder = await orderController.checkOrderNumber({
             orderNumber,
         });
@@ -72,32 +75,51 @@ router.post('/confirmOrder', async (req, res) => {
             break;
         }
     }
+    console.log(deliveryDetails);
+    const slugs = cartProducts.map(product => product.slug);
+    const products = await productController.getProductsCartID(slugs);
+    const cartTotal = await calculateOrderAmount(cartProducts, products);
+    const city = await cityController.getIdbySlug(deliveryDetails.city);
     const order = await orderController.create({
         orderNumber,
         orderStatus: 'Payment Confirmed',
         orderDate: new Date(),
         orderTotal: cartTotal,
         user_id: null,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        contactNumber: req.body.contactNumber,
-        city_id: req.body.city_id,
-        zipCode: req.body.zipCode,
+        firstName: deliveryDetails.firstName,
+        lastName: deliveryDetails.lastName,
+        email: deliveryDetails.email,
+        contactNumber: deliveryDetails.contactNumber,
+        addressLine1: deliveryDetails.addressLine1,
+        addressLine2: deliveryDetails.addressLine2,
+        city_id: city.id,
+        zipCode: deliveryDetails.zipCode,
     });
     if (order) {
-        
+        for (let index = 0; index < cartProducts.length; index++) {
+            const element = cartProducts[index];
+            const product = products.find(product => product.slug === element.slug);
+            console.log(product);
+            await productController.updateQuantity(product.id, product.quantity - element.quantity);
+            await orderItemController.create({
+                order_id: orderNumber,
+                product_id: product.id,
+                quantity: element.quantity,
+                price_per_unit: product['prices.amount'],
+            });
+        }
+        res.json({ data: order });
+    } else {
+        res.json({ data: null });
+    }
 });
 
 const generateOrderNumber = () => {
     return crypto.randomBytes(8).toString('hex');
 };
 
-const calculateOrderAmount = async items => {
-    console.log('items', items);
-    const slugs = items.map(product => product.slug);
+const calculateOrderAmount = async (items, products) => {
     try {
-        const products = await productController.getProductsCart(slugs);
         let amount = 0;
         for (let index = 0; index < items.length; index++) {
             const item = items[index];
@@ -110,7 +132,7 @@ const calculateOrderAmount = async items => {
             };
             amount = amount + product['prices.amount'] * item.quantity;
         }
-        return amount * 100;
+        return amount;
     } catch (error) {
         return error;
     }
@@ -120,18 +142,22 @@ const calculateOrderAmount = async items => {
 };
 
 router.post("/create-payment-intent", async (req, res) => {
-    const { items } = req.body;
+    const { items, email } = req.body;
     // Create a PaymentIntent with the order amount and currency
     let errorMessage = '';
     try {
-        const amount = await calculateOrderAmount(items);
+        const slugs = items.map(product => product.slug);
+        const products = await productController.getProductsCart(slugs);
+        const amount = await calculateOrderAmount(items, products);
         errorMessage = amount;
+        console.log(email);
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount,
+            amount: amount * 100,
             currency: "usd",
             payment_method_types: [
                 "card",
             ],
+            receipt_email: email,
         });
         res.send({
             clientSecret: paymentIntent.client_secret,
