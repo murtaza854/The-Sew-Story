@@ -3,6 +3,7 @@ const firebaseFile = require('../firebase');
 const firebaseAdmin = firebaseFile.admin;
 const { signInWithEmailAndPassword, signOut, getAuth, signInWithCredential, createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, FacebookAuthProvider, EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail, updateProfile, sendPasswordResetEmail } = require('firebase/auth');
 const userController = require('../controllers').user;
+const subscribeController = require('../controllers').subscribe;
 
 const auth = getAuth();
 
@@ -121,6 +122,7 @@ router.post('/change-owner-info', async (req, res) => {
 router.post('/subscribe', async (req, res) => {
     try {
         await userController.updateByEmail({ subscribed: req.body.firstName, email: req.body.email });
+        await subscribeController.createIfNotExists({ email: req.body.email });
         res.json({ data: true });
     } catch (error) {
         console.log(error);

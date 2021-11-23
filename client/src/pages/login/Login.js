@@ -14,6 +14,7 @@ function Login(props) {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        document.title = 'Login | The Sew Story';
     }, []);
 
     const [disable, setDisable] = useState(false);

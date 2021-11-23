@@ -54,6 +54,11 @@ function CheckoutForm(props) {
         appearance
     };
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        document.title = 'Checkout | The Sew Story';
+    }, []);
+
     return (
         <div className="checkout-form">
             {clientSecret && (

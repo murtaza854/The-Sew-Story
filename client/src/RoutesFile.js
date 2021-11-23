@@ -5,7 +5,7 @@ import {
     useLocation,
 } from "react-router-dom";
 import { MainNavbar, Footer, BlackBar } from './components';
-import { Home, Story, Products, ProductPage, Signup, Login, ForgotPassword, Cart, CheckoutForm, OrderMessage } from './pages';
+import { Home, Story, Products, ProductPage, Signup, Login, ForgotPassword, Cart, CheckoutForm, OrderMessage, Contact, Gallery } from './pages';
 import Auth from './auth/Auth';
 // import { ComingSoon } from './pages';
 import { Dashboard } from './dashboard';
@@ -65,6 +65,12 @@ function RoutesFile(props) {
                             {/* <Route path="/payment">
                                 <Payment />
                             </Route> */}
+                            <Route path="/gallery">
+                                <Gallery />
+                            </Route>
+                            <Route path="/contact">
+                                <Contact />
+                            </Route>
                             <Route path="/cart">
                                 <Cart />
                             </Route>

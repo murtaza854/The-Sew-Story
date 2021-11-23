@@ -11,8 +11,9 @@ function ForgotPassword(props) {
     const user = useContext(UserContext);
 
     useEffect(() => {
-      window.scrollTo(0, 0);
-  }, []);
+        window.scrollTo(0, 0);
+        document.title = 'Forgot Password | The Sew Story';
+    }, []);
 
     const [email, setEmail] = useState({ name: '', errorText: '', error: false });
 

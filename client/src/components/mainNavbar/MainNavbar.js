@@ -3,7 +3,8 @@ import { Navbar, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { RiShoppingBag2Fill } from 'react-icons/ri';
 import { FaUser } from 'react-icons/fa';
-import { GiHamburgerMenu } from 'react-icons/gi';
+// import { GiHamburgerMenu } from 'react-icons/gi';
+import MenuIcon from '@mui/icons-material/Menu';
 import Badge from '@mui/material/Badge';
 import { withStyles } from '@mui/styles';
 import UserContext from '../../contexts/userContext';
@@ -47,13 +48,20 @@ function MainNavbar(props) {
     }, [cartCountFromContext])
 
     const onClickHamburger = () => {
-        const check = document.getElementById('client-sidebar').classList.contains('client-sidebar-closed');
-        if (check) {
-            document.getElementById('client-sidebar').classList.remove('client-sidebar-closed');
-            document.getElementById('client-sidebar').classList.add('client-sidebar-open');
+        const sidebar = document.getElementById('client-sidebar');
+        const check = sidebar.classList.contains('client-sidebar-closed');
+        const notActive = sidebar.classList.contains('client-sidebar-not-active');
+        if (notActive) {
+            sidebar.classList.remove('client-sidebar-not-active');
+            sidebar.classList.add('client-sidebar-open');
         } else {
-            document.getElementById('client-sidebar').classList.add('client-sidebar-closed');
-            document.getElementById('client-sidebar').classList.remove('client-sidebar-open');
+            if (check) {
+                sidebar.classList.remove('client-sidebar-closed');
+                sidebar.classList.add('client-sidebar-open');
+            } else {
+                sidebar.classList.add('client-sidebar-closed');
+                sidebar.classList.remove('client-sidebar-open');
+            }
         }
     }
 
@@ -62,6 +70,7 @@ function MainNavbar(props) {
             <Navbar bg="transparent">
                 <Container>
                     <div className="navbar-brand">
+                        <MenuIcon id="client-sidebar-hamburger" className="hamburger-icon" onClick={onClickHamburger} />
                         <Link to="/">
                             <img src="/logo.png" alt="The Sew Story" />
                         </Link>
@@ -93,9 +102,6 @@ function MainNavbar(props) {
             </Navbar>
             <Container>
                 <div className="main-navbar-bottom-line center-relative-horizontal" />
-            </Container>
-            <Container>
-                <GiHamburgerMenu onClick={onClickHamburger} style={{fontSize: '3rem'}} className="hamburger-icon" />
             </Container>
             <Sidebar />
         </div>

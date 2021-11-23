@@ -8,7 +8,6 @@
     width: 300px;
     background-color: $secondary-color;
     z-index: 1;
-    transition: all 0.3s ease-in-out;
     transform: translateX(-100%);
     .top-row {
         padding-top: 2rem;
@@ -24,23 +23,27 @@
         font-size: $font-size-small;
         margin-left: auto;
         margin-right: auto;
+        opacity: 1;
         &:hover {
-            color: $primary-color;
+            // color: $primary-color;
+            opacity: 0.5;
         }
     }
 }
 
+.client-sidebar-not-active {
+    display: none;
+}
+
 .client-sidebar-open {
-    transition: all 0.3s ease-in-out;
     transform: translateX(-100%);
-    animation: slide-in-left 0.3s ease-in-out forwards;
+    animation: slide-in-left .6s ease-in-out forwards;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .client-sidebar-closed {
-    transition: all 0.3s ease-in-out;
     transform: translateX(0);
-    animation: slide-out-left 0.3s ease-in-out forwards;
+    animation: slide-out-left .6s ease-in-out forwards;
 }
 
 @keyframes slide-in-left {

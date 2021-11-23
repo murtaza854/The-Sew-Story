@@ -49,6 +49,11 @@ function OrderStatus(props) {
         });
     }, [stripe]);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        document.title = 'Payment | The Sew Story';
+    }, []);
+
     return (
         <Row className="margin-global-top-2">
             <Heading

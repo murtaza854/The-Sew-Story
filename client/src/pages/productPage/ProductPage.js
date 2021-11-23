@@ -114,6 +114,7 @@ function ProductPage(props) {
                     order: detail.order
                 });
             });
+            document.title = `${product.name} | The Sew Story`;
             setProduct({
                 productCode: product.productCode,
                 name: product.name,

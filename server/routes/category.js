@@ -8,6 +8,7 @@ const slugify = require('slugify');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.resolve('../client/public/categoryUploads'))
+        // cb(null, path.resolve('./build/categoryUploads'));
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -94,6 +95,7 @@ router.post('/updateWithImage', upload.single('image'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data);
         fs.unlinkSync(path.resolve('../client/public/categoryUploads/' + data.oldFileName));
+        // fs.unlinkSync(path.resolve('./build/categoryUploads/' + data.oldFileName));
         await categoryController.update(
             {
                 id: data.id,

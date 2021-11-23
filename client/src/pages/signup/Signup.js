@@ -17,6 +17,7 @@ function Signup(props) {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        document.title = `Sign Up | The Sew Story`;
     }, []);
 
     const [firstName, setFirstName] = useState({ name: '', errorText: '', error: false });

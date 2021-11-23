@@ -8,3 +8,5 @@ export { default as ForgotPassword } from './forgotPassword/ForgotPassword';
 export { default as Cart } from './cart/Cart';
 export { default as CheckoutForm } from './checkoutForm/CheckoutForm';
 export { default as OrderMessage } from './orderMessage/OrderMessage';
+export { default as Contact } from './contact/Contact';
+export { default as Gallery } from './gallery/Gallery';

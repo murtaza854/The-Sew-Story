@@ -24,6 +24,7 @@ const stripe = require("stripe")(STRIPE_SECRET_KEY);
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.resolve('../client/public/productUploads'))
+        // cb(null, path.resolve('./build/productUploads'));
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -203,6 +204,7 @@ router.post('/updateWithImage', upload.array('images'), async (req, res) => {
             // console.log('data.storyImageToBeDeleted', data.storyImageToBeDeleted);
             try {
                 fs.unlinkSync(path.resolve('../client/public/productUploads/' + data.storyOldFileName));
+                // fs.unlinkSync(path.resolve('./build/productUploads/' + data.storyOldFileName));
                 storyImageFileName = images[images.length - 1].filename;
                 storyImagePath = '/productUploads/' + images[images.length - 1].filename;
             } catch (error) {
@@ -238,6 +240,7 @@ router.post('/updateWithImage', upload.array('images'), async (req, res) => {
         await imageController.deleteByFileNames({ fileNames: data.imagesToBeDeleted });
         data.imagesToBeDeleted.forEach(async (image) => {
             fs.unlinkSync(path.resolve('../client/public/productUploads/' + image));
+            // fs.unlinkSync(path.resolve('./build/productUploads/' + image));
         });
         for (let index = 0; index < images.length - count; index++) {
             const element = images[index];
@@ -313,6 +316,7 @@ router.post('/updateWithoutImage', async (req, res) => {
         let storyImagePath = '';
         if (req.body.storyImageToBeDeleted !== '') {
             fs.unlinkSync(path.resolve('../client/public/productUploads/' + req.body.storyOldFileName));
+            // fs.unlinkSync(path.resolve('./build/productUploads/' + req.body.storyOldFileName));
             storyImageFileName = images[images.length - 1].filename;
             storyImagePath = '/productUploads/' + images[images.length - 1].filename;
         }
@@ -345,6 +349,7 @@ router.post('/updateWithoutImage', async (req, res) => {
         await imageController.deleteByFileNames({ fileNames: req.body.imagesToBeDeleted });
         req.body.imagesToBeDeleted.forEach(async (image) => {
             fs.unlinkSync(path.resolve('../client/public/productUploads/' + image));
+            // fs.unlinkSync(path.resolve('./build/productUploads/' + image));
         });
         const category = await categoryController.getById(obj.dataValues.category_id);
         // console.log('category', category);

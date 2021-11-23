@@ -9,6 +9,7 @@ const detail = require('./detail');
 const price = require('./price');
 const order = require('./order');
 const orderItem = require('./orderItem');
+const subscribe = require('./subscribe');
 
 module.exports = {
     user,
@@ -22,4 +23,5 @@ module.exports = {
     price,
     order,
     orderItem,
+    subscribe
 };

@@ -37,6 +37,7 @@ function Cart(props) {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        document.title = 'Cart | The Sew Story';
     }, []);
 
     useEffect(() => {
