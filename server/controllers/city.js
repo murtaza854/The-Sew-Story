@@ -43,7 +43,7 @@ module.exports = {
     getIdbySlug(params) {
         console.log(params);
         return City.findOne({
-            attributes: ['id'],
+            attributes: ['id', 'name', 'state_id'],
             where: {
                 slug: params[0].slug,
             },

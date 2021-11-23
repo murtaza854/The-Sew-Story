@@ -273,6 +273,14 @@ router.post('/updateWithImage', upload.array('images'), async (req, res) => {
             res.json({ data: true });
         } else {
             await priceController.updateProductActiveFalse({ product_id: data.id, active: data.active });
+            const prices = await stripe.prices.list({
+                product: data.id,
+            });
+            prices.data.forEach(async (price) => {
+                await stripe.prices.update(price.id, {
+                    active: false,
+                });
+            });
             const price = await stripe.prices.create({
                 currency: 'USD',
                 product: product.id,
@@ -365,6 +373,14 @@ router.post('/updateWithoutImage', async (req, res) => {
             res.json({ data: true });
         } else {
             await priceController.updateProductActiveFalse({ product_id: req.body.id, active: req.body.active });
+            const prices = await stripe.prices.list({
+                product: data.id,
+            });
+            prices.data.forEach(async (price) => {
+                await stripe.prices.update(price.id, {
+                    active: false,
+                });
+            });
             const price = await stripe.prices.create({
                 currency: 'USD',
                 product: product.id,

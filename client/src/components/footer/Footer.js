@@ -11,8 +11,8 @@ function Footer(props) {
                     <Link to="/" className="link-1">Home</Link>
                     <Link to="/shop" className="link-2">Shop</Link>
                     <Link to="/our-story" className="link-3">Our Story</Link>
-                    <Link to="/our-story" className="link-4">Gallery</Link>
-                    <Link to="/our-story" className="link-5">Contact Us</Link>
+                    <Link to="/gallery" className="link-4">Gallery</Link>
+                    <Link to="/contact" className="link-5">Contact Us</Link>
                     {/* <a href="/diy">DIY</a> */}
                     {/* <a href="/contact-us">Contact Us</a> */}
                 </p>
