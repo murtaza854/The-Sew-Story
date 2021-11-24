@@ -13,6 +13,19 @@ module.exports = {
                 return data;
             });
     },
+    getCityByNameAndStateIds(name, stateIds) {
+        return City.findOne({
+            attributes: ['id'],
+            where: {
+                name: name,
+                state_id: stateIds
+            },
+            raw: true
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     findBySlug(params) {
         return City.findOne({
             attributes: ['id', 'name', 'slug', 'state_id', 'active'],

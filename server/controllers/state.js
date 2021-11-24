@@ -11,6 +11,18 @@ module.exports = {
                 return data;
             });
     },
+    getAllStatesByName(name) {
+        return States.findAll({
+            attributes: ['id'],
+            where: {
+                name: name
+            },
+            raw: true
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
     getStatebyId(id) {
         return States.findOne({
             attributes: ['name'],

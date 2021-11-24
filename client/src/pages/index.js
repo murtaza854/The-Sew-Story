@@ -10,3 +10,4 @@ export { default as CheckoutForm } from './checkoutForm/CheckoutForm';
 export { default as OrderMessage } from './orderMessage/OrderMessage';
 export { default as Contact } from './contact/Contact';
 export { default as Gallery } from './gallery/Gallery';
+export { default as Invoice } from './invoice/Invoice';

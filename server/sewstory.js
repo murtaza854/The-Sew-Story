@@ -59,6 +59,7 @@ const cartRoutes = require('./routes/cart');
 const productRoutes = require('./routes/product');
 const categoryRoutes = require('./routes/category');
 const typeRoutes = require('./routes/type');
+const paymentRoutes = require('./routes/payment');
 
 
 app.use('/api/auth', authRoutes);
@@ -71,6 +72,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/type', typeRoutes);
+app.use('/api/payment', paymentRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     try {

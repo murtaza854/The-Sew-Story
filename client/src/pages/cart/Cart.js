@@ -152,7 +152,7 @@ function Cart(props) {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        history.push(`/checkout?array=${JSON.stringify({
+        history.push(`/invoice?array=${JSON.stringify({
             firstName: firstName.name,
             lastName: lastName.name,
             email: email.name,
@@ -236,7 +236,7 @@ function Cart(props) {
                             <Row className="justify-content-center">
                             <Col>
                                 <Button className="center-relative-horizontal-fit-content" disabled={disable} type="submit">
-                                    Checkout
+                                    Submit
                                 </Button>
                             </Col>
                             </Row>

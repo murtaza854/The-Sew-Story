@@ -29,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   order.init({
-    orderNumber: DataTypes.STRING,
     orderStatus: DataTypes.STRING,
     orderDate: DataTypes.DATE,
     firstName: DataTypes.STRING,
@@ -41,7 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     city_id: DataTypes.INTEGER,
     zipCode: DataTypes.STRING,
     orderTotal: DataTypes.FLOAT,
-    user_id: DataTypes.INTEGER
+    user_id: DataTypes.INTEGER,
+    stripe_sessionID: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'order',
