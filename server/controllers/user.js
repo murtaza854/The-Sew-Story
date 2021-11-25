@@ -6,7 +6,20 @@ module.exports = {
             firstName: params.firstName,
             lastName: params.lastName,
             email: params.email,
+            stripe_id: params.stripe_id,
             uid: params.uid
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    getUserIDByStripeID(stripe_id) {
+        return Users.findOne({
+            attributes: ['id'],
+            where: {
+                stripe_id: stripe_id
+            },
+            raw: true
         })
             .then(function (data) {
                 return data;

@@ -32,9 +32,12 @@ function Invoice(props) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
+                withCredentials: true,
                 body: JSON.stringify({ items: cartProducts, deliveryDetails })
             });
             const data = await response.json();
+            console.log(data);
             setAmount_total(data.session.amount_total / 100);
             setAmount_subtotal(data.session.amount_subtotal / 100);
             setPayment_url(data.session.url);

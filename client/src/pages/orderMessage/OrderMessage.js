@@ -31,13 +31,15 @@ function OrderMessage(props) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
+                withCreditentials: true,
                 body: JSON.stringify(order)
             });
             const data = await response.json();
             if (data.success) {
                 setOrderNumber(data.orderNumber);
                 localStorage.removeItem('cartProducts');
-                cartCountFromContext.setCartCount(cartProducts.length);
+                cartCountFromContext.setCartCount(0);
             }
         }
         confirmOrder();

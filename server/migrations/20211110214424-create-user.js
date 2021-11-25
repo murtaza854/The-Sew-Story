@@ -25,6 +25,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      stripe_id: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       subscribed: {
         allowNull: false,
         defaultValue: false,

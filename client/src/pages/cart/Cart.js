@@ -1,23 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Col, Form, Row, Button } from 'react-bootstrap';
+import { Col, Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 // import { CheckoutForm } from '..';
 import api from '../../api';
 import { Heading } from '../../components';
 import CartCountContext from '../../contexts/cartCountContext';
+import UserContext from '../../contexts/userContext';
 import { Delivery, ProductList } from './components';
 
 function Cart(props) {
     let history = useHistory();
     const cartCountContext = useContext(CartCountContext);
+    const userContext = useContext(UserContext);
     const [cartProducts, setCartProducts] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
 
     const [disable, setDisable] = useState(true);
 
-    const [firstName, setFirstName] = useState({ name: '', error: false, errorText: '' });
-    const [lastName, setLastName] = useState({ name: '', error: false, errorText: '' });
-    const [email, setEmail] = useState({ name: '', error: false, errorText: '' });
+    const [firstName, setFirstName] = useState({ name: '', error: false, errorText: '', readOnly: false });
+    const [lastName, setLastName] = useState({ name: '', error: false, errorText: '', readOnly: false });
+    const [email, setEmail] = useState({ name: '', error: false, errorText: '', readOnly: false });
     const [contactNumber, setContactNumber] = useState({ name: '', error: false, errorText: '' });
 
     const [state, setState] = useState({ value: [], error: false, errortext: '', readOnly: false });
@@ -38,7 +40,27 @@ function Cart(props) {
     useEffect(() => {
         window.scrollTo(0, 0);
         document.title = 'Cart | The Sew Story';
-    }, []);
+        if (userContext.userState) {
+            const getUserInfo = async () => {
+                const response = await fetch(`${api}/user/get-logged-in?email=${userContext.userState.email}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const content = await response.json();
+                const {
+                    firstName,
+                    lastName,
+                    email,
+                } = content.data;
+                setFirstName({ name: firstName, error: false, errorText: '', readOnly: true });
+                setLastName({ name: lastName, error: false, errorText: '', readOnly: true });
+                setEmail({ name: email, error: false, errorText: '', readOnly: true });
+            }
+            getUserInfo();
+        }
+    }, [userContext.userState]);
 
     useEffect(() => {
         const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
@@ -152,7 +174,7 @@ function Cart(props) {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        history.push(`/invoice?array=${JSON.stringify({
+        history.push(`/payment?array=${JSON.stringify({
             firstName: firstName.name,
             lastName: lastName.name,
             email: email.name,
@@ -220,26 +242,14 @@ function Cart(props) {
                             zipCode={zipCode}
                             setZipCode={setZipCode}
                         />
-                        {/* <Payment /> */}
-                        {/* <CheckoutForm 
-                            disable={disable}
-                            firstName={firstName.name}
-                            lastName={lastName.name}
-                            contactNumber={contactNumber.name}
-                            email={email.name}
-                            city={city.value}
-                            addressLine1={addressLine1.text}
-                            addressLine2={addressLine2.text}
-                            zipCode={zipCode.text}
-                        /> */}
                         <Form onSubmit={onSubmit} className="form-style ">
-                            <Row className="justify-content-center">
-                            <Col>
-                                <Button className="center-relative-horizontal-fit-content" disabled={disable} type="submit">
-                                    Submit
-                                </Button>
-                            </Col>
-                            </Row>
+                            <div className="justify-content-center">
+                                <Col>
+                                    <Button className="center-relative-horizontal-fit-content" disabled={disable} type="submit">
+                                        Submit
+                                    </Button>
+                                </Col>
+                            </div>
                         </Form>
                         {/* {
                 cartProducts?.length > 0 ? (

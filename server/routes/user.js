@@ -6,6 +6,12 @@ const { signInWithEmailAndPassword, signOut, getAuth, createUserWithEmailAndPass
 const userController = require('../controllers').user;
 const subscribeController = require('../controllers').subscribe;
 
+const {
+    STRIPE_SECRET_KEY,
+} = process.env;
+
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
+
 const auth = getAuth();
 
 router.get('/getAllUsers', async (req, res) => {
@@ -152,11 +158,16 @@ router.post('/signup', async (req, res) => {
         await updateProfile(user, {
             displayName: firstName.name,
         })
+        const stripe_customer = await stripe.customers.create({
+            name: firstName.name + ' ' + lastName.name,
+            email: email.name,
+        });
         await userController.create({
             firstName: firstName.name,
             lastName: lastName.name,
             email: email.name,
             uid: user.uid,
+            stripe_id: stripe_customer.id,
         });
         // const newUser = new User({
         //     firstName: firstName.name,

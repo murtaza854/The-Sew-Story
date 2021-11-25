@@ -16,6 +16,7 @@ module.exports = {
             addressLine2: params.addressLine2,
             city_id: params.city_id,
             zipCode: params.zipCode,
+            stripe_sessionID: params.stripe_sessionID,
         })
             .then(function (data) {
                 return data;

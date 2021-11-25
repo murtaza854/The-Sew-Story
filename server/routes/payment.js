@@ -4,6 +4,9 @@ const orderController = require('../controllers').order;
 const orderItemController = require('../controllers').orderItem;
 const cityController = require('../controllers').city;
 const stateController = require('../controllers').state;
+const userController = require('../controllers').user;
+const firebaseFile = require('../firebase');
+const firebaseAdmin = firebaseFile.admin;
 var crypto = require("crypto");
 const dotenv = require('dotenv');
 dotenv.config();
@@ -67,9 +70,8 @@ router.post('/create', async (req, res) => {
     }
     // console.log(await stripe.products.list({
     //   }));
+    const state = await stateController.getStatebyId(city[0].state_id);
     if (!sessionCookie) {
-        const state = await stateController.getStatebyId(city[0].state_id);
-        // console.log(state);
         const customer = await stripe.customers.create({
             name: `${firstName} ${lastName}`,
             email,
@@ -107,7 +109,46 @@ router.post('/create', async (req, res) => {
         });
         res.json({ session: session });
     } else {
-        res.json({ data: 'success' });
+        const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
+        const userData = await userController.findByUid({
+            uid: user.uid,
+        });
+        const stripe_customer_id = userData.dataValues.stripe_id;
+        await stripe.customers.update(stripe_customer_id, {
+            name: `${firstName} ${lastName}`,
+            phone: contactNumber,
+            address: {
+                line1: addressLine1,
+                line2: addressLine2,
+                postal_code: zipCode,
+                country: 'US',
+                city: city[0].name,
+                state: state.name,
+            },
+            shipping: {
+                name: `${firstName} ${lastName}`,
+                address: {
+                    line1: addressLine1,
+                    line2: addressLine2,
+                    postal_code: zipCode,
+                    country: 'US',
+                    city: city[0].name,
+                    state: state.name,
+                },
+                phone: contactNumber,
+            },
+        });
+        const session = await stripe.checkout.sessions.create({
+            // currency: 'usd',
+            payment_method_types: ['card'],
+            customer: stripe_customer_id,
+            line_items: line_items,
+            mode: 'payment',
+            success_url: `${API_URL1}/order/status?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${API_URL1}/order/status`,
+            // automatic_tax: { enabled: true },
+        });
+        res.json({ session: session });
     }
 });
 
@@ -118,6 +159,7 @@ router.post('/create-order', async (req, res) => {
     } = req.body;
     if (cartProducts) {
         const session = await stripe.checkout.sessions.retrieve(sessionID);
+        console.log(session);
         const {
             customer,
             amount_total
@@ -134,6 +176,7 @@ router.post('/create-order', async (req, res) => {
         const city = await cityController.getCityByNameAndStateIds(address.city, stateIDs);
         // console.log(session);
         const orderNumber = await generateOrderNumber();
+        const userID = await userController.getUserIDByStripeID(stripe_customer.id);
         await orderController.create({
             orderNumber: orderNumber,
             orderStatus: 'Processing',
@@ -147,7 +190,7 @@ router.post('/create-order', async (req, res) => {
             city_id: city.id,
             zipCode: address.postal_code,
             orderTotal: amount_total,
-            user_id: null,
+            user_id: userID.id || null,
             stripe_sessionID: sessionID,
         });
         // const order_id = order.id;

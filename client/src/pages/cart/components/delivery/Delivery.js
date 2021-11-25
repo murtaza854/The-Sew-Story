@@ -183,6 +183,7 @@ function Delivery(props) {
                             <Form.Label>First Name</Form.Label>
                             <Form.Control
                                 type="text"
+                                readOnly={firstName.readOnly}
                                 onChange={changeFirstName}
                                 onBlur={changeFirstName}
                                 value={firstName.name}
@@ -194,6 +195,7 @@ function Delivery(props) {
                             <Form.Label>Last Name</Form.Label>
                             <Form.Control
                                 type="text"
+                                readOnly={lastName.readOnly}
                                 onChange={changeLastName}
                                 onBlur={changeLastName}
                                 value={lastName.name}
@@ -207,6 +209,7 @@ function Delivery(props) {
                             <Form.Label>Email</Form.Label>
                             <Form.Control
                                 type="email"
+                                readOnly={email.readOnly}
                                 onChange={changeEmail}
                                 onBlur={changeEmail}
                                 value={email.name}

@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     lastName: DataTypes.STRING,
     email: DataTypes.STRING,
     uid: DataTypes.STRING,
+    stripe_id: DataTypes.STRING,
     subscribed: DataTypes.BOOLEAN
   }, {
     sequelize,
