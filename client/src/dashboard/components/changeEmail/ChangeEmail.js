@@ -35,17 +35,18 @@ function ChangeEmail(props) {
     const onSubmit = async e => {
         e.preventDefault();
         setDisable(true);
-        setEmail({ name: '', errorText: '', error: false });
         try {
-            const response = await fetch(`${api}/startup/change-email`, {
+            const response = await fetch(`${api}/user/change-email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'no-store'
                 },
+                credentials: 'include',
+                withCreditials: true,
                 body: JSON.stringify({ email: email.name, password: password.name }),
             });
             const content = await response.json();
+            setEmail({ name: '', errorText: '', error: false });
             if (content.data) {
                 setEdit(false);
                 setMessage({ display: true, text: 'Please verify your new email to confirm the change.' })
@@ -100,6 +101,7 @@ function ChangeEmail(props) {
                                         value={oldEmail.name}
                                     />
                                 </Form.Group>
+                                <div className="margin-global-top-2 unhide-768" />
                                 <Form.Group as={Col} md={6} controlId="email">
                                     <Form.Label>New Email</Form.Label>
                                     <Form.Control
@@ -147,7 +149,7 @@ function ChangeEmail(props) {
                                         text="Type your password to confirm this change"
                                         link=""
                                         to="/"
-                                        classes="text-center"
+                                        className="text-center small-font"
                                     />
                                 </Col>
                             </Row>
@@ -185,7 +187,7 @@ function ChangeEmail(props) {
                                                     text={message.text}
                                                     link=""
                                                     to="/"
-                                                    classes="text-center"
+                                                    className="text-center small-font"
                                                 />
                                             </Col>
                                         </Row>

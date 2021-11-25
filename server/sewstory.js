@@ -1,16 +1,16 @@
 const express = require('express');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const Sequelize = require('sequelize');
-const path = require('path');
+// const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
 
 const firebaseFile = require('./firebase');
-const firebase = firebaseFile.firebase;
-// const firebaseAdmin = firebaseFile.admin;
+// const firebase = firebaseFile.firebase;
+const firebaseAdmin = firebaseFile.admin;
 
 const {
     DATABASE_USERNAME,
@@ -24,6 +24,19 @@ const {
     PORT,
 } = process.env;
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use(cookieParser(COOKIE_SECRET));
+
+app.use(cors({
+    credentials: true,
+    origin: [API_URL1, API_URL2]
+    // origin: [API_URL3]
+    // origin: '*'
+}));
+app.use(express.static('./build'));
+
 const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
     host: DATABASE_HOST,
     dialect: 'mysql'
@@ -34,20 +47,6 @@ sequelize.authenticate().then(() => {
 }).catch(err => {
     console.error('Unable to connect to the database:', err);
 });
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-app.use(cookieParser(
-    COOKIE_SECRET
-));
-app.use(cors({
-    credentials: true,
-    origin: [API_URL1, API_URL2]
-    // origin: [API_URL3]
-    // origin: '*'
-}));
-app.use(express.static('./build'));
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -60,6 +59,7 @@ const productRoutes = require('./routes/product');
 const categoryRoutes = require('./routes/category');
 const typeRoutes = require('./routes/type');
 const paymentRoutes = require('./routes/payment');
+const couponRoutes = require('./routes/coupon');
 
 
 app.use('/api/auth', authRoutes);
@@ -73,6 +73,7 @@ app.use('/api/product', productRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/type', typeRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/coupon', couponRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     try {
@@ -93,13 +94,14 @@ app.get('/api/logged-in', async (req, res) => {
             } else res.json({ data: null })
         } else res.json({ data: null })
     } catch (error) {
+        // console.log(error);
         res.json({ data: null, error: error });
     }
 });
-app.get('*', function (req, res) {
-    // res.sendFile('./build/index.html');
-    res.sendFile(path.resolve('./build/index.html'));
-});
+// app.get('*', function (req, res) {
+//     // res.sendFile('./build/index.html');
+//     res.sendFile(path.resolve('./build/index.html'));
+// });
 
 app.listen(PORT, () => {
     console.log(`Example app listening at http://localhost:${PORT}`);

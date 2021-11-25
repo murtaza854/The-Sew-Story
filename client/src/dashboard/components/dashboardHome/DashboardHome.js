@@ -8,17 +8,21 @@ import './DashboardHome.scss';
 function DashboardHome(props) {
     const user = useContext(UserContext);
 
-    const logout = async (e, id) => {
+    const logout = async e => {
         e.preventDefault();
         try {
-            await fetch(`${api}/user/logout`, {
-                method: 'GET',
+            const response = await fetch(`${api}/user/logout`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
+                withCredentials: true,
             });
+            const content = await response.json();
+            const { displayName, email, emailVerified, admin } = content.data;
             // history.push('/');
-            user.setUserState(null);
+            user.setUserState({ displayName, email, emailVerified, admin });
         } catch (error) {
             alert("Error logging out. Please contact support.")
         }

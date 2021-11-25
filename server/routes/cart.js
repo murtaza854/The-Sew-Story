@@ -9,15 +9,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const {
-    DATABASE_USERNAME,
-    DATABASE_PASSWORD,
-    DATABASE_NAME,
-    DATABASE_HOST,
-    COOKIE_SECRET,
-    API_URL1,
-    API_URL2,
-    API_URL3,
-    PORT,
     STRIPE_SECRET_KEY,
 } = process.env;
 

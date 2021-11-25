@@ -30,6 +30,7 @@ export default function AdminLayout() {
         'state': false,
         'city': false,
         'description-type': false,
+        'coupon': false,
     });
 
     const handleDrawerOpen = () => {
@@ -93,6 +94,14 @@ export default function AdminLayout() {
                                 <InboxIcon />
                             </ListItemIcon>
                             <ListItemText primary="Orders" />
+                        </ListItem>
+                    </Link>
+                    <Link onClick={e => handleLinkDisable(e, 'coupon')} style={{color: 'black', textDecoration: 'none'}} to="/admin/coupon">
+                        <ListItem disabled={linkDisableObject.coupon} button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Coupons" />
                         </ListItem>
                     </Link>
                     <Link onClick={e => handleLinkDisable(e, 'product')} style={{color: 'black', textDecoration: 'none'}} to="/admin/product">

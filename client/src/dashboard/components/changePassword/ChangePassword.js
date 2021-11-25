@@ -55,12 +55,14 @@ function ChangePassword(props) {
         setPassword({ name: '', errorText: '', error: false, showPassword: false });
         setConfirmPassword({ name: '', errorText: '', error: false, showPassword: false });
         try {
-            const response = await fetch(`${api}/startup/change-password`, {
+            const response = await fetch(`${api}/user/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Cache-Control': 'no-store'
                 },
+                credentials: 'include',
+                withCredentials: true,
                 body: JSON.stringify({ oldPassword: oldPassword.name, password: password.name }),
             });
             const content = await response.json();
@@ -203,7 +205,7 @@ function ChangePassword(props) {
                                         text={message.text}
                                         link=""
                                         to="/"
-                                        classes="text-center"
+                                        className="text-center small-font"
                                     />
                                 </Col>
                             </Row>

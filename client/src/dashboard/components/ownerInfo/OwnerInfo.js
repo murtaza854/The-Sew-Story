@@ -29,18 +29,20 @@ function OwnerInfo(props) {
         e.preventDefault();
         setDisable(true);
         try {
-            const response = await fetch(`${api}/startup/change-owner-info`, {
+            const response = await fetch(`${api}/user/change-owner-info`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Cache-Control': 'no-store'
                 },
+                credentials: 'include',
+                withCredentials: true,
                 body: JSON.stringify({ firstName: firstName.name, lastName: lastName.name }),
             });
             const content = await response.json();
             if (content.check) {
-                const { displayName, email, emailVerified } = content.data;
-                user.setUserState({ displayName, email, emailVerified });
+                const { displayName, email, emailVerified, admin } = content.data;
+                user.setUserState({ displayName, email, emailVerified, admin });
                 setEdit(false);
                 setMessage({ display: true, text: 'User information changed successfully.' })
                 setTimeout(() => {

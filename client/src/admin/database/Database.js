@@ -5,12 +5,14 @@ import { CityForm, CityTable } from './city';
 import { CategoryForm, CategoryTable } from './category';
 import { ProductForm, ProductTable } from './product';
 import { DescriptionTypeForm, DescriptionTypeTable } from './descriptionType'
+import { CouponForm, CouponTable } from './coupon';
 import { CreateCategoryData } from './category/categoryTable/CreateCategoryData';
 import { CreateProductData } from './product/productTable/CreateProductData';
 import { CreateUserData } from './user/userTable/CreateUserData';
 import { CreateDescriptionTypeData } from './descriptionType/descriptionTypeTable/CreateDescriptionTypeData';
 import { CreateStateData } from './state/stateTable/CreateStateData';
 import { CreateCityData } from './city/cityTable/CreateCityData';
+import { CreateCouponData } from './coupon/couponTable/CreateCouponData';
 import {
     Switch,
     Route,
@@ -50,6 +52,9 @@ function Database(props) {
     } else if (urlPath === '/admin/city' || urlPath === '/admin/city/add' || urlPath.includes('/admin/city/edit')) {
         fetchUrl = 'city/getAllCities';
         chosenFunction = CreateCityData;
+    } else if (urlPath === '/admin/coupon' || urlPath === '/admin/coupon/add' || urlPath.includes('/admin/coupon/edit')) {
+        fetchUrl = 'coupon/getAllCoupons';
+        chosenFunction = CreateCouponData;
     }
 
     history.listen((location, action) => {
@@ -64,7 +69,7 @@ function Database(props) {
     //     setRows([]);
     //     setFilteredRows([]);
     // }, [])
-        
+
 
     React.useEffect(() => {
         // const sample = [
@@ -83,6 +88,7 @@ function Database(props) {
                 'state': false,
                 'city': false,
                 'description-type': false,
+                'coupon': false,
             });
         } else if (urlPath === '/admin/category') {
             setLinkDisableObject({
@@ -94,6 +100,7 @@ function Database(props) {
                 'state': false,
                 'city': false,
                 'description-type': false,
+                'coupon': false,
             });
         } else if (urlPath === '/admin/product') {
             setLinkDisableObject({
@@ -105,6 +112,7 @@ function Database(props) {
                 'state': false,
                 'city': false,
                 'description-type': false,
+                'coupon': false,
             });
         } else if (urlPath === '/admin/description-type') {
             setLinkDisableObject({
@@ -116,6 +124,7 @@ function Database(props) {
                 'state': false,
                 'city': false,
                 'description-type': true,
+                'coupon': false,
             });
         } else if (urlPath === '/admin/state') {
             setLinkDisableObject({
@@ -127,6 +136,7 @@ function Database(props) {
                 'state': true,
                 'city': false,
                 'description-type': false,
+                'coupon': false,
             });
         } else if (urlPath === '/admin/city') {
             setLinkDisableObject({
@@ -138,6 +148,19 @@ function Database(props) {
                 'state': false,
                 'city': true,
                 'description-type': false,
+                'coupon': false,
+            });
+        } else if (urlPath === '/admin/coupon') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': false,
+                'city': false,
+                'description-type': false,
+                'coupon': true,
             });
         } else {
             setLinkDisableObject({
@@ -149,6 +172,7 @@ function Database(props) {
                 'state': false,
                 'city': false,
                 'description-type': false,
+                'coupon': false,
             });
         }
 
@@ -167,11 +191,14 @@ function Database(props) {
                     setFilteredRows(rows);
                 });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchUrl, urlPath, historyChanged]);
 
     return (
         <Switch>
+            <Route exact path="/admin/coupon/edit/:id">
+                <CouponForm rows={rows} setRows={setRows} />
+            </Route>
             <Route path="/admin/state/edit/:id">
                 <StateForm rows={rows} setRows={setRows} />
             </Route>
@@ -199,6 +226,9 @@ function Database(props) {
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
+            <Route exact path="/admin/coupon/add">
+                <CouponForm rows={rows} setRows={setRows} />
+            </Route>
             <Route path="/admin/state/add">
                 <StateForm rows={rows} setRows={setRows} />
             </Route>
@@ -224,6 +254,15 @@ function Database(props) {
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
+                />
+            </Route>
+            <Route exact path="/admin/coupon">
+                <CouponTable
+                    rows={rows}
+                    filteredRows={filteredRows}
+                    setFilteredRows={setFilteredRows}
+                    tableOrder="name"
+                    searchField="name"
                 />
             </Route>
             <Route path="/admin/state">

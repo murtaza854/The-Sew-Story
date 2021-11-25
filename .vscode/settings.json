@@ -9,9 +9,10 @@
             "port": 3306,
             "driver": "MySQL",
             "name": "127.0.0.1",
-            "database": "thesewstory",
+            "database": "thesewstory_development",
             "username": "root",
             "password": "Omzig123_MFS"
         }
-    ]
+    ],
+    "cmake.configureOnOpen": false
 }
