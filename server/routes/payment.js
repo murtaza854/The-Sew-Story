@@ -6,6 +6,7 @@ const cityController = require('../controllers').city;
 const stateController = require('../controllers').state;
 const userController = require('../controllers').user;
 const firebaseFile = require('../firebase');
+const shipstationAPI = require('node-shipstation');
 const firebaseAdmin = firebaseFile.admin;
 var crypto = require("crypto");
 const dotenv = require('dotenv');
@@ -22,7 +23,13 @@ const {
     API_URL3,
     PORT,
     STRIPE_SECRET_KEY,
+    SHIPSTATION_API_KEY,
+    SHIPSTATION_API_KEY_SECRET
 } = process.env;
+
+const shipstation = new shipstationAPI(
+    SHIPSTATION_API_KEY,
+    SHIPSTATION_API_KEY_SECRET);
 
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
 

@@ -17,6 +17,8 @@ function OrderMessage(props) {
     const [orderNumber, setOrderNumber] = React.useState('');
     const cartCountFromContext = useContext(CartCountContext);
 
+    const [OrderSuccess, setOrderSuccess] = React.useState(null);
+
     useEffect(() => {
         const confirmOrder = async () => {
             const params = new URLSearchParams(location.search);
@@ -40,54 +42,87 @@ function OrderMessage(props) {
                 setOrderNumber(data.orderNumber);
                 localStorage.removeItem('cartProducts');
                 cartCountFromContext.setCartCount(0);
+                setOrderSuccess(true);
+            } else {
+                setOrderNumber(data.orderNumber);
+                localStorage.removeItem('cartProducts');
+                cartCountFromContext.setCartCount(0);
+                setOrderSuccess(false);
             }
         }
         confirmOrder();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <Container className="order-message">
-            <Row>
-                <Col>
-                    <Heading
-                        text="Thank you!"
-                        className="text-center margin-global-top-5"
-                    />
-                </Col>
-            </Row>
+            {
+                OrderSuccess ? (
+                    <>
+                        <Row>
+                            <Col>
+                                <Heading
+                                    text="Thank you!"
+                                    className="text-center margin-global-top-5"
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <p className="text-center margin-bottom-0">
+                                    Your order has been placed successfully.
+                                </p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <p className="text-center">
+                                    Your order number is: <span className="order-number bold-500">{orderNumber}</span>
+                                </p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <p className="text-center margin-bottom-0">
+                                    You will receive an email confirmation shortly.
+                                </p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <p className="text-center">
+                                    Thank you for shopping with us.
+                                </p>
+                            </Col>
+                        </Row>
+                    </>
+                ) : null
+            }
+            {
+                OrderSuccess === false ? (
+                    <>
+                        <Row>
+                            <Col>
+                                <Heading
+                                    text="Sorry!"
+                                    className="text-center margin-global-top-5"
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <p className="text-center margin-bottom-0">
+                                    Your order has been cancelled.
+                                </p>
+                            </Col>
+                        </Row>
+                    </>
+                ) : null
+            }
             <Row>
                 <Col>
                     <p className="text-center margin-bottom-0">
-                        Your order has been placed successfully.
-                    </p>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <p className="text-center">
-                        Your order number is: <span className="order-number bold-500">{orderNumber}</span>
-                    </p>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <p className="text-center margin-bottom-0">
-                        You will receive an email confirmation shortly.
-                    </p>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <p className="text-center">
-                        Thank you for shopping with us.
-                    </p>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <p className="text-center margin-bottom-0">
-                        Please click <Link className="bold-500" style={{textDecoration: 'none', color: 'black'}} to="/">here</Link> to return to the home page.
+                        Please click <Link className="bold-500" style={{ textDecoration: 'none', color: 'black' }} to="/">here</Link> to return to the home page.
                     </p>
                 </Col>
             </Row>
