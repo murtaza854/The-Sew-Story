@@ -45,10 +45,11 @@ sequelize.authenticate().then(() => {
             // console.log('City: ' + columns[0] + ', State: ' + columns[2], ', County: ' + columns[3]);
             try {
                 if (columns[2] && !states.find(state => state.name === columns[2])) {
-                    // console.log('State: ' + columns[2], slugify(columns[2], { lower: true }));
+                    console.log('State: ' + columns[2], slugify(columns[2], { lower: true }), columns[1]);
                     states.push({
                         name: columns[2],
                         slug: slugify(columns[2], { lower: true }),
+                        abbreviation: columns[1]
                     });
                 }
                 if (columns[0] && !cities.find(city => city.name === columns[0])) {
@@ -66,6 +67,7 @@ sequelize.authenticate().then(() => {
             await stateController.create({
                 name: state.name,
                 slug: state.slug,
+                abbreviation: state.abbreviation
             })
                 .then(state => {
                     console.log('Added');

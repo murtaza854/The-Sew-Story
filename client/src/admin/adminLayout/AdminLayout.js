@@ -31,6 +31,7 @@ export default function AdminLayout() {
         'city': false,
         'description-type': false,
         'coupon': false,
+        'promotionCode': false,
     });
 
     const handleDrawerOpen = () => {
@@ -77,7 +78,7 @@ export default function AdminLayout() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    <Link onClick={e => handleLinkDisable(e, 'user')} style={{color: 'black', textDecoration: 'none'}} to="/admin/user">
+                    <Link onClick={e => handleLinkDisable(e, 'user')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/user">
                         <ListItem disabled={linkDisableObject.user} button>
                             <ListItemIcon>
                                 <InboxIcon />
@@ -88,7 +89,7 @@ export default function AdminLayout() {
                 </List>
                 <Divider />
                 <List>
-                    <Link onClick={e => handleLinkDisable(e, 'order')} style={{color: 'black', textDecoration: 'none'}} to="/admin/order">
+                    <Link onClick={e => handleLinkDisable(e, 'order')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/order">
                         <ListItem disabled={linkDisableObject.order} button>
                             <ListItemIcon>
                                 <InboxIcon />
@@ -96,15 +97,7 @@ export default function AdminLayout() {
                             <ListItemText primary="Orders" />
                         </ListItem>
                     </Link>
-                    <Link onClick={e => handleLinkDisable(e, 'coupon')} style={{color: 'black', textDecoration: 'none'}} to="/admin/coupon">
-                        <ListItem disabled={linkDisableObject.coupon} button>
-                            <ListItemIcon>
-                                <InboxIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Coupons" />
-                        </ListItem>
-                    </Link>
-                    <Link onClick={e => handleLinkDisable(e, 'product')} style={{color: 'black', textDecoration: 'none'}} to="/admin/product">
+                    <Link onClick={e => handleLinkDisable(e, 'product')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/product">
                         <ListItem disabled={linkDisableObject.product} button>
                             <ListItemIcon>
                                 <InboxIcon />
@@ -112,7 +105,7 @@ export default function AdminLayout() {
                             <ListItemText primary="Products" />
                         </ListItem>
                     </Link>
-                    <Link onClick={e => handleLinkDisable(e, 'category')} style={{color: 'black', textDecoration: 'none'}} to="/admin/category">
+                    <Link onClick={e => handleLinkDisable(e, 'category')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/category">
                         <ListItem disabled={linkDisableObject.category} button>
                             <ListItemIcon>
                                 <InboxIcon />
@@ -123,7 +116,26 @@ export default function AdminLayout() {
                 </List>
                 <Divider />
                 <List>
-                    <Link onClick={e => handleLinkDisable(e, 'state')} style={{color: 'black', textDecoration: 'none'}} to="/admin/state">
+                    <Link onClick={e => handleLinkDisable(e, 'coupon')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/coupon">
+                        <ListItem disabled={linkDisableObject.coupon} button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Coupons" />
+                        </ListItem>
+                    </Link>
+                    <Link onClick={e => handleLinkDisable(e, 'promotionCode')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/promotion-code">
+                        <ListItem disabled={linkDisableObject.promotionCode} button>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Promotion Codes" />
+                        </ListItem>
+                    </Link>
+                </List>
+                <Divider />
+                <List>
+                    <Link onClick={e => handleLinkDisable(e, 'state')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/state">
                         <ListItem disabled={linkDisableObject.state} button>
                             <ListItemIcon>
                                 <InboxIcon />
@@ -131,7 +143,7 @@ export default function AdminLayout() {
                             <ListItemText primary="States" />
                         </ListItem>
                     </Link>
-                    <Link onClick={e => handleLinkDisable(e, 'city')} style={{color: 'black', textDecoration: 'none'}} to="/admin/city">
+                    <Link onClick={e => handleLinkDisable(e, 'city')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/city">
                         <ListItem disabled={linkDisableObject.city} button>
                             <ListItemIcon>
                                 <InboxIcon />
@@ -142,7 +154,7 @@ export default function AdminLayout() {
                 </List>
                 <Divider />
                 <List>
-                    <Link onClick={e => handleLinkDisable(e, 'description-type')} style={{color: 'black', textDecoration: 'none'}} to="/admin/description-type">
+                    <Link onClick={e => handleLinkDisable(e, 'description-type')} style={{ color: 'black', textDecoration: 'none' }} to="/admin/description-type">
                         <ListItem disabled={linkDisableObject['description-type']} button>
                             <ListItemIcon>
                                 <InboxIcon />

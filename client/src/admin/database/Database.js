@@ -6,6 +6,7 @@ import { CategoryForm, CategoryTable } from './category';
 import { ProductForm, ProductTable } from './product';
 import { DescriptionTypeForm, DescriptionTypeTable } from './descriptionType'
 import { CouponForm, CouponTable } from './coupon';
+import { PromotionCodeForm, PromotionCodeTable } from './promotionCode';
 import { CreateCategoryData } from './category/categoryTable/CreateCategoryData';
 import { CreateProductData } from './product/productTable/CreateProductData';
 import { CreateUserData } from './user/userTable/CreateUserData';
@@ -13,6 +14,7 @@ import { CreateDescriptionTypeData } from './descriptionType/descriptionTypeTabl
 import { CreateStateData } from './state/stateTable/CreateStateData';
 import { CreateCityData } from './city/cityTable/CreateCityData';
 import { CreateCouponData } from './coupon/couponTable/CreateCouponData';
+import { CreatePromotionCodeData } from './promotionCode/promotionCodeTable/CreatePromotionCodeData';
 import {
     Switch,
     Route,
@@ -55,6 +57,9 @@ function Database(props) {
     } else if (urlPath === '/admin/coupon' || urlPath === '/admin/coupon/add' || urlPath.includes('/admin/coupon/edit')) {
         fetchUrl = 'coupon/getAllCoupons';
         chosenFunction = CreateCouponData;
+    } else if (urlPath === '/admin/promtion-code' || urlPath === '/admin/promtion-code/add' || urlPath.includes('/admin/promtion-code/edit')) {
+        fetchUrl = 'promotionCode/getAllPromotionCodes';
+        chosenFunction = CreatePromotionCodeData;
     }
 
     history.listen((location, action) => {
@@ -89,6 +94,7 @@ function Database(props) {
                 'city': false,
                 'description-type': false,
                 'coupon': false,
+                'promotionCode': false,
             });
         } else if (urlPath === '/admin/category') {
             setLinkDisableObject({
@@ -101,6 +107,7 @@ function Database(props) {
                 'city': false,
                 'description-type': false,
                 'coupon': false,
+                'promotionCode': false,
             });
         } else if (urlPath === '/admin/product') {
             setLinkDisableObject({
@@ -113,6 +120,7 @@ function Database(props) {
                 'city': false,
                 'description-type': false,
                 'coupon': false,
+                'promotionCode': false,
             });
         } else if (urlPath === '/admin/description-type') {
             setLinkDisableObject({
@@ -125,6 +133,7 @@ function Database(props) {
                 'city': false,
                 'description-type': true,
                 'coupon': false,
+                'promotionCode': false,
             });
         } else if (urlPath === '/admin/state') {
             setLinkDisableObject({
@@ -137,6 +146,7 @@ function Database(props) {
                 'city': false,
                 'description-type': false,
                 'coupon': false,
+                'promotionCode': false,
             });
         } else if (urlPath === '/admin/city') {
             setLinkDisableObject({
@@ -149,6 +159,7 @@ function Database(props) {
                 'city': true,
                 'description-type': false,
                 'coupon': false,
+                'promotionCode': false,
             });
         } else if (urlPath === '/admin/coupon') {
             setLinkDisableObject({
@@ -161,6 +172,20 @@ function Database(props) {
                 'city': false,
                 'description-type': false,
                 'coupon': true,
+                'promotionCode': false,
+            });
+        } else if (urlPath === '/admin/promotion-code') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': false,
+                'city': false,
+                'description-type': false,
+                'coupon': false,
+                'promotionCode': true,
             });
         } else {
             setLinkDisableObject({
@@ -226,6 +251,9 @@ function Database(props) {
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
+            <Route exact path="/admin/promotion-code/add">
+                <PromotionCodeForm rows={rows} setRows={setRows} />
+            </Route>
             <Route exact path="/admin/coupon/add">
                 <CouponForm rows={rows} setRows={setRows} />
             </Route>
@@ -254,6 +282,15 @@ function Database(props) {
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
+                />
+            </Route>
+            <Route path="/admin/promotion-code">
+                <PromotionCodeTable
+                    rows={rows}
+                    filteredRows={filteredRows}
+                    setFilteredRows={setFilteredRows}
+                    tableOrder="code"
+                    searchField="code"
                 />
             </Route>
             <Route exact path="/admin/coupon">

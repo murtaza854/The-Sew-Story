@@ -15,7 +15,7 @@ import { getComparator } from '../../comparator';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function CouponTable(props) {
+export default function PromotionCodeTable(props) {
 
     const {
         rows,
@@ -152,21 +152,14 @@ export default function CouponTable(props) {
                                                 scope="row"
                                                 padding="none"
                                             >
-                                                {row.name}
+                                                {row.code}
                                             </TableCell>
                                             <TableCell
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
                                             >
-                                                {row.type}
-                                            </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                            >
-                                                {row.value}
+                                                {row.coupon}
                                             </TableCell>
                                             <TableCell
                                                 component="th"
@@ -174,7 +167,7 @@ export default function CouponTable(props) {
                                                 scope="row"
                                             >
                                                 {
-                                                    row.usageLimit ? row.usageLimit : '-'
+                                                    row.user ? row.user : '-'
                                                 }
                                             </TableCell>
                                             <TableCell
@@ -183,15 +176,40 @@ export default function CouponTable(props) {
                                                 scope="row"
                                             >
                                                 {
-                                                    row.redeemBy ? row.redeemBy : '-'
+                                                    row.expiresAt ? row.expiresAt : '-'
+                                                }
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                            >
+                                                {
+                                                    row.maxRedemptions ? row.maxRedemptions : '-'
                                                 }
                                             </TableCell>
                                             <TableCell>
-                                                {row.promotionCodes ? (
+                                                {row.firstTimeTransaction ? (
                                                     <CheckIcon />
                                                 ) : (
                                                     <CloseIcon />
                                                 )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                            >
+                                                {
+                                                    row.minAmount ? row.minAmount : '-'
+                                                }
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                            >
+                                                {row.timesRedeemed}
                                             </TableCell>
                                         </TableRow>
                                     );

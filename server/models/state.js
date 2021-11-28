@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   state.init({
     name: DataTypes.STRING,
     slug: DataTypes.STRING,
+    abbreviation: DataTypes.STRING,
     active: DataTypes.BOOLEAN
   }, {
     sequelize,

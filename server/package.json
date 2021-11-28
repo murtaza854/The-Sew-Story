@@ -5,7 +5,8 @@
   "main": "sewstory.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon sewstory.js"
+    "start": "nodemon sewstory.js",
+    "database": "node database.js"
   },
   "author": "",
   "license": "ISC",

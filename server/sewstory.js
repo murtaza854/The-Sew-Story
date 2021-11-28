@@ -60,6 +60,7 @@ const categoryRoutes = require('./routes/category');
 const typeRoutes = require('./routes/type');
 const paymentRoutes = require('./routes/payment');
 const couponRoutes = require('./routes/coupon');
+const promotionCodeRoutes = require('./routes/promotionCode');
 
 
 app.use('/api/auth', authRoutes);
@@ -74,6 +75,7 @@ app.use('/api/category', categoryRoutes);
 app.use('/api/type', typeRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/coupon', couponRoutes);
+app.use('/api/promotionCode', promotionCodeRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     try {

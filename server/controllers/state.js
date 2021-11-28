@@ -5,6 +5,7 @@ module.exports = {
         return States.create({
             name: params.name,
             slug: params.slug,
+            abbreviation: params.abbreviation,
             active: params.active,
         })
             .then(function (data) {
@@ -25,7 +26,7 @@ module.exports = {
     },
     getStatebyId(id) {
         return States.findOne({
-            attributes: ['name'],
+            attributes: ['name', 'abbreviation'],
             where: {
                 id: id,
             },
@@ -47,7 +48,7 @@ module.exports = {
     },
     findBySlug(params) {
         return States.findOne({
-            attributes: ['id', 'name', 'slug', 'active'],
+            attributes: ['id', 'name', 'abbreviation', 'active'],
             where: {
                 slug: params.slug,
                 active: true
@@ -60,7 +61,7 @@ module.exports = {
     },
     getSearch(params) {
         return States.findAll({
-            attributes: ['name', 'slug', 'active'],
+            attributes: ['name', 'slug', 'abbreviation', 'active'],
             where: {
                 name: {
                     [params.sequelize.Op.like]: '%' + params.search + '%'
@@ -75,7 +76,7 @@ module.exports = {
     },
     getAll() {
         return States.findAll({
-            attributes: ['id', 'name', 'slug', 'active']
+            attributes: ['id', 'name', 'slug', 'abbreviation', 'active'],
         })
             .then(function (data) {
                 return data;
@@ -83,7 +84,7 @@ module.exports = {
     },
     update(params) {
         const updateValues = {},
-            updateKeys = ['name', 'slug', 'active'];
+            updateKeys = ['name', 'slug', 'abbreviation', 'active'];
         updateKeys.forEach(function (key) {
             if (key in params) {
                 updateValues[key] = params[key];
