@@ -19,6 +19,7 @@ function Invoice(props) {
     // } = deliveryDetails;
 
     const [amount_subtotal, setAmount_subtotal] = useState(0);
+    const [value, setValue] = useState(null);
     const [amount_total, setAmount_total] = useState(0);
     const [payment_url, setPayment_url] = useState('');
     const [disable, setDisable] = useState(false);
@@ -37,7 +38,30 @@ function Invoice(props) {
                 body: JSON.stringify({ items: cartProducts, deliveryDetails })
             });
             const data = await response.json();
-            console.log(data);
+            const coupons = data.coupons;
+            let coupon = null;
+            for (let i = 0; i < coupons.length; i++) {
+                const couponFromArray = coupons[i];
+                if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                    coupon = couponFromArray;
+                    break;
+                }
+            }
+            if (!coupon && coupons.length > 0 && !coupons[0].redeemBy) coupon = coupons[0];
+            let value = null;
+            if (coupon) {
+                let flag = true;
+                localStorage.setItem('coupon', JSON.stringify(coupon.id));
+                if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
+                if (flag) {
+                    if (coupon.type === 'Fixed Amount Discount') {
+                        value = `$${coupon.amountOff}`;
+                    } else {
+                        value = `${coupon.percentOff}%`;
+                    }
+                }
+            }
+            setValue(value);
             setAmount_total(data.session.amount_total / 100);
             setAmount_subtotal(data.session.amount_subtotal / 100);
             setPayment_url(data.session.url);
@@ -62,6 +86,13 @@ function Invoice(props) {
                     <div className="text-center cart-total">
                         <b className="bold-500">Sub Total:</b> <b className="bold-300">$ {amount_subtotal.toFixed(2)}</b>
                     </div>
+                    {
+                        value && (
+                            <div className="text-center cart-total">
+                                <b className="bold-500">Discount:</b> <b className="bold-300">{value} off</b>
+                            </div>
+                        )
+                    }
                     <div className="text-center cart-total">
                         <b className="bold-500">Total:</b> <b className="bold-300">$ {amount_total.toFixed(2)}</b>
                     </div>

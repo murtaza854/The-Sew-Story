@@ -54,12 +54,40 @@ function Products(props) {
                     },
                 });
                 const json = await response.json();
+                const coupons = json.coupons;
+                let coupon = null;
+                for (let i = 0; i < coupons.length; i++) {
+                    const couponFromArray = coupons[i];
+                    if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                        coupon = couponFromArray;
+                        break;
+                    }
+                }
+                if (!coupon && coupons.length > 0) coupon = coupons[0];
                 const data = [].map.call(json.data, (product) => {
+                    let discountedPrice = null;
+                    let value = null;
+                    if (coupon) {
+                        let flag = true;
+                        if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
+                        if (flag) {
+                            if (coupon.type === 'Fixed Amount Discount') {
+                                discountedPrice = (product.prices[0].amount - coupon.amountOff);
+                                value = `$${coupon.amountOff}`;
+                            } else {
+                                discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
+                                value = `${coupon.percentOff}%`;
+                            }
+                        }
+                    }
+                    console.log(discountedPrice);
                     return {
                         name: product.name,
                         slug: product.slug,
                         shortDescription: product.shortDescription,
                         price: `$ ${product.prices[0].amount}`,
+                        discountedPrice: discountedPrice ? `$ ${discountedPrice}` : null,
+                        value: value,
                         quantity: product.quantity,
                         image: product.images[0].path,
                         category: {

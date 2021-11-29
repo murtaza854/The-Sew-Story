@@ -79,7 +79,20 @@ function ProductCard(props) {
                                     className=""
                                 />
                                 <p className="product-description"><b className="bold-500">Product Code:</b> <b className="bold-300">{product.productCode}</b></p>
-                                <p className="product-price">$ {product.price}</p>
+                                <p className="product-price">
+                                    {
+                                        product.discountedPrice ? (
+                                            <>
+                                                <span className="product-box__price-cut">{props.product.price}</span> -
+                                                <span className="product-box__discount"> {props.product.discountedPrice}</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {props.product.price}
+                                            </>
+                                        )
+                                    }
+                                </p>
                                 <Row className="justify-content-center-992">
                                     <Col xs={6}>
                                         {

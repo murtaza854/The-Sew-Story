@@ -27,12 +27,16 @@ module.exports = (sequelize, DataTypes) => {
         as: 'orderItems',
         foreignKey: 'order_id',
       });
-      order.belongsTo(models.coupon, {
-        foreignKey: 'coupon_id',
-        as: 'coupon',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+      order.hasMany(models.orderCoupon, {
+        as: 'orderCoupons',
+        foreignKey: 'order_id',
       });
+      // order.belongsTo(models.coupon, {
+      //   foreignKey: 'coupon_id',
+      //   as: 'coupon',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE'
+      // });
     }
   };
   order.init({
@@ -46,10 +50,11 @@ module.exports = (sequelize, DataTypes) => {
     addressLine2: DataTypes.STRING,
     city_id: DataTypes.INTEGER,
     zipCode: DataTypes.STRING,
+    amountSubtotal: DataTypes.FLOAT,
     orderTotal: DataTypes.FLOAT,
     user_id: DataTypes.INTEGER,
     stripe_sessionID: DataTypes.STRING,
-    coupon_id: DataTypes.STRING,
+    // coupon_id: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'order',

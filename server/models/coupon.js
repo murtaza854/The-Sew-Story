@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      coupon.hasMany(models.order, {
-        foreignKey: 'coupon_id',
-        as: 'orders',
-      });
+      // coupon.hasMany(models.order, {
+      //   foreignKey: 'coupon_id',
+      //   as: 'orders',
+      // });
       coupon.hasMany(models.promotionCode, {
         foreignKey: 'coupon_id',
         as: 'promotionCodes',
@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
       coupon.hasMany(models.productCoupon, {
         foreignKey: 'coupon_id',
         as: 'productCoupons',
+      });
+      coupon.hasMany(models.orderCoupon, {
+        foreignKey: 'coupon_id',
+        as: 'orderCoupons',
       });
     }
   };

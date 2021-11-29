@@ -12,6 +12,11 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: 'Pending'
       },
+      amountSubtotal: {
+        allowNull: false,
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
       orderTotal: {
         allowNull: false,
         type: Sequelize.FLOAT,

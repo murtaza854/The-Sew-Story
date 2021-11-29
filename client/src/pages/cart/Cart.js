@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Col, Form, Button } from 'react-bootstrap';
+import { Col, Form, Button, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 // import { CheckoutForm } from '..';
 import api from '../../api';
@@ -7,6 +7,7 @@ import { Heading } from '../../components';
 import CartCountContext from '../../contexts/cartCountContext';
 import UserContext from '../../contexts/userContext';
 import { Delivery, ProductList } from './components';
+import './Cart.scss';
 
 function Cart(props) {
     let history = useHistory();
@@ -14,6 +15,8 @@ function Cart(props) {
     const userContext = useContext(UserContext);
     const [cartProducts, setCartProducts] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
+    const [discountedPrice, setDiscountedPrice] = useState(null);
+    const [value, setValue] = useState(null);
 
     const [disable, setDisable] = useState(true);
 
@@ -74,7 +77,16 @@ function Cart(props) {
                     body: JSON.stringify({ cartProducts }),
                 });
                 const json = await response.json();
-                const { data } = json;
+                const { data, coupons } = json;
+                let coupon = null;
+                for (let i = 0; i < coupons.length; i++) {
+                    const couponFromArray = coupons[i];
+                    if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                        coupon = couponFromArray;
+                        break;
+                    }
+                }
+                if (!coupon && coupons.length > 0 && !coupons[0].redeemBy) coupon = coupons[0];
                 // console.log('cartProducts', [].map.call(data, (product) => {
                 //     const prodQuantity = (cartProducts.find(cartProduct => cartProduct.slug === product.slug)).quantity;
                 //     return {
@@ -140,6 +152,23 @@ function Cart(props) {
                         };
                     }
                 }));
+                let discountedPrice = null;
+                let value = null;
+                if (coupon) {
+                    let flag = true;
+                    if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
+                    if (flag) {
+                        if (coupon.type === 'Fixed Amount Discount') {
+                            discountedPrice = (totalPrice - coupon.amountOff);
+                            value = `$${coupon.amountOff}`;
+                        } else {
+                            discountedPrice = (totalPrice - (totalPrice * (coupon.percentOff / 100))).toFixed(2);
+                            value = `${coupon.percentOff}%`;
+                        }
+                    }
+                }
+                setDiscountedPrice(discountedPrice);
+                setValue(value);
                 setCartTotal(totalPrice);
                 // setCartProducts(data);
             }
@@ -149,6 +178,16 @@ function Cart(props) {
         }
         // setCartProducts(cartProducts);
     }, []);
+
+    useEffect(() => {
+        if (value) {
+            if (value.includes('%')) {
+                setDiscountedPrice(cartTotal - (cartTotal * (value.replace('%', '') / 100)));
+            } else if (value.includes('$')) {
+                setDiscountedPrice(cartTotal - value.replace('$', ''));
+            }
+        }
+    }, [cartTotal, value]);
 
     useEffect(() => {
         let flag = true;
@@ -188,7 +227,7 @@ function Cart(props) {
     }
 
     return (
-        <div>
+        <div className="shopping-cart">
             <Heading
                 text="Shopping Cart"
                 className="text-center margin-global-top-3"
@@ -200,12 +239,61 @@ function Cart(props) {
                     cartTotal={cartTotal}
                     setCartTotal={setCartTotal}
                 />
+                <Form className="form-style cart-form margin-global-top-1" style={{ overflowX: 'hidden' }}>
+                    <input
+                        type="password"
+                        autoComplete="on"
+                        value=""
+                        style={{ display: 'none' }}
+                        readOnly={true}
+                    />
+                    <Row className="justify-content-center">
+                        <Col md={3}>
+                            <Form.Group className="form-group-rght" controlId="promotionCode">
+                                <Form.Label>Promotion Code</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                // readOnly={firstName.readOnly}
+                                // onChange={changeFirstName}
+                                // onBlur={changeFirstName}
+                                // value={firstName.name}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <div className="fit-content">
+                            <Form.Group className="form-group-rght">
+                                <Form.Label></Form.Label>
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                // className="btn-block"
+                                // disabled={disable}
+                                // onClick={onSubmit}
+                                >
+                                    Apply
+                                </Button>
+                            </Form.Group>
+                        </div>
+                    </Row>
+                </Form>
                 <Heading
                     text="Total Amount"
                     className="text-center margin-global-top-1"
                 />
                 <div className="text-center cart-total">
-                    <h3>$ {cartTotal.toFixed(2)}</h3>
+                    <h3>
+                        {
+                            discountedPrice ? (
+                                <>
+                                    <span className="text-cut">$ {cartTotal.toFixed(2)}</span>
+                                    <br />
+                                    <span className="text-red">{value} off - $ {discountedPrice.toFixed(2)}</span>
+                                </>
+                            ) : (
+                                <>$ {cartTotal.toFixed(2)}</>
+                            )
+                        }
+                    </h3>
                 </div>
             </div>
             {

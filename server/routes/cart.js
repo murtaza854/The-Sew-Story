@@ -4,6 +4,7 @@ const orderController = require('../controllers').order;
 const orderItemController = require('../controllers').orderItem;
 const cityController = require('../controllers').city;
 const stateController = require('../controllers').state;
+const couponController = require('../controllers').coupon;
 var crypto = require("crypto");
 const dotenv = require('dotenv');
 dotenv.config();
@@ -20,7 +21,8 @@ router.post("/cartProducts", async (req, res) => {
     const slugs = cartProducts.map(product => product.slug);
     try {
         const products = await productController.getProducts(slugs);
-        res.json({ data: products });
+        const coupons = await couponController.getAllClient();
+        res.json({ data: products, coupons });
     } catch (error) {
         res.json({ data: [], error: error });
     }

@@ -5,6 +5,7 @@ const orderItemController = require('../controllers').orderItem;
 const cityController = require('../controllers').city;
 const stateController = require('../controllers').state;
 const userController = require('../controllers').user;
+const couponController = require('../controllers').coupon;
 const firebaseFile = require('../firebase');
 const shipstationAPI = require('node-shipstation');
 const firebaseAdmin = firebaseFile.admin;
@@ -104,7 +105,17 @@ router.post('/create', async (req, res) => {
                 phone: contactNumber,
             },
         });
-        const session = await stripe.checkout.sessions.create({
+        const coupons = await couponController.getAll();
+        let coupon = null;
+        for (let i = 0; i < coupons.length; i++) {
+            const couponFromArray = coupons[i].dataValues;
+            if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                coupon = couponFromArray;
+                break;
+            }
+        }
+        if (!coupon && coupons.length > 0 && !coupons[0].dataValues.redeemBy) coupon = coupons[0].dataValues;
+        const params = {
             // currency: 'usd',
             payment_method_types: ['card'],
             customer: customer.id,
@@ -113,8 +124,15 @@ router.post('/create', async (req, res) => {
             success_url: `${API_URL1}/order/status?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${API_URL1}/order/status`,
             // automatic_tax: { enabled: true },
-        });
-        res.json({ session: session });
+        };
+        if (coupon) {
+            params.discounts = [];
+            params.discounts.push({
+                coupon: coupon.id,
+            });
+        }
+        const session = await stripe.checkout.sessions.create(params);
+        res.json({ session: session, coupons });
     } else {
         const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
         const userData = await userController.findByUid({
@@ -145,30 +163,48 @@ router.post('/create', async (req, res) => {
                 phone: contactNumber,
             },
         });
-        const session = await stripe.checkout.sessions.create({
+        const coupons = await couponController.getAll();
+        let coupon = null;
+        for (let i = 0; i < coupons.length; i++) {
+            const couponFromArray = coupons[i].dataValues;
+            if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                coupon = couponFromArray;
+                break;
+            }
+        }
+        if (!coupon && coupons.length > 0 && !coupons[0].dataValues.redeemBy) coupon = coupons[0].dataValues;
+        const params = {
             // currency: 'usd',
             payment_method_types: ['card'],
-            customer: stripe_customer_id,
+            customer: customer.id,
             line_items: line_items,
             mode: 'payment',
             success_url: `${API_URL1}/order/status?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${API_URL1}/order/status`,
             // automatic_tax: { enabled: true },
-        });
-        res.json({ session: session });
+        };
+        if (coupon) {
+            params.discounts = [];
+            params.discounts.push({
+                coupon: coupon.id,
+            });
+        }
+        const session = await stripe.checkout.sessions.create(params);
+        res.json({ session: session, coupons });
     }
 });
 
 router.post('/create-order', async (req, res) => {
     const {
         sessionID,
-        cartProducts
+        cartProducts,
+        coupon
     } = req.body;
     if (cartProducts) {
         const session = await stripe.checkout.sessions.retrieve(sessionID);
-        console.log(session);
         const {
             customer,
+            amount_subtotal,
             amount_total
         } = session;
         const stripe_customer = await stripe.customers.retrieve(customer);
@@ -181,7 +217,6 @@ router.post('/create-order', async (req, res) => {
         const states = await stateController.getAllStatesByName(address.state);
         const stateIDs = states.map(state => state.id);
         const city = await cityController.getCityByNameAndStateIds(address.city, stateIDs);
-        // console.log(session);
         const orderNumber = await generateOrderNumber();
         const userID = await userController.getUserIDByStripeID(stripe_customer.id);
         await orderController.create({
@@ -196,11 +231,12 @@ router.post('/create-order', async (req, res) => {
             addressLine2: address.line2,
             city_id: city.id,
             zipCode: address.postal_code,
+            amountSubtotal: amount_subtotal,
             orderTotal: amount_total,
-            user_id: userID.id || null,
+            user_id: userID ? userID.id : null,
             stripe_sessionID: sessionID,
+            coupon_id: coupon ? coupon : null,
         });
-        // const order_id = order.id;
         const slugs = cartProducts.map(product => product.slug);
         const products = await productController.getProductsCartID(slugs);
         products.forEach(async product => {

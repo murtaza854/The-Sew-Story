@@ -20,7 +20,13 @@ function ProductBox(props) {
                                     props.product.quantity === 0 ? (
                                         <div className="ribbon"><span>Out of Stock</span></div>
                                     ) : (
-                                        null
+                                        <>
+                                            {
+                                                props.product.discountedPrice ? (
+                                                    <div className="ribbon"><span>Sale - {props.product.value} off</span></div>
+                                                ) : null
+                                            }
+                                        </>
                                     )
                                 }
                                 <div className="product-box__category">
@@ -31,7 +37,19 @@ function ProductBox(props) {
                         </Link>
                         <div className="product-box__description text-center">
                             <h4>{props.product.shortDescription}</h4>
-                            <p>{props.product.price}</p>
+                            {
+                                props.product.discountedPrice ? (
+                                    <>
+                                    <p className="margin-bottom-0">
+                                        <span className="product-box__price-cut">{props.product.price}</span> - 
+                                        <span className="product-box__discount"> {props.product.discountedPrice}</span>
+                                    </p>
+                                    {/* <p className="product-box__discount">{props.product.discountedPrice}</p> */}
+                                    </>
+                                ) : (
+                                    <p  className="margin-bottom-0">{props.product.price}</p>
+                                )
+                            }
                         </div>
                     </>
                 ) : (

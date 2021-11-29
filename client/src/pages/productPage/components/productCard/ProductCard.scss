@@ -79,6 +79,12 @@
                 font-size: $font-size-xl;
             }
         }
+        .product-box__price-cut {
+            text-decoration: line-through;
+        }
+        .product-box__discount {
+            color: rgb(160, 0, 0);
+        }
     }
     // h1 {
     //     font-family: $font-retro;

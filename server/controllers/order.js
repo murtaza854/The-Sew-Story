@@ -6,6 +6,7 @@ module.exports = {
             id: params.orderNumber,
             orderStatus: params.orderStatus,
             orderDate: params.orderDate,
+            amountSubtotal: params.amountSubtotal,
             orderTotal: params.orderTotal,
             user_id: params.user_id,
             firstName: params.firstName,
@@ -17,6 +18,7 @@ module.exports = {
             city_id: params.city_id,
             zipCode: params.zipCode,
             stripe_sessionID: params.stripe_sessionID,
+            coupon_id: params.coupon_id,
         })
             .then(function (data) {
                 return data;

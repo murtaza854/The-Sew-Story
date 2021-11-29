@@ -5,6 +5,7 @@ const priceController = require('../controllers').price;
 const imageController = require('../controllers').image;
 const detailController = require('../controllers').detail;
 const typeController = require('../controllers').type;
+const couponController = require('../controllers').coupon;
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
@@ -50,7 +51,8 @@ router.get('/getAll-client', async (req, res) => {
             const products = await productController.getAllByCategoryId({
                 category_id: category.id
             });
-            res.json({ data: products });
+            const coupons = await couponController.getAllClient();
+            res.json({ data: products, coupons });
         }
     } catch (error) {
         res.json({ data: [], error: error });
@@ -73,7 +75,8 @@ router.get('/getProduct-client', async (req, res) => {
             slug: slug
         });
         const types = await typeController.getAllClient();
-        res.json({ data: product, types: types });
+        const coupons = await couponController.getAllClient();
+        res.json({ data: product, types: types, coupons });
     } catch (error) {
         res.json({ data: [], error: error });
     }

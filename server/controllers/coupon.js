@@ -1,4 +1,5 @@
 const Coupon = require('../models').coupon;
+const promotionCode = require('../models').promotionCode;
 
 module.exports = {
     create(params) {
@@ -20,6 +21,17 @@ module.exports = {
     getAll() {
         return Coupon.findAll({
             attributes: ['id', 'name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    getAllClient() {
+        return Coupon.findAll({
+            attributes: ['name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
+            where: {
+                hasPromotionCodes: true,
+            },
         })
             .then(function (data) {
                 return data;

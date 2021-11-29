@@ -13,6 +13,12 @@
             font-family: $font-urbanist;
             font-weight: $font-weight-regular;
         }
+        .product-box__price-cut {
+            text-decoration: line-through;
+        }
+        .product-box__discount {
+            color: rgb(160, 0, 0);
+        }
     }
     .product-box-link {
         position: relative;

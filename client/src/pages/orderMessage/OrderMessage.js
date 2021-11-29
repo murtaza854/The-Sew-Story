@@ -24,9 +24,11 @@ function OrderMessage(props) {
             const params = new URLSearchParams(location.search);
             const sessionID = params.get('session_id');
             const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
+            const coupon = JSON.parse(localStorage.getItem('coupon'));
             const order = {
                 sessionID: sessionID,
-                cartProducts: cartProducts
+                cartProducts: cartProducts,
+                coupon
             };
             const response = await fetch(`${api}/payment/create-order`, {
                 method: 'POST',
