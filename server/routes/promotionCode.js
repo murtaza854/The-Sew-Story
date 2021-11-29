@@ -10,9 +10,32 @@ const {
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
 router.get('/getAllPromotionCodes', async (req, res) => {
-    res.status(200).json({
-        data: []
-    });
+    try {
+        const promotionCodes = await promotionCodeController.getAllInclude();
+        res.status(200).json({
+            data: promotionCodes,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error
+        });
+    }
+});
+
+router.post('/check', async (req, res) => {
+    const {
+        promotionCode
+    } = req.body;
+    const promotionCodeDb = await promotionCodeController.getByPromotionCode(promotionCode);
+    if (promotionCodeDb) {
+        res.status(200).json({
+            data: promotionCodeDb,
+        });
+    } else {
+        res.status(404).json({
+            message: 'Promotion code not found'
+        });
+    }
 });
 
 router.post('/add', async (req, res) => {

@@ -41,7 +41,31 @@ router.post('/login', async (req, res) => {
         await signOut(auth);
         res.json({ data: { displayName, email, emailVerified, admin } });
     } catch (error) {
-        console.log(error);
+        res.json({ data: null, error: error });
+    }
+});
+
+router.post('/login-admin', async (req, res) => {
+    try {
+        const response = await signInWithEmailAndPassword(auth, req.body.email.name, req.body.password.name);
+        const user = response.user;
+        if (!user.emailVerified) {
+            await sendEmailVerification(user);
+            throw "Email not verified";
+        }
+        const displayName = user.name;
+        const email = user.email;
+        const emailVerified = user.emailVerified || user.email_verified;
+        const admin = user.admin;
+        const idToken = await user.getIdToken();
+        const expiresIn = 60 * 60 * 24 * 5 * 1000;
+        const sessionCookie = await firebaseAdmin.auth().createSessionCookie(idToken, { expiresIn });
+        const options = { maxAge: expiresIn, httpOnly: true, secure: true /* to test in localhost */ };
+        res.cookie("sessionAdmin", sessionCookie, options);
+        // console.log(res.cookie("session"));
+        await signOut(auth);
+        res.json({ data: { displayName, email, emailVerified, admin } });
+    } catch (error) {
         res.json({ data: null, error: error });
     }
 });

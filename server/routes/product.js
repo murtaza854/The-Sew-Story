@@ -93,6 +93,7 @@ router.post('/getById', async (req, res) => {
 });
 
 router.post('/add', upload.array('images'), async (req, res) => {
+    let id = null;
     try {
         const data = JSON.parse(req.body.data);
         const images = req.files;
@@ -122,6 +123,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
             category_id: data.category.id,
             quantity: data.quantity
         });
+        id = obj.dataValues.id
         // console.log('obj', obj);
         data.details.forEach(async (detail) => {
             await detailController.create({
@@ -174,6 +176,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
         res.json({ data: true });
     } catch (error) {
         console.log(error);
+        await productController.deleteById(id);
         res.json({ data: null, error: error });
     }
 });

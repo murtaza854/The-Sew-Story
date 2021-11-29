@@ -61,6 +61,7 @@ function Invoice(props) {
                     }
                 }
             }
+            console.log(data.session);
             setValue(value);
             setAmount_total(data.session.amount_total / 100);
             setAmount_subtotal(data.session.amount_subtotal / 100);

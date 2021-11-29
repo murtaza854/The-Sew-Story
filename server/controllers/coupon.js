@@ -30,7 +30,7 @@ module.exports = {
         return Coupon.findAll({
             attributes: ['name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
             where: {
-                hasPromotionCodes: true,
+                hasPromotionCodes: false,
             },
         })
             .then(function (data) {

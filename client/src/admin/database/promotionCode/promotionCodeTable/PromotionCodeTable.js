@@ -209,7 +209,7 @@ export default function PromotionCodeTable(props) {
                                                 id={labelId}
                                                 scope="row"
                                             >
-                                                {row.timesRedeemed}
+                                                {row.timesRedeeemed}
                                             </TableCell>
                                         </TableRow>
                                     );

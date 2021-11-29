@@ -1,4 +1,6 @@
 const promotionCode = require('../models').promotionCode;
+const Coupon = require('../models').coupon;
+const User = require('../models').user;
 
 module.exports = {
     create(params) {
@@ -19,6 +21,49 @@ module.exports = {
     getAll() {
         return promotionCode.findAll({
             attributes: ['id', 'code', 'coupon_id', 'user_id', 'expiresAt', 'maxRedemptions', 'firstTimeTransaction', 'minAmount', 'timesRedeeemed', 'active'],
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    getAllInclude() {
+        return promotionCode.findAll({
+            attributes: ['id', 'code', 'coupon_id', 'user_id', 'expiresAt', 'maxRedemptions', 'firstTimeTransaction', 'minAmount', 'timesRedeeemed', 'active'],
+            include: [
+                {
+                    model: Coupon,
+                    attributes: ['id', 'name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
+                    as: 'coupon'
+                },
+                {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                    as: 'user'
+                }
+            ],
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    getByPromotionCode(code) {
+        return promotionCode.findOne({
+            where: {
+                code: code,
+            },
+            attributes: ['id', 'code', 'coupon_id', 'user_id', 'expiresAt', 'maxRedemptions', 'firstTimeTransaction', 'minAmount', 'timesRedeeemed', 'active'],
+            include: [
+                {
+                    model: Coupon,
+                    attributes: ['id', 'name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
+                    as: 'coupon'
+                },
+                {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                    as: 'user'
+                }
+            ],
         })
             .then(function (data) {
                 return data;

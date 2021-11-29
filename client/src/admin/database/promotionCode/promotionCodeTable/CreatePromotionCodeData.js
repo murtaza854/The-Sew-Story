@@ -10,6 +10,6 @@ export function CreatePromotionCodeData(obj) {
         maxRedemptions: obj.maxRedemptions,
         firstTimeTransaction: obj.firstTimeTransaction,
         minAmount: obj.minAmount ? `$ ${parseInt(obj.minAmount)}` : null,
-        timesRedeemed: obj.timesRedeemed,
+        timesRedeeemed: obj.timesRedeeemed,
     };
 }

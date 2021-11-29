@@ -6,6 +6,7 @@ const cityController = require('../controllers').city;
 const stateController = require('../controllers').state;
 const userController = require('../controllers').user;
 const couponController = require('../controllers').coupon;
+const orderCouponController = require('../controllers').orderCoupon;
 const firebaseFile = require('../firebase');
 const shipstationAPI = require('node-shipstation');
 const firebaseAdmin = firebaseFile.admin;
@@ -62,18 +63,20 @@ router.post('/create', async (req, res) => {
         // const stripe_product = await stripe.products.retrieve(
         //     product.id.toString()
         // );
-        const prices = await stripe.prices.list({
-            product: product.id.toString(),
-            active: true,
-        });
-        const price = prices.data[0];
-        if (price) {
-            line_items.push({
-                price: price.id,
-                quantity: items[i].quantity,
-                description: product.name,
-                // unit_amount: price.unit_amount,
+        if (product.quantity - items.find(item => item.slug === product.slug).quantity > 0) {
+            const prices = await stripe.prices.list({
+                product: product.id.toString(),
+                active: true,
             });
+            const price = prices.data[0];
+            if (price) {
+                line_items.push({
+                    price: price.id,
+                    quantity: items.find(item => item.slug === product.slug).quantity,
+                    description: product.name,
+                    // unit_amount: price.unit_amount,
+                });
+            }
         }
     }
     // console.log(await stripe.products.list({
@@ -237,6 +240,12 @@ router.post('/create-order', async (req, res) => {
             stripe_sessionID: sessionID,
             coupon_id: coupon ? coupon : null,
         });
+        if (coupon) {
+            await orderCouponController.create({
+                order_id: orderNumber,
+                coupon_id: coupon,
+            });
+        }
         const slugs = cartProducts.map(product => product.slug);
         const products = await productController.getProductsCartID(slugs);
         products.forEach(async product => {
@@ -246,6 +255,7 @@ router.post('/create-order', async (req, res) => {
                 price_per_unit: product['prices.amount'],
                 quantity: cartProducts.find(cartProduct => cartProduct.slug === product.slug).quantity,
             });
+            await productController.updateQuantity(product.id, product.quantity - cartProducts.find(cartProduct => cartProduct.slug === product.slug).quantity);
         });
         res.json({ success: true, orderNumber });
     } else {

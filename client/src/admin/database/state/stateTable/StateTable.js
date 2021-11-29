@@ -141,7 +141,6 @@ export default function StateTable(props) {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                padding="none"
                                                 hidden
                                             >
                                                 {row.id}
@@ -150,9 +149,15 @@ export default function StateTable(props) {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                padding="none"
                                             >
                                                 {row.name}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                            >
+                                                {row.code}
                                             </TableCell>
                                             <TableCell>
                                                 {row.active ? (

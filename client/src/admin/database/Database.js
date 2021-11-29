@@ -57,7 +57,7 @@ function Database(props) {
     } else if (urlPath === '/admin/coupon' || urlPath === '/admin/coupon/add' || urlPath.includes('/admin/coupon/edit')) {
         fetchUrl = 'coupon/getAllCoupons';
         chosenFunction = CreateCouponData;
-    } else if (urlPath === '/admin/promtion-code' || urlPath === '/admin/promtion-code/add' || urlPath.includes('/admin/promtion-code/edit')) {
+    } else if (urlPath === '/admin/promotion-code' || urlPath === '/admin/promotion-code/add') {
         fetchUrl = 'promotionCode/getAllPromotionCodes';
         chosenFunction = CreatePromotionCodeData;
     }
@@ -200,7 +200,7 @@ function Database(props) {
                 'coupon': false,
             });
         }
-
+        console.log('fetchUrl', fetchUrl);
         if (fetchUrl !== '') {
             fetch(`${api}/${fetchUrl}`, {
                 method: 'GET',

@@ -38,6 +38,9 @@ function Cart(props) {
     const [landmark, setLandmark] = useState({ text: '' });
     const [zipCode, setZipCode] = useState({ text: '', error: false, errorText: '' });
 
+    const [couponButton, setCouponButton] = useState({ text: 'Apply Coupon', disabled: false });
+    const [coupon, setCoupon] = useState({ value: '', error: false, errortext: '', readOnly: false });
+
     // const [radios, setRadios] = useState({ debitCreditCard: true });
 
     useEffect(() => {
@@ -162,14 +165,14 @@ function Cart(props) {
                             discountedPrice = (totalPrice - coupon.amountOff);
                             value = `$${coupon.amountOff}`;
                         } else {
-                            discountedPrice = (totalPrice - (totalPrice * (coupon.percentOff / 100))).toFixed(2);
+                            discountedPrice = (totalPrice - (totalPrice * (coupon.percentOff / 100)));
                             value = `${coupon.percentOff}%`;
                         }
                     }
                 }
-                setDiscountedPrice(discountedPrice);
+                setDiscountedPrice(discountedPrice?.toFixed(2));
                 setValue(value);
-                setCartTotal(totalPrice);
+                setCartTotal(totalPrice.toFixed(2));
                 // setCartProducts(data);
             }
             fetchedCartProducts();
@@ -181,10 +184,11 @@ function Cart(props) {
 
     useEffect(() => {
         if (value) {
+            const totalPrice = parseFloat(cartTotal);
             if (value.includes('%')) {
-                setDiscountedPrice(cartTotal - (cartTotal * (value.replace('%', '') / 100)));
+                setDiscountedPrice((totalPrice - (totalPrice * (value.replace('%', '') / 100))).toFixed(2));
             } else if (value.includes('$')) {
-                setDiscountedPrice(cartTotal - value.replace('$', ''));
+                setDiscountedPrice((totalPrice - value.replace('$', '')).toFixed(2));
             }
         }
     }, [cartTotal, value]);
@@ -226,6 +230,33 @@ function Cart(props) {
         })}`);
     }
 
+    const applyCoupon = async (e) => {
+        e.preventDefault();
+        setCouponButton({text: 'Loading', disabled: true});
+        const response = await fetch(`${api}/promotionCode/check`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                promotionCode: coupon.value
+            })
+        });
+        const data = await response.json();
+        if (data.data) {
+            console.log(data.data);
+            setCouponButton({text: 'Coupon Applied', disabled: true});
+            setTimeout(() => {
+                setCouponButton({text: 'Apply Coupon', disabled: false});
+            }, 3000);
+        } else {
+            setCouponButton({text: 'Invalid', disabled: true});
+            setTimeout(() => {
+                setCouponButton({text: 'Apply Coupon', disabled: false});
+            }, 3000);
+        }
+    }
+
     return (
         <div className="shopping-cart">
             <Heading
@@ -239,7 +270,7 @@ function Cart(props) {
                     cartTotal={cartTotal}
                     setCartTotal={setCartTotal}
                 />
-                <Form className="form-style cart-form margin-global-top-1" style={{ overflowX: 'hidden' }}>
+                <Form onSubmit={applyCoupon} className="form-style cart-form margin-global-top-1" style={{ overflowX: 'hidden' }}>
                     <input
                         type="password"
                         autoComplete="on"
@@ -253,10 +284,8 @@ function Cart(props) {
                                 <Form.Label>Promotion Code</Form.Label>
                                 <Form.Control
                                     type="text"
-                                // readOnly={firstName.readOnly}
-                                // onChange={changeFirstName}
-                                // onBlur={changeFirstName}
-                                // value={firstName.name}
+                                    value={coupon.value}
+                                    onChange={(e) => setCoupon({ value: e.target.value, error: false })}
                                 />
                             </Form.Group>
                         </Col>
@@ -266,11 +295,9 @@ function Cart(props) {
                                 <Button
                                     variant="primary"
                                     type="submit"
-                                // className="btn-block"
-                                // disabled={disable}
-                                // onClick={onSubmit}
+                                    disabled={couponButton.disabled}
                                 >
-                                    Apply
+                                    {couponButton.text}
                                 </Button>
                             </Form.Group>
                         </div>
@@ -285,12 +312,12 @@ function Cart(props) {
                         {
                             discountedPrice ? (
                                 <>
-                                    <span className="text-cut">$ {cartTotal.toFixed(2)}</span>
+                                    <span className="text-cut">$ {cartTotal}</span>
                                     <br />
-                                    <span className="text-red">{value} off - $ {discountedPrice.toFixed(2)}</span>
+                                    <span className="text-red">{value} off - $ {discountedPrice}</span>
                                 </>
                             ) : (
-                                <>$ {cartTotal.toFixed(2)}</>
+                                <>$ {cartTotal}</>
                             )
                         }
                     </h3>

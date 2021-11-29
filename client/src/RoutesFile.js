@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Switch,
     Route,
@@ -19,26 +19,50 @@ import {
 //   import './App.scss';
 import './form.scss';
 import './global.scss';
+import api from './api';
+import UserContext from './contexts/userContext';
+import CartCountContext from './contexts/cartCountContext';
 // import { Dashboard } from './dashboard';
 
 function RoutesFile(props) {
-    //   const [cart, setCart] = useState({ data: {}, count: 0 });
-    //   const [discountState, setDiscountState] = useState(null);
-    //   const [navOptions, setNavOptions] = useState([]);
-    //   const [mainNavOptions, setMainNavOptions] = useState([]);
+    const [userState, setUserState] = useState(null);
+    const [cartCount, setCartCount] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     let location = useLocation();
+
+    useEffect(() => {
+      (
+        async () => {
+          try {
+            const response = await fetch(`${api}/logged-in`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              withCredentials: true,
+            });
+            const content = await response.json();
+            const user = content.data;
+            const { displayName, email, emailVerified, admin } = user;
+            setUserState({ displayName, email, emailVerified, admin });
+            setLoading(false);
+          } catch (error) {
+            setUserState(null);
+            setLoading(false);
+          }
+        })();
+    }, []);
+  
+    if (loading) return <div></div>
 
     let positionStyle = 'relative';
     if (location.pathname === '/') positionStyle = 'absolute';
 
     return (
-        // <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
-        //   <DiscountContext.Provider value={discountState}>
-        //     <SmallBanner />
-        //     <div className="margin-global-top-1" />
-        //     <SearchNavbar options={navOptions} />
-        // {/* <div className="margin-global-top-1" /> */}
+        <UserContext.Provider value={{ userState: userState, setUserState: setUserState }}>
+          <CartCountContext.Provider value={{ cartCount: cartCount, setCartCount: setCartCount }}>
         <div>
             {/* <MainNavbar /> */}
             <TransitionGroup>
@@ -108,6 +132,8 @@ function RoutesFile(props) {
                 </CSSTransition>
             </TransitionGroup>
         </div>
+      </CartCountContext.Provider>
+    </UserContext.Provider>
         //   {/* </DiscountContext.Provider>
         // </CartContext.Provider> */}
     );

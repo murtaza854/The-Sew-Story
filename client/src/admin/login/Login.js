@@ -46,7 +46,7 @@ function Login(props) {
         e.preventDefault();
         // setDisable(true);
         try {
-            const response = await fetch(`${api}/user/login`, {
+            const response = await fetch(`${api}/user/login-admin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -386,5 +386,14 @@ module.exports = {
         }).then(function (data) {
             return data;
         });
-    }
+    },
+    deleteById(id) {
+        return Product.destroy({
+            where: {
+                id: id
+            }
+        }).then(function (data) {
+            return data;
+        });
+    },
 }
