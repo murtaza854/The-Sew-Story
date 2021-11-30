@@ -59,7 +59,7 @@ function PromotionCodeForm(props) {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${api}/coupon/getAllCoupons`, {
+                const response = await fetch(`${api}/coupon/getAllCouponsPromotionFlag`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'

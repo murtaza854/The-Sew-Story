@@ -1,5 +1,7 @@
 const Coupon = require('../models').coupon;
 const promotionCode = require('../models').promotionCode;
+const ProductCoupon = require('../models').productCoupon;
+const Product = require('../models').product;
 
 module.exports = {
     create(params) {
@@ -26,15 +28,45 @@ module.exports = {
                 return data;
             });
     },
-    getAllClient() {
+    getAllPromotionFlag() {
         return Coupon.findAll({
-            attributes: ['name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
+            attributes: ['id', 'name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
             where: {
-                hasPromotionCodes: false,
+                hasPromotionCodes: true,
             },
         })
             .then(function (data) {
                 return data;
+            });
+    },
+    getAllClient() {
+        console.log('getAllClient');
+        return Coupon.findAll({
+            attributes: ['name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
+            where: {
+                hasPromotionCodes: true,
+            },
+            include: [
+                {
+                    model: ProductCoupon,
+                    attributes: ['id', 'product_id', 'coupon_id'],
+                    as: 'productCoupons',
+                    // include: [
+                    //     {
+                    //         model: Product,
+                    //         attributes: ['slug'],
+                    //         as: 'product',
+                    //     },
+                    // ],
+                },
+            ],
+        })
+            .then(function (data) {
+                console.log(1, data);
+                return data;
+            })
+            .catch(function (error) {
+                console.log(error);
             });
     },
     getById(id) {

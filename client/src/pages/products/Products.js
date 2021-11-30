@@ -55,6 +55,7 @@ function Products(props) {
                 });
                 const json = await response.json();
                 const coupons = json.coupons;
+                console.log(coupons);
                 let coupon = null;
                 for (let i = 0; i < coupons.length; i++) {
                     const couponFromArray = coupons[i];

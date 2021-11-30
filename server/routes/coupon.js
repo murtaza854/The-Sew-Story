@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const couponController = require('../controllers').coupon;
+const productCouponController = require('../controllers').productCoupon;
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -12,6 +13,19 @@ const stripe = require("stripe")(STRIPE_SECRET_KEY);
 router.get('/getAllCoupons', async (req, res) => {
     try {
         const coupons = await couponController.getAll();
+        res.status(200).json({
+            data: coupons,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error
+        });
+    }
+});
+
+router.get('/getAllCouponsPromotionFlag', async (req, res) => {
+    try {
+        const coupons = await couponController.getAllPromotionFlag();
         res.status(200).json({
             data: coupons,
         });
@@ -53,6 +67,16 @@ router.post('/add', async (req, res) => {
         params.applies_to.products = products.map(product => product.id);
     }
     const coupon = await stripe.coupons.create(params);
+    if (appliedToProducts) {
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+            const productCoupon = {
+                coupon_id: coupon.id,
+                product_id: product.id,
+            };
+            await productCouponController.create(productCoupon);
+        }
+    }
     const couponDb = await couponController.create({
         id: coupon.id,
         name: coupon.name,

@@ -13,6 +13,7 @@ const subscribe = require('./subscribe');
 const coupon = require('./coupon');
 const promotionCode = require('./promotionCode');
 const orderCoupon = require('./orderCoupon');
+const productCoupon = require('./productCoupon');
 
 module.exports = {
     user,
@@ -29,5 +30,6 @@ module.exports = {
     subscribe,
     coupon,
     promotionCode,
-    orderCoupon
+    orderCoupon,
+    productCoupon
 };

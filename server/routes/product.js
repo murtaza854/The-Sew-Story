@@ -76,6 +76,7 @@ router.get('/getProduct-client', async (req, res) => {
         });
         const types = await typeController.getAllClient();
         const coupons = await couponController.getAllClient();
+        console.log(coupons);
         res.json({ data: product, types: types, coupons });
     } catch (error) {
         res.json({ data: [], error: error });
