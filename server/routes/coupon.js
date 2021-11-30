@@ -67,16 +67,6 @@ router.post('/add', async (req, res) => {
         params.applies_to.products = products.map(product => product.id);
     }
     const coupon = await stripe.coupons.create(params);
-    if (appliedToProducts) {
-        for (let i = 0; i < products.length; i++) {
-            const product = products[i];
-            const productCoupon = {
-                coupon_id: coupon.id,
-                product_id: product.id,
-            };
-            await productCouponController.create(productCoupon);
-        }
-    }
     const couponDb = await couponController.create({
         id: coupon.id,
         name: coupon.name,
@@ -88,6 +78,16 @@ router.post('/add', async (req, res) => {
         appliedToProducts: appliedToProducts,
         hasPromotionCodes: promotionCodes,
     });
+    if (appliedToProducts) {
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+            const productCoupon = {
+                coupon_id: coupon.id,
+                product_id: product.value,
+            };
+            await productCouponController.create(productCoupon);
+        }
+    }
     res.json({ data: couponDb });
 });
 

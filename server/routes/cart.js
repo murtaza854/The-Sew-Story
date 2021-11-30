@@ -18,6 +18,7 @@ const stripe = require("stripe")(STRIPE_SECRET_KEY);
 router.post("/cartProducts", async (req, res) => {
     const { cartProducts } = req.body;
     // convert array of objects to array of slugs
+    console.log(cartProducts);
     const slugs = cartProducts.map(product => product.slug);
     try {
         const products = await productController.getProducts(slugs);

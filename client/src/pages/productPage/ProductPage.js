@@ -31,12 +31,44 @@ function ProductPage(props) {
                     },
                 });
                 const json = await response.json();
+                const coupons = json.coupons;
+                let coupon = null;
+                for (let i = 0; i < coupons.length; i++) {
+                    const couponFromArray = coupons[i];
+                    if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                        coupon = couponFromArray;
+                        break;
+                    }
+                }
+                if (!coupon && coupons.length > 0) coupon = coupons[0];
+                let productCouponSlugs = [];
+                if (coupon && coupon.productCoupons.length > 0) productCouponSlugs = coupon.productCoupons.map((productCoupon) => productCoupon.product.slug);
                 const data = [].map.call(json.data, (product) => {
+                    let discountedPrice = null;
+                    let value = null;
+                    if (coupon) {
+                        let flag = true;
+                        if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
+                        if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                        if (flag && !coupon.hasPromotionCodes) {
+                            if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
+                                if (coupon.type === 'Fixed Amount Discount') {
+                                    discountedPrice = (product.prices[0].amount - coupon.amountOff);
+                                    value = `$${coupon.amountOff}`;
+                                } else {
+                                    discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
+                                    value = `${coupon.percentOff}%`;
+                                }
+                            }
+                        }
+                    }
                     return {
                         name: product.name,
                         slug: product.slug,
                         shortDescription: product.shortDescription,
                         price: `$ ${product.prices[0].amount}`,
+                        discountedPrice: discountedPrice ? `$ ${discountedPrice}` : null,
+                        value: value,
                         quantity: product.quantity,
                         image: product.images[0].path,
                         category: {
@@ -113,7 +145,8 @@ function ProductPage(props) {
                 }
             }
             if (!coupon && coupons.length > 0) coupon = coupons[0];
-            console.log(coupon);
+            let productCouponSlugs = [];
+            if (coupon && coupon.productCoupons.length > 0) productCouponSlugs = coupon.productCoupons.map((productCoupon) => productCoupon.product.slug);
             const detailObject = {};
             types.forEach(type => {
                 detailObject[type.name] = [];
@@ -131,13 +164,16 @@ function ProductPage(props) {
             if (coupon) {
                 let flag = true;
                 if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                if (flag) {
-                    if (coupon.type === 'Fixed Amount Discount') {
-                        discountedPrice = (product.prices[0].amount - coupon.amountOff);
-                        value = `$${coupon.amountOff}`;
-                    } else {
-                        discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
-                        value = `${coupon.percentOff}%`;
+                if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                if (flag && !coupon.hasPromotionCodes) {
+                    if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
+                        if (coupon.type === 'Fixed Amount Discount') {
+                            discountedPrice = (product.prices[0].amount - coupon.amountOff);
+                            value = `$${coupon.amountOff}`;
+                        } else {
+                            discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
+                            value = `${coupon.percentOff}%`;
+                        }
                     }
                 }
             }

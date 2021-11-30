@@ -40,29 +40,27 @@ module.exports = {
             });
     },
     getAllClient() {
-        console.log('getAllClient');
         return Coupon.findAll({
-            attributes: ['name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
+            attributes: ['name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes', 'timesRedeeemed'],
             where: {
-                hasPromotionCodes: true,
+                hasPromotionCodes: false,
             },
             include: [
                 {
                     model: ProductCoupon,
-                    attributes: ['id', 'product_id', 'coupon_id'],
+                    attributes: ['product_id'],
                     as: 'productCoupons',
-                    // include: [
-                    //     {
-                    //         model: Product,
-                    //         attributes: ['slug'],
-                    //         as: 'product',
-                    //     },
-                    // ],
+                    include: [
+                        {
+                            model: Product,
+                            attributes: ['slug'],
+                            as: 'product',
+                        },
+                    ],
                 },
             ],
         })
             .then(function (data) {
-                console.log(1, data);
                 return data;
             })
             .catch(function (error) {

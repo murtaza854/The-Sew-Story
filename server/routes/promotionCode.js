@@ -26,14 +26,32 @@ router.post('/check', async (req, res) => {
     const {
         promotionCode
     } = req.body;
-    const promotionCodeDb = await promotionCodeController.getByPromotionCode(promotionCode);
-    if (promotionCodeDb) {
-        res.status(200).json({
-            data: promotionCodeDb,
-        });
-    } else {
-        res.status(404).json({
-            message: 'Promotion code not found'
+    try {
+        const promotionCodeDb = await promotionCodeController.getByPromotionCode(promotionCode);
+        if (promotionCodeDb && promotionCodeDb.dataValues.firstTimeTransaction) {
+            const sessionCookie = req.cookies.session || "";
+            if (sessionCookie) {
+                const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
+                if (user) {
+                    res.status(200).json({
+                        data: promotionCodeDb,
+                    });
+                } else {
+                    throw new Error("User not found");
+                }
+            } else {
+                throw new Error("You need to login to use this coupon");
+            }
+        } else if (promotionCodeDb) {
+            res.status(200).json({
+                data: promotionCodeDb,
+            });
+        } else {
+            throw new Error("Promotion code not found");
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
         });
     }
 });

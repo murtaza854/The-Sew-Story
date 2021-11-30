@@ -55,6 +55,14 @@ $padding-image-small: 0 2rem;
 $padding-image-medium: 0 5rem;
 $padding-image-large: 0 10rem;
 
+.strike-through {
+    text-decoration: line-through;
+}
+
+.red {
+    color: rgb(160, 0, 0);
+}
+
 .page {
     position: absolute;
     background-color: white;

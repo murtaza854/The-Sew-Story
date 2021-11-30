@@ -41,6 +41,8 @@ function Cart(props) {
     const [couponButton, setCouponButton] = useState({ text: 'Apply Coupon', disabled: false });
     const [coupon, setCoupon] = useState({ value: '', error: false, errortext: '', readOnly: false });
 
+    const [generalCoupon, setGeneralCoupon] = useState(null);
+
     // const [radios, setRadios] = useState({ debitCreditCard: true });
 
     useEffect(() => {
@@ -81,6 +83,7 @@ function Cart(props) {
                 });
                 const json = await response.json();
                 const { data, coupons } = json;
+                setGeneralCoupon(coupons.find(coupon => !coupon.hasPromotionCodes && !coupon.appliedToProducts));
                 let coupon = null;
                 for (let i = 0; i < coupons.length; i++) {
                     const couponFromArray = coupons[i];
@@ -90,23 +93,29 @@ function Cart(props) {
                     }
                 }
                 if (!coupon && coupons.length > 0 && !coupons[0].redeemBy) coupon = coupons[0];
-                // console.log('cartProducts', [].map.call(data, (product) => {
-                //     const prodQuantity = (cartProducts.find(cartProduct => cartProduct.slug === product.slug)).quantity;
-                //     return {
-                //         product: {
-                //             name: product.name,
-                //             slug: product.slug,
-                //             price: product.prices[0].amount,
-                //             quantity: product.quantity,
-                //             image: product.images[0].path,
-                //             details: product.details,
-                //         },
-                //         quantity: prodQuantity,
-                //     };
-                // }));
+                let productCouponSlugs = [];
+                if (coupon && coupon.productCoupons.length > 0) productCouponSlugs = coupon.productCoupons.map((productCoupon) => productCoupon.product.slug);
                 let totalPrice = 0;
                 setCartProducts([].map.call(data, (product) => {
                     const prodQuantity = (cartProducts.find(cartProduct => cartProduct.slug === product.slug)).quantity;
+                    let discountedPrice = null;
+                    let value = null;
+                    if (coupon) {
+                        let flag = true;
+                        if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
+                        if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                        if (flag && !coupon.hasPromotionCodes) {
+                            if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
+                                if (coupon.type === 'Fixed Amount Discount') {
+                                    discountedPrice = (product.prices[0].amount - coupon.amountOff);
+                                    value = `$${coupon.amountOff}`;
+                                } else {
+                                    discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
+                                    value = `${coupon.percentOff}%`;
+                                }
+                            }
+                        }
+                    }
                     if (!product.active) {
                         localStorage.setItem('cartProducts', JSON.stringify(cartProducts.filter(cartProduct => cartProduct.slug !== product.slug)));
                         return {
@@ -125,12 +134,15 @@ function Cart(props) {
                         };
                     }
                     else if (prodQuantity <= product.quantity) {
-                        totalPrice += product.prices[0].amount * prodQuantity;
+                        if (discountedPrice) totalPrice += discountedPrice * prodQuantity;
+                        else totalPrice += product.prices[0].amount * prodQuantity;
                         return {
                             product: {
                                 name: product.name,
                                 slug: product.slug,
                                 price: product.prices[0].amount,
+                                discountedPrice: discountedPrice ? discountedPrice : null,
+                                value: value,
                                 quantity: product.quantity,
                                 image: product.images[0].path,
                                 details: product.details,
@@ -155,24 +167,24 @@ function Cart(props) {
                         };
                     }
                 }));
-                let discountedPrice = null;
-                let value = null;
-                if (coupon) {
-                    let flag = true;
-                    if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                    if (flag) {
-                        if (coupon.type === 'Fixed Amount Discount') {
-                            discountedPrice = (totalPrice - coupon.amountOff);
-                            value = `$${coupon.amountOff}`;
-                        } else {
-                            discountedPrice = (totalPrice - (totalPrice * (coupon.percentOff / 100)));
-                            value = `${coupon.percentOff}%`;
-                        }
-                    }
-                }
-                setDiscountedPrice(discountedPrice?.toFixed(2));
-                setValue(value);
-                setCartTotal(totalPrice.toFixed(2));
+                // let discountedPrice = null;
+                // let value = null;
+                // if (coupon) {
+                //     let flag = true;
+                //     if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
+                //     if (flag) {
+                //         if (coupon.type === 'Fixed Amount Discount') {
+                //             discountedPrice = (totalPrice - coupon.amountOff);
+                //             value = `$${coupon.amountOff}`;
+                //         } else {
+                //             discountedPrice = (totalPrice - (totalPrice * (coupon.percentOff / 100)));
+                //             value = `${coupon.percentOff}%`;
+                //         }
+                //     }
+                // }
+                // setDiscountedPrice(discountedPrice?.toFixed(2));
+                // setValue(value);
+                setCartTotal(totalPrice);
                 // setCartProducts(data);
             }
             fetchedCartProducts();
@@ -183,15 +195,35 @@ function Cart(props) {
     }, []);
 
     useEffect(() => {
-        if (value) {
-            const totalPrice = parseFloat(cartTotal);
-            if (value.includes('%')) {
-                setDiscountedPrice((totalPrice - (totalPrice * (value.replace('%', '') / 100))).toFixed(2));
-            } else if (value.includes('$')) {
-                setDiscountedPrice((totalPrice - value.replace('$', '')).toFixed(2));
+        if (cartTotal) {
+            let discountedPrice = null;
+            let value = null;
+            // const totalPrice = parseFloat(cartTotal);
+            if (generalCoupon) {
+                let flag = true;
+                if (generalCoupon.redeemBy && new Date(generalCoupon.redeemBy) < new Date()) flag = false;
+                if (generalCoupon.maxRedemptions <= generalCoupon.timesRedeeemed) flag = false;
+                if (flag) {
+                    if (generalCoupon.type === 'Fixed Amount Discount') {
+                        discountedPrice = (cartTotal - generalCoupon.amountOff);
+                        value = `$${generalCoupon.amountOff}`;
+                    } else {
+                        discountedPrice = (cartTotal - (cartTotal * (generalCoupon.percentOff / 100))).toFixed(2);
+                        value = `${generalCoupon.percentOff}%`;
+                    }
+                    setDiscountedPrice(discountedPrice);
+                    setValue(value);
+                    // setCartTotal(totalPrice.toFixed(2));
+                }
             }
+            // const totalPrice = parseFloat(cartTotal);
+            // if (value.includes('%')) {
+            //     setDiscountedPrice((totalPrice - (totalPrice * (value.replace('%', '') / 100))).toFixed(2));
+            // } else if (value.includes('$')) {
+            //     setDiscountedPrice((totalPrice - value.replace('$', '')).toFixed(2));
+            // }
         }
-    }, [cartTotal, value]);
+    }, [cartTotal, value, generalCoupon]);
 
     useEffect(() => {
         let flag = true;
@@ -232,27 +264,32 @@ function Cart(props) {
 
     const applyCoupon = async (e) => {
         e.preventDefault();
-        setCouponButton({text: 'Loading', disabled: true});
-        const response = await fetch(`${api}/promotionCode/check`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                promotionCode: coupon.value
-            })
-        });
-        const data = await response.json();
-        if (data.data) {
-            console.log(data.data);
-            setCouponButton({text: 'Coupon Applied', disabled: true});
+        setCouponButton({ text: 'Loading', disabled: true });
+        try {
+            const response = await fetch(`${api}/promotionCode/check`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    promotionCode: coupon.value
+                })
+            });
+            const data = await response.json();
+            if (data.data) {
+                console.log(data.data);
+                setCouponButton({ text: 'Coupon Applied', disabled: true });
+                setTimeout(() => {
+                    setCouponButton({ text: 'Apply Coupon', disabled: false });
+                }, 3000);
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            setCouponButton({ text: 'Invalid', disabled: true });
+            alert(error.message);
             setTimeout(() => {
-                setCouponButton({text: 'Apply Coupon', disabled: false});
-            }, 3000);
-        } else {
-            setCouponButton({text: 'Invalid', disabled: true});
-            setTimeout(() => {
-                setCouponButton({text: 'Apply Coupon', disabled: false});
+                setCouponButton({ text: 'Apply Coupon', disabled: false });
             }, 3000);
         }
     }
@@ -312,12 +349,12 @@ function Cart(props) {
                         {
                             discountedPrice ? (
                                 <>
-                                    <span className="text-cut">$ {cartTotal}</span>
+                                    <span className="text-cut">$ {cartTotal.toFixed(2)}</span>
                                     <br />
                                     <span className="text-red">{value} off - $ {discountedPrice}</span>
                                 </>
                             ) : (
-                                <>$ {cartTotal}</>
+                                <>$ {cartTotal.toFixed(2)}</>
                             )
                         }
                     </h3>

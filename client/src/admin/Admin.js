@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/styles';
 import { createTheme } from '@mui/material/styles';
 import './Admin.scss';
 import AdminContext from '../contexts/adminContext';
-import api from '../api';
+// import api from '../api';
 
 
 function Admin(props) {

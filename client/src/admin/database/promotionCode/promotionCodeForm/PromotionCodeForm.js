@@ -168,7 +168,7 @@ function PromotionCodeForm(props) {
         const content = await response.json();
         if (content.data) {
             console.log(content.data);
-            // window.location.href = window.location.href.split('/admin')[0] + '/admin/promotion-code';
+            window.location.href = window.location.href.split('/admin')[0] + '/admin/promotion-code';
         } else {
             alert("Something went wrong.");
         }

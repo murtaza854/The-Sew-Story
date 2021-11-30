@@ -55,7 +55,6 @@ function Products(props) {
                 });
                 const json = await response.json();
                 const coupons = json.coupons;
-                console.log(coupons);
                 let coupon = null;
                 for (let i = 0; i < coupons.length; i++) {
                     const couponFromArray = coupons[i];
@@ -65,23 +64,27 @@ function Products(props) {
                     }
                 }
                 if (!coupon && coupons.length > 0) coupon = coupons[0];
+                let productCouponSlugs = [];
+                if (coupon && coupon.productCoupons.length > 0) productCouponSlugs = coupon.productCoupons.map((productCoupon) => productCoupon.product.slug);
                 const data = [].map.call(json.data, (product) => {
                     let discountedPrice = null;
                     let value = null;
                     if (coupon) {
                         let flag = true;
                         if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                        if (flag) {
-                            if (coupon.type === 'Fixed Amount Discount') {
-                                discountedPrice = (product.prices[0].amount - coupon.amountOff);
-                                value = `$${coupon.amountOff}`;
-                            } else {
-                                discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
-                                value = `${coupon.percentOff}%`;
+                        if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                        if (flag && !coupon.hasPromotionCodes) {
+                            if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
+                                if (coupon.type === 'Fixed Amount Discount') {
+                                    discountedPrice = (product.prices[0].amount - coupon.amountOff);
+                                    value = `$${coupon.amountOff}`;
+                                } else {
+                                    discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
+                                    value = `${coupon.percentOff}%`;
+                                }
                             }
                         }
                     }
-                    console.log(discountedPrice);
                     return {
                         name: product.name,
                         slug: product.slug,

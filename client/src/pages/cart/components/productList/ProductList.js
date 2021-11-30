@@ -112,7 +112,18 @@ function ProductList(props) {
                                             </Form>
                                         </Col>
                                         <Col md={2}>
-                                            <p className="product-price center-relative-fit-content">${(value.product.price * value.quantity).toFixed(2)}</p>
+                                            <p className="product-price center-relative-fit-content">
+                                                {
+                                                    value.product.discountedPrice ? (
+                                                        <>
+                                                            <span className="strike-through">${(value.product.price * value.quantity).toFixed(2)}</span>
+                                                            <span> - </span>
+                                                            <span className="red">${(value.product.discountedPrice * value.quantity).toFixed(2)}
+                                                            </span>
+                                                        </>
+                                                    ) : <>${(value.product.price * value.quantity).toFixed(2)}</>
+                                                }
+                                            </p>
                                         </Col>
                                     </Row>
                                 )
