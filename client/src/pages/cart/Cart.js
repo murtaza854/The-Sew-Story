@@ -43,6 +43,9 @@ function Cart(props) {
 
     const [generalCoupon, setGeneralCoupon] = useState(null);
 
+    const [billCoupon, setBillCoupon] = useState(null);
+    const [productCoupon, setProductCoupon] = useState(null);
+
     // const [radios, setRadios] = useState({ debitCreditCard: true });
 
     useEffect(() => {
@@ -83,35 +86,50 @@ function Cart(props) {
                 });
                 const json = await response.json();
                 const { data, coupons } = json;
-                setGeneralCoupon(coupons.find(coupon => !coupon.hasPromotionCodes && !coupon.appliedToProducts));
-                let coupon = null;
+                // setGeneralCoupon(coupons.find(coupon => coupon.hasPromotionCodes));
+                let billCoupon = null;
+                let productCoupon = null;
                 for (let i = 0; i < coupons.length; i++) {
                     const couponFromArray = coupons[i];
-                    if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
-                        coupon = couponFromArray;
-                        break;
+                    let flag = true;
+                    if (!couponFromArray.appliedToProducts) {
+                        if (couponFromArray.maxRedemptions && couponFromArray.maxRedemptions <= couponFromArray.timesRedeeemed) flag = false;
+                        if (flag && couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                            billCoupon = couponFromArray;
+                        } else if (flag && !couponFromArray.redeemBy) {
+                            billCoupon = couponFromArray;
+                        }
+                    } else {
+                        if (couponFromArray.maxRedemptions && couponFromArray.maxRedemptions <= couponFromArray.timesRedeeemed) flag = false;
+                        if (flag && couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+                            productCoupon = couponFromArray;
+                        } else if (flag && !couponFromArray.redeemBy) {
+                            productCoupon = couponFromArray;
+                        }
                     }
                 }
-                if (!coupon && coupons.length > 0 && !coupons[0].redeemBy) coupon = coupons[0];
+                // if (!coupon && coupons.length > 0 && !coupons[0].redeemBy) 
                 let productCouponSlugs = [];
-                if (coupon && coupon.productCoupons.length > 0) productCouponSlugs = coupon.productCoupons.map((productCoupon) => productCoupon.product.slug);
+                if (productCoupon && productCoupon.productCoupons.length > 0) productCouponSlugs = productCoupon.productCoupons.map((productCoupon) => productCoupon.product.slug);
                 let totalPrice = 0;
                 setCartProducts([].map.call(data, (product) => {
                     const prodQuantity = (cartProducts.find(cartProduct => cartProduct.slug === product.slug)).quantity;
                     let discountedPrice = null;
                     let value = null;
-                    if (coupon) {
+                    if (productCoupon) {
+                        console.log(productCoupon, productCouponSlugs);
                         let flag = true;
                         if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                        if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
-                        if (flag && !coupon.hasPromotionCodes) {
-                            if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
-                                if (coupon.type === 'Fixed Amount Discount') {
-                                    discountedPrice = (product.prices[0].amount - coupon.amountOff);
-                                    value = `$${coupon.amountOff}`;
+                        if (coupon.maxRedemptions && coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                        console.log(flag && !productCoupon.hasPromotionCodes);
+                        if (flag && !productCoupon.hasPromotionCodes) {
+                            if (productCoupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
+                                if (productCoupon.type === 'Fixed Amount Discount') {
+                                    discountedPrice = (product.prices[0].amount - productCoupon.amountOff);
+                                    value = `$${productCoupon.amountOff}`;
                                 } else {
-                                    discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (coupon.percentOff / 100))).toFixed(2);
-                                    value = `${coupon.percentOff}%`;
+                                    discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (productCoupon.percentOff / 100)));
+                                    value = `${productCoupon.percentOff}%`;
                                 }
                             }
                         }
@@ -136,13 +154,14 @@ function Cart(props) {
                     else if (prodQuantity <= product.quantity) {
                         if (discountedPrice) totalPrice += discountedPrice * prodQuantity;
                         else totalPrice += product.prices[0].amount * prodQuantity;
+                        // totalPrice += product.prices[0].amount * prodQuantity;
                         return {
                             product: {
                                 name: product.name,
                                 slug: product.slug,
                                 price: product.prices[0].amount,
-                                discountedPrice: discountedPrice ? discountedPrice : null,
-                                value: value,
+                                discountedPrice,
+                                value,
                                 quantity: product.quantity,
                                 image: product.images[0].path,
                                 details: product.details,
@@ -167,23 +186,18 @@ function Cart(props) {
                         };
                     }
                 }));
-                // let discountedPrice = null;
-                // let value = null;
-                // if (coupon) {
-                //     let flag = true;
-                //     if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                //     if (flag) {
-                //         if (coupon.type === 'Fixed Amount Discount') {
-                //             discountedPrice = (totalPrice - coupon.amountOff);
-                //             value = `$${coupon.amountOff}`;
-                //         } else {
-                //             discountedPrice = (totalPrice - (totalPrice * (coupon.percentOff / 100)));
-                //             value = `${coupon.percentOff}%`;
-                //         }
-                //     }
-                // }
-                // setDiscountedPrice(discountedPrice?.toFixed(2));
-                // setValue(value);
+
+                if (billCoupon) {
+                    if (billCoupon.type === 'Fixed Amount Discount') {
+                        setDiscountedPrice(totalPrice - billCoupon.amountOff);
+                        setValue(`$${billCoupon.amountOff}`);
+                    } else {
+                        setDiscountedPrice(totalPrice - (totalPrice * (billCoupon.percentOff / 100)));
+                        setValue(`${billCoupon.percentOff}%`);
+                    }
+                }
+                setBillCoupon(billCoupon);
+                setProductCoupon(productCoupon);
                 setCartTotal(totalPrice);
                 // setCartProducts(data);
             }
@@ -195,35 +209,107 @@ function Cart(props) {
     }, []);
 
     useEffect(() => {
-        if (cartTotal) {
-            let discountedPrice = null;
-            let value = null;
-            // const totalPrice = parseFloat(cartTotal);
-            if (generalCoupon) {
-                let flag = true;
-                if (generalCoupon.redeemBy && new Date(generalCoupon.redeemBy) < new Date()) flag = false;
-                if (generalCoupon.maxRedemptions <= generalCoupon.timesRedeeemed) flag = false;
-                if (flag) {
-                    if (generalCoupon.type === 'Fixed Amount Discount') {
-                        discountedPrice = (cartTotal - generalCoupon.amountOff);
-                        value = `$${generalCoupon.amountOff}`;
-                    } else {
-                        discountedPrice = (cartTotal - (cartTotal * (generalCoupon.percentOff / 100))).toFixed(2);
-                        value = `${generalCoupon.percentOff}%`;
-                    }
-                    setDiscountedPrice(discountedPrice);
-                    setValue(value);
-                    // setCartTotal(totalPrice.toFixed(2));
-                }
+        if (billCoupon && cartTotal && cartProducts.length > 0) {
+            // console.log(billCoupon, cartProducts);
+            if (billCoupon.type === 'Fixed Amount Discount') {
+                setDiscountedPrice(cartTotal - billCoupon.amountOff);
+                setValue(`$${billCoupon.amountOff}`);
+            } else {
+                setDiscountedPrice(cartTotal - (cartTotal * (billCoupon.percentOff / 100)));
+                setValue(`${billCoupon.percentOff}%`);
             }
-            // const totalPrice = parseFloat(cartTotal);
-            // if (value.includes('%')) {
-            //     setDiscountedPrice((totalPrice - (totalPrice * (value.replace('%', '') / 100))).toFixed(2));
-            // } else if (value.includes('$')) {
-            //     setDiscountedPrice((totalPrice - value.replace('$', '')).toFixed(2));
-            // }
+            // setCartProducts([].map.call(cartProducts, (product) => {
+            //     let discountedPrice = null;
+            //     let value = null;
+            //     let flag = true;
+            //     if (billCoupon.redeemBy && new Date(billCoupon.redeemBy) < new Date()) flag = false;
+            //     if (billCoupon.maxRedemptions && billCoupon.maxRedemptions <= billCoupon.timesRedeeemed) flag = false;
+            //     if (flag && !billCoupon.hasPromotionCodes) {
+
+            //         // if (billCoupon.appliedToProducts && billCoupon.productCoupons.find(productCoupon => productCoupon.product.slug === product.product.slug)) {
+            //         //     if (billCoupon.type === 'Fixed Amount Discount') {
+            //         //         discountedPrice = (product.product.price - billCoupon.amountOff);
+            //         //         value = `$${billCoupon.amountOff}`;
+            //         //     } else {
+            //         //         discountedPrice = (product.product.price - (product.product.price * (billCoupon.percentOff / 100)));
+            //         //         value = `${billCoupon.percentOff}%`;
+            //         //     }
+            //         // }
+            //     }
+            //     console.log(discountedPrice, value, flag);
+            //     return {
+            //         product: {
+            //             name: product.product.name,
+            //             slug: product.product.slug,
+            //             price: product.product.price,
+            //             discountedPrice: discountedPrice,
+            //             value: value,
+            //             quantity: product.product.quantity,
+            //             image: product.product.image,
+            //             details: product.product.details,
+            //         },
+            //         quantity: product.quantity,
+            //     }
+            //     // if (discountedPrice) {
+            //     //     return {
+            //     //         product: {
+            //     //             name: product.name,
+            //     //             slug: product.slug,
+            //     //             price: discountedPrice,
+            //     //             quantity: product.quantity,
+            //     //             image: product.image,
+            //     //             details: product.details,
+            //     //         },
+            //     //         quantity: product.quantity,
+            //     //     };
+            //     // } else {
+            //     //     return {
+            //     //         product: {
+            //     //             name: product.name,
+            //     //             slug: product.slug,
+            //     //             price: product.price,
+            //     //             quantity: product.product.quantity,
+            //     //             image: product.product.image,
+            //     //             details: product.product.details,
+            //     //         },
+            //     //         quantity: product.quantity,
+            //     //     };
+            //     // }
+            // }));
         }
-    }, [cartTotal, value, generalCoupon]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cartTotal]);
+
+    // useEffect(() => {
+    //     if (cartTotal) {
+    //         let discountedPrice = null;
+    //         let value = null;
+    //         // const totalPrice = parseFloat(cartTotal);
+    //         if (generalCoupon) {
+    //             let flag = true;
+    //             if (generalCoupon.redeemBy && new Date(generalCoupon.redeemBy) < new Date()) flag = false;
+    //             if (generalCoupon.maxRedemptions && generalCoupon.maxRedemptions <= generalCoupon.timesRedeeemed) flag = false;
+    //             if (flag) {
+    //                 if (generalCoupon.type === 'Fixed Amount Discount') {
+    //                     discountedPrice = (cartTotal - generalCoupon.amountOff);
+    //                     value = `$${generalCoupon.amountOff}`;
+    //                 } else {
+    //                     discountedPrice = (cartTotal - (cartTotal * (generalCoupon.percentOff / 100))).toFixed(2);
+    //                     value = `${generalCoupon.percentOff}%`;
+    //                 }
+    //                 setDiscountedPrice(discountedPrice);
+    //                 setValue(value);
+    //                 // setCartTotal(totalPrice.toFixed(2));
+    //             }
+    //         }
+    //         // const totalPrice = parseFloat(cartTotal);
+    //         // if (value.includes('%')) {
+    //         //     setDiscountedPrice((totalPrice - (totalPrice * (value.replace('%', '') / 100))).toFixed(2));
+    //         // } else if (value.includes('$')) {
+    //         //     setDiscountedPrice((totalPrice - value.replace('$', '')).toFixed(2));
+    //         // }
+    //     }
+    // }, [cartTotal, value, generalCoupon]);
 
     useEffect(() => {
         let flag = true;
@@ -351,7 +437,7 @@ function Cart(props) {
                                 <>
                                     <span className="text-cut">$ {cartTotal.toFixed(2)}</span>
                                     <br />
-                                    <span className="text-red">{value} off - $ {discountedPrice}</span>
+                                    <span className="text-red">{value} off - $ {discountedPrice.toFixed(2)}</span>
                                 </>
                             ) : (
                                 <>$ {cartTotal.toFixed(2)}</>
