@@ -32,29 +32,33 @@ function RoutesFile(props) {
     let location = useLocation();
 
     useEffect(() => {
-      (
-        async () => {
-          try {
-            const response = await fetch(`${api}/logged-in`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              credentials: 'include',
-              withCredentials: true,
-            });
-            const content = await response.json();
-            const user = content.data;
-            const { displayName, email, emailVerified, admin } = user;
-            setUserState({ displayName, email, emailVerified, admin });
-            setLoading(false);
-          } catch (error) {
-            setUserState(null);
-            setLoading(false);
-          }
-        })();
+        (
+            async () => {
+                try {
+                    const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
+                    const response = await fetch(`${api}/logged-in?cartProducts=${JSON.stringify({
+                        cartProducts
+                    })}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        withCredentials: true
+                    });
+                    const content = await response.json();
+                    localStorage.setItem('cartProducts', JSON.stringify(content.cartProducts));
+                    const user = content.data;
+                    const { displayName, email, emailVerified, admin } = user;
+                    setUserState({ displayName, email, emailVerified, admin });
+                    setLoading(false);
+                } catch (error) {
+                    setUserState(null);
+                    setLoading(false);
+                }
+            })();
     }, []);
-  
+
     if (loading) return <div></div>
 
     let positionStyle = 'relative';
@@ -62,78 +66,78 @@ function RoutesFile(props) {
 
     return (
         <UserContext.Provider value={{ userState: userState, setUserState: setUserState }}>
-          <CartCountContext.Provider value={{ cartCount: cartCount, setCartCount: setCartCount }}>
-        <div>
-            {/* <MainNavbar /> */}
-            <TransitionGroup>
-                <CSSTransition
-                    key={location.key}
-                    classNames="page"
-                    timeout={300}
-                >
-                    <div className="page">
-                        <MainNavbar positionStyle={positionStyle} />
-                        <Switch location={location}>
-                            <Route path="/__/auth/action">
-                                <Auth />
-                            </Route>
-                            <Route path="/dashboard/account">
-                                <Dashboard />
-                            </Route>
-                            <Route path="/order/status">
-                                <OrderMessage />
-                            </Route>
-                            <Route path="/:categorySlug/:productSlug">
-                                <ProductPage />
-                            </Route>
-                            {/* <Route path="/payment">
+            <CartCountContext.Provider value={{ cartCount: cartCount, setCartCount: setCartCount }}>
+                <div>
+                    {/* <MainNavbar /> */}
+                    <TransitionGroup>
+                        <CSSTransition
+                            key={location.key}
+                            classNames="page"
+                            timeout={300}
+                        >
+                            <div className="page">
+                                <MainNavbar positionStyle={positionStyle} />
+                                <Switch location={location}>
+                                    <Route path="/__/auth/action">
+                                        <Auth />
+                                    </Route>
+                                    <Route path="/dashboard/account">
+                                        <Dashboard />
+                                    </Route>
+                                    <Route path="/order/status">
+                                        <OrderMessage />
+                                    </Route>
+                                    <Route path="/:categorySlug/:productSlug">
+                                        <ProductPage />
+                                    </Route>
+                                    {/* <Route path="/payment">
                                 <Payment />
                             </Route> */}
-                            <Route path="/payment">
-                                <Invoice />
-                            </Route>
-                            <Route path="/gallery">
-                                <Gallery />
-                            </Route>
-                            <Route path="/contact">
-                                <Contact />
-                            </Route>
-                            <Route path="/cart">
-                                <Cart />
-                            </Route>
-                            <Route path="/forgot-password">
-                                <ForgotPassword />
-                            </Route>
-                            <Route path="/signup">
-                                <Signup />
-                            </Route>
-                            <Route path="/login">
-                                <Login />
-                            </Route>
-                            <Route path="/checkout">
-                                <CheckoutForm />
-                            </Route>
-                            {/* <Route path="/products">
+                                    <Route path="/payment">
+                                        <Invoice />
+                                    </Route>
+                                    <Route path="/gallery">
+                                        <Gallery />
+                                    </Route>
+                                    <Route path="/contact">
+                                        <Contact />
+                                    </Route>
+                                    <Route path="/cart">
+                                        <Cart />
+                                    </Route>
+                                    <Route path="/forgot-password">
+                                        <ForgotPassword />
+                                    </Route>
+                                    <Route path="/signup">
+                                        <Signup />
+                                    </Route>
+                                    <Route path="/login">
+                                        <Login />
+                                    </Route>
+                                    <Route path="/checkout">
+                                        <CheckoutForm />
+                                    </Route>
+                                    {/* <Route path="/products">
                                 <Products />
                             </Route> */}
-                            <Route path="/our-story">
-                                <Story />
-                            </Route>
-                            <Route path="/:productSlug">
-                                <Products />
-                            </Route>
-                            <Route path="/">
-                                <Home />
-                            </Route>
-                        </Switch>
-                        <Footer />
-                        <BlackBar />
-                    </div>
-                </CSSTransition>
-            </TransitionGroup>
-        </div>
-      </CartCountContext.Provider>
-    </UserContext.Provider>
+                                    <Route path="/our-story">
+                                        <Story />
+                                    </Route>
+                                    <Route path="/:productSlug">
+                                        <Products />
+                                    </Route>
+                                    <Route path="/">
+                                        <Home />
+                                    </Route>
+                                </Switch>
+                                <Footer />
+                                <BlackBar />
+                            </div>
+                        </CSSTransition>
+                    </TransitionGroup>
+                </div>
+            </CartCountContext.Provider>
+        </UserContext.Provider>
         //   {/* </DiscountContext.Provider>
         // </CartContext.Provider> */}
     );

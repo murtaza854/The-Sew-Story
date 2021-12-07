@@ -84,6 +84,17 @@ module.exports = {
                 return data;
             })
     },
+    checkProductSlug(slug) {
+        return Product.findOne({
+            where: {
+                slug: slug,
+                active: true
+            }
+        })
+            .then(function (data) {
+                return data;
+            })
+    },
     getProductsCartID(slugs) {
         return Product.findAll({
             include: [

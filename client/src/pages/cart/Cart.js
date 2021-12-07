@@ -117,11 +117,9 @@ function Cart(props) {
                     let discountedPrice = null;
                     let value = null;
                     if (productCoupon) {
-                        console.log(productCoupon, productCouponSlugs);
                         let flag = true;
                         if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
                         if (coupon.maxRedemptions && coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
-                        console.log(flag && !productCoupon.hasPromotionCodes);
                         if (flag && !productCoupon.hasPromotionCodes) {
                             if (productCoupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
                                 if (productCoupon.type === 'Fixed Amount Discount') {

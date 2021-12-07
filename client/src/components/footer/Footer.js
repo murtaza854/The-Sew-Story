@@ -37,6 +37,11 @@ function Footer(props) {
             <span>About mzushi</span>
             Mzushi, your online local directory for the finest listings of food, clothes and all things homemade. Search for businesses, list your own, review site products or services and make the shift from yellow pages, today!
           </p> */}
+                <div>
+                    <a className="h-b" href="https://www.instagram.com/hexandbracket" target="_blank" rel="noopener noreferrer">
+                        <img src="/h-b.jpg" alt="Hex & bracket" />
+                    </a>
+                </div>
                 <div className="footer-icons">
                     <a rel="noreferrer" target="_blank" href="https://www.facebook.com/thesewstory"><i className="fa fa-facebook" /></a>
                     <a rel="noreferrer" target="_blank" href="https://pinterest.com/thesewstory"><i className="fa fa-pinterest" /></a>

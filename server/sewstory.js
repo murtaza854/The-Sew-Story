@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const Sequelize = require('sequelize');
+const productController = require('./controllers').product;
 // const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -78,6 +79,20 @@ app.use('/api/coupon', couponRoutes);
 app.use('/api/promotionCode', promotionCodeRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
+    let cartProducts = JSON.parse(req.query.cartProducts) || [];
+    try {
+        // const cartProductsCookie = req.cookies.cartProducts || [];
+        const cartProductTemp = [...cartProducts];
+        cartProducts.forEach(async (product) => {
+            const flag = await productController.checkProductSlug(product.slug);
+            if (!flag) {
+                cartProductTemp.splice(cartProductTemp.indexOf(product), 1);
+            }
+        });
+        cartProducts = cartProductTemp;
+    } catch (error) {
+        
+    }
     try {
         const sessionCookie = req.cookies.session || "";
         if (sessionCookie) {
@@ -89,15 +104,15 @@ app.get('/api/logged-in', async (req, res) => {
                 const admin = user.admin;
                 if (!emailVerified) {
                     res.clearCookie("session");
-                    res.json({ data: { displayName, email, emailVerified, admin } });
+                    res.json({ data: { displayName, email, emailVerified, admin }, cartProducts });
                 } else {
-                    res.json({ data: { displayName, email, emailVerified, admin } });
+                    res.json({ data: { displayName, email, emailVerified, admin }, cartProducts });
                 }
-            } else res.json({ data: null })
-        } else res.json({ data: null })
+            } else res.json({ data: null, cartProducts });
+        } else res.json({ data: null, cartProducts });
     } catch (error) {
         // console.log(error);
-        res.json({ data: null, error: error });
+        res.json({ data: null, error: error, cartProducts });
     }
 });
 // app.get('*', function (req, res) {
