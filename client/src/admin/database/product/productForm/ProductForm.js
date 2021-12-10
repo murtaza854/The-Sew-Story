@@ -32,6 +32,7 @@ function ProductForm(props) {
     const [shortDescription, setShortDescription] = useState({ value: '', error: false, helperText: 'Enter a short description Ex. Pack of 2 Kitchen Towels' });
     const [price, setPrice] = useState({ value: '', error: false, helperText: 'Enter a price Ex. 10.00' });
     const [quantity, setQuantity] = useState({ value: '', error: false, helperText: 'Enter a quantity Ex. 10' });
+    const [primaryImage, setPrimaryImage] = useState({ picturePreview: '', imgURl: '', error: false });
     const [story, setStory] = useState({ value: '', error: false, helperText: 'Enter a story Ex. This is a story...' });
     const [storyImage, setStoryImage] = useState({ picturePreview: '', imgURl: '', error: false });
     const [storyWrittenBy, setStoryWrittenBy] = useState({ value: '', error: false, helperText: 'Enter a Hand Embroidered by Ex. John Doe' });
@@ -93,6 +94,8 @@ function ProductForm(props) {
         else if (name.value.length === 0) flag = true;
         else if (shortDescription.error === true) flag = true;
         else if (shortDescription.value.length === 0) flag = true;
+        else if (primaryImage.imgURl === '') flag = true;
+        else if (primaryImage.error === true) flag = true;
         else if (storyImage.imgURl === '') flag = true;
         else if (storyImage.error === true) flag = true;
         else if (storyWrittenBy.error === true) flag = true;
@@ -119,7 +122,7 @@ function ProductForm(props) {
             }
         }
         setDisabled(flag);
-    }, [name, shortDescription, storyImage, storyWrittenBy, category, details]);
+    }, [name, shortDescription, primaryImage, storyImage, storyWrittenBy, category, details]);
 
     const handleNameChange = (event) => {
         if (event.target.value.length === 0) {
@@ -167,6 +170,33 @@ function ProductForm(props) {
         }
     }
 
+    const primaryImageChange = event => {
+        let reader = new FileReader();
+        if (event.target.files && event.target.files[0]) {
+            if (event.target.files[0].size / 1024 < 300) {
+                reader.readAsDataURL(event.target.files[0]);
+                const objectUrl = URL.createObjectURL(event.target.files[0]);
+                reader.onload = ((theFile) => {
+                    var image = new Image();
+                    image.src = theFile.target.result;
+                    image.onload = function () {
+                        const w = this.width;
+                        const h = this.height;
+                        const r = gcd(w, h);
+                        if (w / r < h / r) {
+                            setPrimaryImage(prevState => ({ ...prevState, picturePreview: event.target.files[0], imgURl: objectUrl, error: false }));
+                        }
+                        else {
+                            alert("Please upload a square image.");
+                        }
+                    };
+                });
+            } else {
+                alert("Size too large. Must be below 300kb.");
+            }
+        }
+    }
+
     const handleStoryChange = (event) => {
         if (event.target.value.length === 0) {
             setStory({ value: event.target.value, error: true, helperText: 'Story is required!' });
@@ -193,7 +223,7 @@ function ProductForm(props) {
                             setStoryImage(prevState => ({ ...prevState, picturePreview: event.target.files[0], imgURl: objectUrl, error: false }));
                         }
                         else {
-                            alert("Please upload a square image.");
+                            alert("Please upload a portrait image.");
                         }
                     };
                 });
@@ -206,31 +236,35 @@ function ProductForm(props) {
     const imagesChange = event => {
         const files = event.target.files;
         let flag = false;
-        Array.prototype.forEach.call(files, (file, index) => {
-            if (file.size / 1024 < 300) {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                const objectUrl = URL.createObjectURL(file);
-                reader.onload = ((theFile) => {
-                    var image = new Image();
-                    image.src = theFile.target.result;
-                    image.onload = function () {
-                        const w = this.width;
-                        const h = this.height;
-                        const r = gcd(w, h);
-                        if (w / r < h / r) {
-                            setImages(prevState => [...prevState, { picturePreview: file, imgURl: objectUrl, error: false }]);
-                        } else {
-                            flag = true;
-                        }
-                    };
-                });
-            } else {
-                alert("Size too large. Must be below 300kb.");
+        if (images.length + files.length < 8) {
+            Array.prototype.forEach.call(files, (file, index) => {
+                if (file.size / 1024 < 300) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    const objectUrl = URL.createObjectURL(file);
+                    reader.onload = ((theFile) => {
+                        var image = new Image();
+                        image.src = theFile.target.result;
+                        image.onload = function () {
+                            const w = this.width;
+                            const h = this.height;
+                            const r = gcd(w, h);
+                            if (w / r < h / r) {
+                                setImages(prevState => [...prevState, { picturePreview: file, imgURl: objectUrl, error: false }]);
+                            } else {
+                                flag = true;
+                            }
+                        };
+                    });
+                } else {
+                    alert("Size too large. Must be below 300kb.");
+                }
+            });
+            if (flag) {
+                alert("Only portrait images uploaded");
             }
-        });
-        if (flag) {
-            alert("Only portrait images uploaded");
+        } else {
+            alert("You can only upload a maximum of 8 images");
         }
     }
 
@@ -336,7 +370,7 @@ function ProductForm(props) {
             formData.append('images', element.picturePreview);
         }
         formData.append('images', storyImage.picturePreview);
-        // console.log(formData.getAll('images'));
+        formData.append('images', primaryImage.picturePreview);
         const response = await fetch(`${api}/product/add`, {
             method: 'POST',
             headers: {
@@ -352,6 +386,51 @@ function ProductForm(props) {
             alert("Something went wrong.");
         }
     }
+
+    // const handleSubmitAdd = async event => {
+    //     event.preventDefault();
+    //     const formData = new FormData();
+    //     formData.append(
+    //         'data',
+    //         JSON.stringify({
+    //             name: name.value,
+    //             shortDescription: shortDescription.value,
+    //             productCode: productCode.value,
+    //             price: price.value,
+    //             quantity: quantity.value,
+    //             story: story.value,
+    //             storyWrittenBy: storyWrittenBy.value,
+    //             category: category.obj,
+    //             details: details.map(detail => ({
+    //                 type: detail.type,
+    //                 label: detail.label,
+    //                 text: detail.text,
+    //                 order: detail.order
+    //             })),
+    //             active: checkBoxes.active,
+    //         })
+    //     );
+    //     for (let index = 0; index < images.length; index++) {
+    //         const element = images[index];
+    //         formData.append('images', element.picturePreview);
+    //     }
+    //     formData.append('images', storyImage.picturePreview);
+    //     // console.log(formData.getAll('images'));
+    //     const response = await fetch(`${api}/product/add`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Accept': 'multipart/form-data',
+    //             'Cache-Control': 'no-store'
+    //         },
+    //         body: formData,
+    //     });
+    //     const content = await response.json();
+    //     if (content.data) {
+    //         window.location.href = window.location.href.split('/admin')[0] + '/admin/product';
+    //     } else {
+    //         alert("Something went wrong.");
+    //     }
+    // }
 
     const handleSubmitEdit = async event => {
         event.preventDefault();
@@ -480,7 +559,6 @@ function ProductForm(props) {
                     const content = await response.json();
                     if (content.data) {
                         const { data } = content;
-                        console.log(data);
                         const activePrice = data.prices.find(p => p.active);
                         setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Kaneez' });
                         setShortDescription({ value: data.shortDescription, error: false, helperText: 'Enter a short description Ex. Pack of 2 Kitchen Towels' });
@@ -626,6 +704,28 @@ function ProductForm(props) {
                             />
                             <FormHelperText error={quantity.error}>{quantity.helperText}</FormHelperText>
                         </FormControl>
+                    </Col>
+                </Row>
+                <div className="margin-global-top-1" />
+                <Row>
+                    <Col md={6}>
+                        <label htmlFor="image1">
+                            <Input onChange={primaryImageChange} hidden accept="image/*" id="image1" type="file" />
+                            <Button type="button" variant="contained" component="span">
+                                Upload Primary Image
+                            </Button>
+                        </label>
+                    </Col>
+                    <Col md={6}>
+                        {
+                            primaryImage.imgURl !== '' ? (
+                                <>
+                                    <div className="margin-global-top-2" />
+                                    <img style={{ width: '15rem' }} src={primaryImage.imgURl} alt="Preview" />
+                                    <div className="margin-global-top-1" />
+                                </>
+                            ) : null
+                        }
                     </Col>
                 </Row>
                 <div className="margin-global-top-1" />

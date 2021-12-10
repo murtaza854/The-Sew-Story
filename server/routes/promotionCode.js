@@ -5,9 +5,11 @@ dotenv.config();
 
 const {
     STRIPE_SECRET_KEY,
+    STRIPE_LIVE_SECRET_KEY
 } = process.env;
 
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_LIVE_SECRET_KEY);
 
 router.get('/getAllPromotionCodes', async (req, res) => {
     try {

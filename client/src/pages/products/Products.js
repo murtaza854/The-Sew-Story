@@ -85,6 +85,7 @@ function Products(props) {
                             }
                         }
                     }
+                    console.log(product);
                     return {
                         name: product.name,
                         slug: product.slug,
@@ -93,7 +94,7 @@ function Products(props) {
                         discountedPrice: discountedPrice ? `$ ${discountedPrice}` : null,
                         value: value,
                         quantity: product.quantity,
-                        image: product.images[0].path,
+                        image: product.image,
                         category: {
                             slug: productSlug,
                         },

@@ -38,8 +38,9 @@ function Footer(props) {
             Mzushi, your online local directory for the finest listings of food, clothes and all things homemade. Search for businesses, list your own, review site products or services and make the shift from yellow pages, today!
           </p> */}
                 <div>
+                    Developed by <br />
                     <a className="h-b" href="https://www.instagram.com/hexandbracket" target="_blank" rel="noopener noreferrer">
-                        <img src="/h-b.jpg" alt="Hex & bracket" />
+                        <img src="/h-b.png" alt="Hex & bracket" />
                     </a>
                 </div>
                 <div className="footer-icons">

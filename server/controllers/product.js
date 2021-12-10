@@ -11,8 +11,10 @@ const {
 module.exports = {
     create(params) {
         return Product.create({
+            id: params.id,
             name: params.name,
             slug: params.slug,
+            image: params.image,
             shortDescription: params.shortDescription,
             productCode: params.productCode,
             story: params.story,
@@ -70,7 +72,7 @@ module.exports = {
                     ]
                 }
             ],
-            attributes: ['name', 'slug', 'quantity', 'active', 'shortDescription'],
+            attributes: ['name', 'slug', 'image', 'quantity', 'active', 'shortDescription'],
             where: {
                 slug: {
                     [Op.in]: slugs
@@ -107,7 +109,7 @@ module.exports = {
                     }
                 },
             ],
-            attributes: ['id', 'name', 'slug', 'quantity', 'active'],
+            attributes: ['id', 'name', 'image', 'slug', 'quantity', 'active'],
             where: {
                 slug: {
                     [Op.in]: slugs
@@ -131,7 +133,7 @@ module.exports = {
                     }
                 },
             ],
-            attributes: ['name', 'slug', 'quantity', 'active'],
+            attributes: ['name', 'slug', 'image', 'quantity', 'active'],
             where: {
                 slug: {
                     [Op.in]: slugs
@@ -148,7 +150,7 @@ module.exports = {
             where: {
                 id: id
             },
-            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
+            attributes: ['id', 'name', 'image', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
             include: [
                 {
                     model: Category,
@@ -185,7 +187,7 @@ module.exports = {
     },
     findBySlug(params) {
         return Product.findOne({
-            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
+            attributes: ['id', 'name', 'slug', 'image', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
             where: {
                 slug: params.slug,
                 active: true
@@ -222,7 +224,7 @@ module.exports = {
     },
     findBySlugClient(params) {
         return Product.findOne({
-            attributes: ['name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'shortDescription'],
+            attributes: ['name', 'slug', 'image', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'shortDescription'],
             where: {
                 slug: params.slug,
                 active: true
@@ -264,7 +266,7 @@ module.exports = {
     },
     getAll() {
         return Product.findAll({
-            attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
+            attributes: ['id', 'name', 'slug', 'image', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
             include: [
                 {
                     model: Category,
@@ -308,7 +310,7 @@ module.exports = {
     getAllByCategoryId(params) {
         if (params.limit) {
             return Product.findAll({
-                attributes: ['id', 'name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
+                attributes: ['id', 'name', 'slug', 'image', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'],
                 where: {
                     category_id: params.category_id,
                     active: true
@@ -352,7 +354,7 @@ module.exports = {
                 });
         } else {
         return Product.findAll({
-            attributes: ['name', 'slug', 'quantity', 'active', 'shortDescription'],
+            attributes: ['name', 'slug', 'image', 'quantity', 'active', 'shortDescription'],
             where: {
                 category_id: params.category_id,
                 active: true
@@ -384,7 +386,7 @@ module.exports = {
     update(params) {
         // console.log('params', params);
         const updateValues = {},
-            updateKeys = ['name', 'slug', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'];
+            updateKeys = ['name', 'slug', 'image', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'];
         updateKeys.forEach(function (key) {
             if (key in params) {
                 updateValues[key] = params[key];

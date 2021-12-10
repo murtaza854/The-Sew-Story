@@ -19,7 +19,7 @@ module.exports = {
         unique: true
       },
       product_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: 'products',
           key: 'id'

@@ -2,6 +2,7 @@ const Image = require('../models').image;
 
 module.exports = {
     create(params) {
+        console.log(params);
         return Image.create({
             fileName: params.fileName,
             path: params.path,

@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   image.init({
     fileName: DataTypes.STRING,
     path: DataTypes.STRING,
-    product_id: DataTypes.INTEGER
+    product_id: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'image',

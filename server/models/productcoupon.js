@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   productCoupon.init({
-    product_id: DataTypes.INTEGER,
+    product_id: DataTypes.STRING,
     coupon_id: DataTypes.STRING
   }, {
     sequelize,
