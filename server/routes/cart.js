@@ -11,11 +11,11 @@ dotenv.config();
 
 const {
     STRIPE_SECRET_KEY,
-    STRIPE_LIVE_SECRET_KEY
+    STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
-const stripe = require("stripe")(STRIPE_SECRET_KEY);
-// const stripe = require("stripe")(STRIPE_LIVE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY);
+const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 router.post("/cartProducts", async (req, res) => {
     const { cartProducts } = req.body;

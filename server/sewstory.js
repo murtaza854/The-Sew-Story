@@ -32,8 +32,8 @@ app.use(cookieParser(COOKIE_SECRET));
 
 app.use(cors({
     credentials: true,
-    origin: [API_URL1, API_URL2]
-    // origin: [API_URL3]
+    // origin: [API_URL1, API_URL2]
+    origin: [API_URL3]
     // origin: '*'
 }));
 app.use(express.static('./build'));
@@ -80,6 +80,7 @@ app.use('/api/promotionCode', promotionCodeRoutes);
 
 app.get('/api/logged-in', async (req, res) => {
     let cartProducts = JSON.parse(req.query.cartProducts) || [];
+    cartProducts = cartProducts.cartProducts;
     try {
         // const cartProductsCookie = req.cookies.cartProducts || [];
         const cartProductTemp = [...cartProducts];
@@ -91,7 +92,7 @@ app.get('/api/logged-in', async (req, res) => {
         });
         cartProducts = cartProductTemp;
     } catch (error) {
-        
+
     }
     try {
         const sessionCookie = req.cookies.session || "";

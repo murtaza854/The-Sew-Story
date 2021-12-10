@@ -18,16 +18,16 @@ const {
     API_URL2,
     API_URL3,
     STRIPE_SECRET_KEY,
-    STRIPE_LIVE_SECRET_KEY
+    STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
-const stripe = require("stripe")(STRIPE_SECRET_KEY);
-// const stripe = require("stripe")(STRIPE_LIVE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY);
+const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.resolve('../client/public/productUploads'))
-        // cb(null, path.resolve('./build/productUploads'));
+        // cb(null, path.resolve('../client/public/productUploads'))
+        cb(null, path.resolve('./build/productUploads'));
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -37,8 +37,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const productImagesUrl = API_URL1;
-// const productImagesUrl = API_URL3';
+// const productImagesUrl = API_URL1;
+const productImagesUrl = API_URL3;
 
 router.get('/getAll-client', async (req, res) => {
     const { categorySlug, limit } = req.query;

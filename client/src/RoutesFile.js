@@ -47,7 +47,9 @@ function RoutesFile(props) {
                         withCredentials: true
                     });
                     const content = await response.json();
+                    // if (content.cartProducts) {
                     localStorage.setItem('cartProducts', JSON.stringify(content.cartProducts));
+                    // }
                     const user = content.data;
                     const { displayName, email, emailVerified, admin } = user;
                     setUserState({ displayName, email, emailVerified, admin });

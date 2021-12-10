@@ -18,11 +18,11 @@ const {
     API_URL2,
     API_URL3,
     STRIPE_SECRET_KEY,
-    STRIPE_LIVE_SECRET_KEY
+    STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
-// const stripe = require("stripe")(STRIPE_LIVE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

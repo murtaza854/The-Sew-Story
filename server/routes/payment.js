@@ -27,15 +27,15 @@ const {
     STRIPE_SECRET_KEY,
     SHIPSTATION_API_KEY,
     SHIPSTATION_API_KEY_SECRET,
-    STRIPE_LIVE_SECRET_KEY
+    STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
 const shipstation = new shipstationAPI(
     SHIPSTATION_API_KEY,
     SHIPSTATION_API_KEY_SECRET);
 
-const stripe = require("stripe")(STRIPE_SECRET_KEY);
-// const stripe = require("stripe")(STRIPE_LIVE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY);
+const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 router.post('/create', async (req, res) => {
     const {

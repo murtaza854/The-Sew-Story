@@ -74,7 +74,8 @@ function Cart(props) {
     }, [userContext.userState]);
 
     useEffect(() => {
-        const cartProducts = JSON.parse(localStorage.getItem('cartProducts'));
+        const cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
+        // console.log(cartProducts);
         if (cartProducts) {
             const fetchedCartProducts = async _ => {
                 const response = await fetch(`${api}/cart/cartProducts`, {
