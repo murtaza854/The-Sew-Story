@@ -2,7 +2,6 @@ const Image = require('../models').image;
 
 module.exports = {
     create(params) {
-        console.log(params);
         return Image.create({
             fileName: params.fileName,
             path: params.path,
@@ -28,6 +27,32 @@ module.exports = {
             where: {
                 product_id: null
             }
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    getAllClient() {
+        return Image.findAll({
+            attributes: ['fileName', 'path'],
+            where: {
+                product_id: null
+            }
+        })
+            .then(function (data) {
+                return data;
+            });
+    },
+    delete(params) {
+        const deleteValues = {},
+            deleteKeys = ['id', 'fileName', 'path', 'product_id'];
+        deleteKeys.forEach(function (key) {
+            if (key in params) {
+                deleteValues[key] = params[key];
+            }
+        });
+        return Image.destroy({
+            where: deleteValues
         })
             .then(function (data) {
                 return data;

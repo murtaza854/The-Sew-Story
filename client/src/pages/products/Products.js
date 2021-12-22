@@ -72,7 +72,7 @@ function Products(props) {
                     if (coupon) {
                         let flag = true;
                         if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                        if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                        if (coupon.maxRedemptions && coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
                         if (flag && !coupon.hasPromotionCodes) {
                             if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
                                 if (coupon.type === 'Fixed Amount Discount') {
@@ -85,7 +85,6 @@ function Products(props) {
                             }
                         }
                     }
-                    console.log(product);
                     return {
                         name: product.name,
                         slug: product.slug,
@@ -147,7 +146,6 @@ function Products(props) {
                 setProducts(chunks);
                 setTotalPages(chunks.length);
             } catch (error) {
-                console.log(error);
             }
             // }
         };

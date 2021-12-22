@@ -42,10 +42,8 @@ sequelize.authenticate().then(() => {
             // split the line into an array of strings
             var columns = line.split('|');
             // log the data to the console
-            // console.log('City: ' + columns[0] + ', State: ' + columns[2], ', County: ' + columns[3]);
             try {
                 if (columns[2] && !states.find(state => state.name === columns[2])) {
-                    console.log('State: ' + columns[2], slugify(columns[2], { lower: true }), columns[1]);
                     states.push({
                         name: columns[2],
                         slug: slugify(columns[2], { lower: true }),
@@ -70,10 +68,8 @@ sequelize.authenticate().then(() => {
                 abbreviation: state.abbreviation
             })
                 .then(state => {
-                    console.log('Added');
                 })
                 .catch(err => {
-                    console.log(err);
                 });
         });
     });

@@ -28,7 +28,6 @@ router.post('/getById', async (req, res) => {
         const state = await stateController.getById(id);
         res.json({ data: state });
     } catch (error) {
-        console.log(error);
         res.json({ data: [], error: error.message });
     }
 });
@@ -42,6 +41,7 @@ router.post('/add', async (req, res) => {
         });
         res.json({ data: newState });
     } catch (error) {
+        console.log(error);
         res.json({ data: null, error: error.message });
     }
 });

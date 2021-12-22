@@ -11,8 +11,8 @@ const {
     STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
-// const stripe = require("stripe")(STRIPE_SECRET_KEY);
-const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 const auth = getAuth();
 
@@ -39,7 +39,6 @@ router.post('/login', async (req, res) => {
         const sessionCookie = await firebaseAdmin.auth().createSessionCookie(idToken, { expiresIn });
         const options = { maxAge: expiresIn, httpOnly: true, secure: true /* to test in localhost */ };
         res.cookie("session", sessionCookie, options);
-        // console.log(res.cookie("session"));
         await signOut(auth);
         res.json({ data: { displayName, email, emailVerified, admin } });
     } catch (error) {
@@ -64,7 +63,6 @@ router.post('/login-admin', async (req, res) => {
         const sessionCookie = await firebaseAdmin.auth().createSessionCookie(idToken, { expiresIn });
         const options = { maxAge: expiresIn, httpOnly: true, secure: true /* to test in localhost */ };
         res.cookie("sessionAdmin", sessionCookie, options);
-        // console.log(res.cookie("session"));
         await signOut(auth);
         res.json({ data: { displayName, email, emailVerified, admin } });
     } catch (error) {
@@ -108,7 +106,6 @@ router.post('/change-password', async (req, res) => {
         await signOut(auth);
         res.json({ data: true });
     } catch (error) {
-        console.log(error);
         res.json({ data: false });
     }
 });
@@ -128,7 +125,6 @@ router.post('/change-email', async (req, res) => {
         await signOut(auth);
         res.json({ data: true });
     } catch (error) {
-        console.log(error);
         res.json({ data: false });
     }
 });
@@ -148,7 +144,6 @@ router.post('/change-owner-info', async (req, res) => {
         const admin = user.admin;
         res.json({ data: { displayName, email, emailVerified, admin }, check: true });
     } catch (error) {
-        console.log(error);
         res.json({ check: false });
     }
 });
@@ -159,7 +154,6 @@ router.post('/subscribe', async (req, res) => {
         await subscribeController.createIfNotExists({ email: req.body.email });
         res.json({ data: true });
     } catch (error) {
-        console.log(error);
         res.json({ check: false });
     }
 });
@@ -169,7 +163,6 @@ router.post('/send-password-reset-link', async (req, res) => {
         await sendPasswordResetEmail(auth, req.body.email);
         res.json({ data: true });
     } catch (error) {
-        console.log(error);
         res.json({ data: false });
     }
 });
@@ -205,7 +198,6 @@ router.post('/signup', async (req, res) => {
         await signOut(auth);
         res.json({ data: true });
     } catch (error) {
-        console.log(error);
         res.json({ data: false, error: error });
     }
 });
@@ -225,7 +217,6 @@ router.post('/signup', async (req, res) => {
 //             throw "Email not verified";
 //         } else res.json({ data: { displayName, email, emailVerified, admin } });
 //     } catch (error) {
-//         console.log(error);
 //         res.json({ data: null, error: error });
 //     }
 // });

@@ -49,7 +49,7 @@ function ProductPage(props) {
                     if (coupon) {
                         let flag = true;
                         if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                        if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                        if (coupon.maxRedemptions && coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
                         if (flag && !coupon.hasPromotionCodes) {
                             if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
                                 if (coupon.type === 'Fixed Amount Discount') {
@@ -164,7 +164,7 @@ function ProductPage(props) {
             if (coupon) {
                 let flag = true;
                 if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
-                if (coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                if (coupon.maxRedemptions && coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
                 if (flag && !coupon.hasPromotionCodes) {
                     if (coupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
                         if (coupon.type === 'Fixed Amount Discount') {
@@ -210,7 +210,6 @@ function ProductPage(props) {
             //         story: 'Kaneez belongs to a small village in interior Sindh. She moved to Karachi with her husband and four kids five years ago in search of better work opportunities and life style. She currently resides in a rented small one-bedroom house. Her husband works as an electrician and welder with a construction team and is paid Rs.350 (approximately $2 USD) per day which is just enough to manage to get food on the table each day. Kaneez manages to contribute to the household expenses sometimes if she is able to get sewing or embroidery work from her neighborhood and society women. Her kids aged 4,5,7 and 9 all used to go to school but earlier this year due to insufficient funds, the two older kids were withdrawn from school and were asked to help work along their parents to contribute to the household income.Kaneez met The Sew Story tea, in August 2021 and has been an integral member of our team since then. She has been able to enroll all her kids back in school and The Sew Story team has taken up the responsibility to pay their education expenses',
             //     });
             // } catch (error) {
-            //     console.log(error);
             // }
         };
         fetchProduct();

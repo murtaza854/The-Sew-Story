@@ -90,7 +90,6 @@ router.post('/getById', async (req, res) => {
         const product = await productController.getById(req.body.id);
         res.json({ data: product });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });
@@ -127,7 +126,6 @@ router.post('/add', upload.array('images'), async (req, res) => {
             quantity: data.quantity
         });
         id = obj.dataValues.id
-        // console.log('obj', obj);
         data.details.forEach(async (detail) => {
             await detailController.create({
                 product_id: obj.dataValues.id,
@@ -154,7 +152,6 @@ router.post('/add', upload.array('images'), async (req, res) => {
             }
         }
         const category = await categoryController.getById(obj.dataValues.category_id);
-        // console.log('category', category);
         const product = await stripe.products.create({
             id: obj.dataValues.id,
             name: data.name,
@@ -178,7 +175,6 @@ router.post('/add', upload.array('images'), async (req, res) => {
         });
         res.json({ data: true });
     } catch (error) {
-        console.log(error);
         await productController.deleteById(id);
         res.json({ data: null, error: error });
     }
@@ -210,7 +206,6 @@ router.post('/updateWithImage', upload.array('images'), async (req, res) => {
         let count = 0;
         if (data.storyImageToBeDeleted !== '') {
             count = 1;
-            // console.log('data.storyImageToBeDeleted', data.storyImageToBeDeleted);
             try {
                 fs.unlinkSync(path.resolve('../client/public/productUploads/' + data.storyOldFileName));
                 // fs.unlinkSync(path.resolve('./build/productUploads/' + data.storyOldFileName));
@@ -268,7 +263,6 @@ router.post('/updateWithImage', upload.array('images'), async (req, res) => {
             }
         }
         const category = await categoryController.getById(obj.dataValues.category_id);
-        // console.log('category', category);
         const product = await stripe.products.update(obj.dataValues.id.toString(), {
             name: data.name,
             active: data.active,
@@ -305,7 +299,6 @@ router.post('/updateWithImage', upload.array('images'), async (req, res) => {
             res.json({ data: true });
         }
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });
@@ -352,7 +345,6 @@ router.post('/updateWithoutImage', async (req, res) => {
             quantity: req.body.quantity
         });
         const obj = await productController.getById(req.body.id);
-        // console.log('obj', obj);
         await detailController.deleteByProductId({ product_id: req.body.id });
         req.body.details.forEach(async (detail) => {
             await detailController.create({
@@ -369,7 +361,6 @@ router.post('/updateWithoutImage', async (req, res) => {
             // fs.unlinkSync(path.resolve('./build/productUploads/' + image));
         });
         const category = await categoryController.getById(obj.dataValues.category_id);
-        // console.log('category', category);
         const product = await stripe.products.update(obj.dataValues.id.toString(), {
             name: req.body.name,
             active: req.body.active,
@@ -405,7 +396,6 @@ router.post('/updateWithoutImage', async (req, res) => {
             res.json({ data: true });
         }
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });

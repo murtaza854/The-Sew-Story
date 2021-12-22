@@ -7,6 +7,8 @@ import { ProductForm, ProductTable } from './product';
 import { DescriptionTypeForm, DescriptionTypeTable } from './descriptionType'
 import { CouponForm, CouponTable } from './coupon';
 import { PromotionCodeForm, PromotionCodeTable } from './promotionCode';
+import { ShippingRateForm, ShippingRateTable } from './shippingRate';
+import { GalleryForm, GalleryTable } from './gallery';
 import { CreateCategoryData } from './category/categoryTable/CreateCategoryData';
 import { CreateProductData } from './product/productTable/CreateProductData';
 import { CreateUserData } from './user/userTable/CreateUserData';
@@ -15,6 +17,8 @@ import { CreateStateData } from './state/stateTable/CreateStateData';
 import { CreateCityData } from './city/cityTable/CreateCityData';
 import { CreateCouponData } from './coupon/couponTable/CreateCouponData';
 import { CreatePromotionCodeData } from './promotionCode/promotionCodeTable/CreatePromotionCodeData';
+import { CreateShippingRateData } from './shippingRate/shippingRateTable/CreateShippingRateData';
+import { CreateGalleryData } from './gallery/galleryTable/CreateGalleryData';
 import {
     Switch,
     Route,
@@ -60,6 +64,14 @@ function Database(props) {
     } else if (urlPath === '/admin/promotion-code' || urlPath === '/admin/promotion-code/add') {
         fetchUrl = 'promotionCode/getAllPromotionCodes';
         chosenFunction = CreatePromotionCodeData;
+    } else if (urlPath === '/admin/shipping-rate' || urlPath === '/admin/shipping-rate/add') {
+        fetchUrl = 'shippingRate/getAllShippingRates';
+        chosenFunction = CreateShippingRateData;
+    } else if (urlPath === '/admin/order') {
+        fetchUrl = 'order/getAllOrders';
+    } else if (urlPath === '/admin/gallery') {
+        fetchUrl = 'gallery/getAllImages';
+        chosenFunction = CreateGalleryData;
     }
 
     history.listen((location, action) => {
@@ -95,6 +107,8 @@ function Database(props) {
                 'description-type': false,
                 'coupon': false,
                 'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         } else if (urlPath === '/admin/category') {
             setLinkDisableObject({
@@ -108,6 +122,8 @@ function Database(props) {
                 'description-type': false,
                 'coupon': false,
                 'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         } else if (urlPath === '/admin/product') {
             setLinkDisableObject({
@@ -121,6 +137,8 @@ function Database(props) {
                 'description-type': false,
                 'coupon': false,
                 'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         } else if (urlPath === '/admin/description-type') {
             setLinkDisableObject({
@@ -134,6 +152,8 @@ function Database(props) {
                 'description-type': true,
                 'coupon': false,
                 'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         } else if (urlPath === '/admin/state') {
             setLinkDisableObject({
@@ -147,6 +167,8 @@ function Database(props) {
                 'description-type': false,
                 'coupon': false,
                 'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         } else if (urlPath === '/admin/city') {
             setLinkDisableObject({
@@ -160,6 +182,8 @@ function Database(props) {
                 'description-type': false,
                 'coupon': false,
                 'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         } else if (urlPath === '/admin/coupon') {
             setLinkDisableObject({
@@ -173,6 +197,8 @@ function Database(props) {
                 'description-type': false,
                 'coupon': true,
                 'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         } else if (urlPath === '/admin/promotion-code') {
             setLinkDisableObject({
@@ -186,6 +212,23 @@ function Database(props) {
                 'description-type': false,
                 'coupon': false,
                 'promotionCode': true,
+                'shippingRate': false,
+                'gallery': false
+            });
+        } else if (urlPath === '/admin/gallery') {
+            setLinkDisableObject({
+                'dashboard': false,
+                'user': false,
+                'order': false,
+                'product': false,
+                'category': false,
+                'state': false,
+                'city': false,
+                'description-type': false,
+                'coupon': false,
+                'promotionCode': false,
+                'shippingRate': false,
+                'gallery': true
             });
         } else {
             setLinkDisableObject({
@@ -198,9 +241,11 @@ function Database(props) {
                 'city': false,
                 'description-type': false,
                 'coupon': false,
+                'promotionCode': false,
+                'shippingRate': false,
+                'gallery': false
             });
         }
-        console.log('fetchUrl', fetchUrl);
         if (fetchUrl !== '') {
             fetch(`${api}/${fetchUrl}`, {
                 method: 'GET',
@@ -209,6 +254,7 @@ function Database(props) {
                 }
             }).then(res => res.json())
                 .then(data => {
+                    console.log(data);
                     const rows = data.data.map(obj => {
                         return chosenFunction(obj);
                     });
@@ -251,6 +297,20 @@ function Database(props) {
                     setFilteredRows={setFilteredRows}
                 />
             </Route>
+            <Route path="/admin/gallery/add">
+                <GalleryForm
+                    rows={rows}
+                    setRows={setRows}
+                    setFilteredRows={setFilteredRows}
+                />
+            </Route>
+            <Route exact path="/admin/shipping-rate/add">
+                <ShippingRateForm
+                    rows={rows}
+                    setRows={setRows}
+                    setFilteredRows={setFilteredRows}
+                />
+            </Route>
             <Route exact path="/admin/promotion-code/add">
                 <PromotionCodeForm rows={rows} setRows={setRows} />
             </Route>
@@ -282,6 +342,24 @@ function Database(props) {
                     rows={rows}
                     setRows={setRows}
                     setFilteredRows={setFilteredRows}
+                />
+            </Route>
+            <Route exact path="/admin/gallery">
+                <GalleryTable
+                    rows={rows}
+                    filteredRows={filteredRows}
+                    setFilteredRows={setFilteredRows}
+                    tableOrder="image"
+                    searchField="image"
+                />
+            </Route>
+            <Route exact path="/admin/shipping-rate">
+                <ShippingRateTable
+                    rows={rows}
+                    filteredRows={filteredRows}
+                    setFilteredRows={setFilteredRows}
+                    tableOrder="name"
+                    searchField="name"
                 />
             </Route>
             <Route path="/admin/promotion-code">

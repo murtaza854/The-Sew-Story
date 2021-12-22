@@ -111,9 +111,7 @@ function AdminLayout(props) {
   if (!props.darkState) color = 'black';
 
   const handleThemeChange = async () => {
-    // console.log(!props.darkState)
     props.setDarkState(!props.darkState);
-    // console.log(props.darkState)
     // await fetch('http://localhost:4000/api/set-darktheme', {
     //   method: 'POST',
     //   headers: {'Content-Type': 'application/json'},

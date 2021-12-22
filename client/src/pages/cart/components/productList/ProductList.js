@@ -11,7 +11,6 @@ function ProductList(props) {
     const cartCountFromContext = useContext(CartCountContext);
 
     // useEffect(() => {
-    //     console.log('ProductList useEffect');
     //     // setCartProductList(products);
     // }, [products]);
 

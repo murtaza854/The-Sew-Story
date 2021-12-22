@@ -1,6 +1,9 @@
 const promotionCode = require('../models').promotionCode;
 const Coupon = require('../models').coupon;
 const User = require('../models').user;
+const ProductCoupon = require('../models').productCoupon;
+const Product = require('../models').product;
+
 
 module.exports = {
     create(params) {
@@ -56,7 +59,21 @@ module.exports = {
                 {
                     model: Coupon,
                     attributes: ['id', 'name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes'],
-                    as: 'coupon'
+                    as: 'coupon',
+                    include: [
+                        {
+                            model: ProductCoupon,
+                            attributes: ['product_id'],
+                            as: 'productCoupons',
+                            include: [
+                                {
+                                    model: Product,
+                                    attributes: ['slug'],
+                                    as: 'product',
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     model: User,

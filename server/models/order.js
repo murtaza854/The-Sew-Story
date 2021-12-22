@@ -23,6 +23,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
+      order.belongsTo(models.shippingRate, {
+        foreignKey: 'shippingRateId',
+        as: 'shippingRate',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
       order.hasMany(models.orderItem, {
         as: 'orderItems',
         foreignKey: 'order_id',
@@ -54,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     orderTotal: DataTypes.FLOAT,
     user_id: DataTypes.INTEGER,
     stripe_sessionID: DataTypes.STRING,
+    shippingRateId: DataTypes.STRING,
     // coupon_id: DataTypes.STRING,
   }, {
     sequelize,

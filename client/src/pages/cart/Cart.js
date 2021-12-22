@@ -20,28 +20,26 @@ function Cart(props) {
 
     const [disable, setDisable] = useState(true);
 
-    const [firstName, setFirstName] = useState({ name: '', error: false, errorText: '', readOnly: false });
-    const [lastName, setLastName] = useState({ name: '', error: false, errorText: '', readOnly: false });
+    // const [firstName, setFirstName] = useState({ name: '', error: false, errorText: '', readOnly: false });
+    // const [lastName, setLastName] = useState({ name: '', error: false, errorText: '', readOnly: false });
     const [email, setEmail] = useState({ name: '', error: false, errorText: '', readOnly: false });
-    const [contactNumber, setContactNumber] = useState({ name: '', error: false, errorText: '' });
+    // const [contactNumber, setContactNumber] = useState({ name: '', error: false, errorText: '' });
 
-    const [state, setState] = useState({ value: [], error: false, errortext: '', readOnly: false });
-    const [stateList, setStateList] = useState([]);
-    const [stateLoading, setStateLoading] = useState(false);
+    // const [state, setState] = useState({ value: [], error: false, errortext: '', readOnly: false });
+    // const [stateList, setStateList] = useState([]);
+    // const [stateLoading, setStateLoading] = useState(false);
 
-    const [city, setCity] = useState({ value: [], error: false, errortext: '', readOnly: true });
-    const [cityList, setCityList] = useState([]);
-    const [cityLoading, setCityLoading] = useState(false);
+    // const [city, setCity] = useState({ value: [], error: false, errortext: '', readOnly: true });
+    // const [cityList, setCityList] = useState([]);
+    // const [cityLoading, setCityLoading] = useState(false);
 
-    const [addressLine1, setAddressLine1] = useState({ text: '', error: false, errorText: '' });
-    const [addressLine2, setAddressLine2] = useState({ text: '' });
-    const [landmark, setLandmark] = useState({ text: '' });
-    const [zipCode, setZipCode] = useState({ text: '', error: false, errorText: '' });
+    // const [addressLine1, setAddressLine1] = useState({ text: '', error: false, errorText: '' });
+    // const [addressLine2, setAddressLine2] = useState({ text: '' });
+    // const [landmark, setLandmark] = useState({ text: '' });
+    // const [zipCode, setZipCode] = useState({ text: '', error: false, errorText: '' });
 
     const [couponButton, setCouponButton] = useState({ text: 'Apply Coupon', disabled: false });
     const [coupon, setCoupon] = useState({ value: '', error: false, errortext: '', readOnly: false });
-
-    const [generalCoupon, setGeneralCoupon] = useState(null);
 
     const [billCoupon, setBillCoupon] = useState(null);
     const [productCoupon, setProductCoupon] = useState(null);
@@ -61,12 +59,12 @@ function Cart(props) {
                 });
                 const content = await response.json();
                 const {
-                    firstName,
-                    lastName,
+                    // firstName,
+                    // lastName,
                     email,
                 } = content.data;
-                setFirstName({ name: firstName, error: false, errorText: '', readOnly: true });
-                setLastName({ name: lastName, error: false, errorText: '', readOnly: true });
+                // setFirstName({ name: firstName, error: false, errorText: '', readOnly: true });
+                // setLastName({ name: lastName, error: false, errorText: '', readOnly: true });
                 setEmail({ name: email, error: false, errorText: '', readOnly: true });
             }
             getUserInfo();
@@ -75,7 +73,6 @@ function Cart(props) {
 
     useEffect(() => {
         const cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
-        // console.log(cartProducts);
         if (cartProducts) {
             const fetchedCartProducts = async _ => {
                 const response = await fetch(`${api}/cart/cartProducts`, {
@@ -88,47 +85,50 @@ function Cart(props) {
                 const json = await response.json();
                 const { data, coupons } = json;
                 // setGeneralCoupon(coupons.find(coupon => coupon.hasPromotionCodes));
-                let billCoupon = null;
-                let productCoupon = null;
+                let billCouponDB = null;
+                let productCouponDB = null;
                 for (let i = 0; i < coupons.length; i++) {
                     const couponFromArray = coupons[i];
                     let flag = true;
                     if (!couponFromArray.appliedToProducts) {
                         if (couponFromArray.maxRedemptions && couponFromArray.maxRedemptions <= couponFromArray.timesRedeeemed) flag = false;
                         if (flag && couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
-                            billCoupon = couponFromArray;
+                            billCouponDB = couponFromArray;
                         } else if (flag && !couponFromArray.redeemBy) {
-                            billCoupon = couponFromArray;
+                            billCouponDB = couponFromArray;
                         }
                     } else {
                         if (couponFromArray.maxRedemptions && couponFromArray.maxRedemptions <= couponFromArray.timesRedeeemed) flag = false;
                         if (flag && couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
-                            productCoupon = couponFromArray;
+                            productCouponDB = couponFromArray;
                         } else if (flag && !couponFromArray.redeemBy) {
-                            productCoupon = couponFromArray;
+                            productCouponDB = couponFromArray;
                         }
                     }
                 }
+                if (billCouponDB) {
+                    productCouponDB = null;
+                }
                 // if (!coupon && coupons.length > 0 && !coupons[0].redeemBy) 
                 let productCouponSlugs = [];
-                if (productCoupon && productCoupon.productCoupons.length > 0) productCouponSlugs = productCoupon.productCoupons.map((productCoupon) => productCoupon.product.slug);
+                if (productCouponDB && productCouponDB.productCoupons.length > 0) productCouponSlugs = productCouponDB.productCoupons.map((productCoupon) => productCoupon.product.slug);
                 let totalPrice = 0;
                 setCartProducts([].map.call(data, (product) => {
                     const prodQuantity = (cartProducts.find(cartProduct => cartProduct.slug === product.slug)).quantity;
                     let discountedPrice = null;
                     let value = null;
-                    if (productCoupon) {
+                    if (productCouponDB) {
                         let flag = true;
                         if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
                         if (coupon.maxRedemptions && coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
-                        if (flag && !productCoupon.hasPromotionCodes) {
-                            if (productCoupon.appliedToProducts && productCouponSlugs.includes(product.slug)) {
-                                if (productCoupon.type === 'Fixed Amount Discount') {
-                                    discountedPrice = (product.prices[0].amount - productCoupon.amountOff);
-                                    value = `$${productCoupon.amountOff}`;
+                        if (flag && !productCouponDB.hasPromotionCodes) {
+                            if (productCouponDB.appliedToProducts && productCouponSlugs.includes(product.slug)) {
+                                if (productCouponDB.type === 'Fixed Amount Discount') {
+                                    discountedPrice = (product.prices[0].amount - productCouponDB.amountOff);
+                                    value = `$${productCouponDB.amountOff}`;
                                 } else {
-                                    discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (productCoupon.percentOff / 100)));
-                                    value = `${productCoupon.percentOff}%`;
+                                    discountedPrice = (product.prices[0].amount - (product.prices[0].amount * (productCouponDB.percentOff / 100)));
+                                    value = `${productCouponDB.percentOff}%`;
                                 }
                             }
                         }
@@ -141,7 +141,8 @@ function Cart(props) {
                                 slug: product.slug,
                                 price: 0,
                                 quantity: product.quantity,
-                                image: product.images[0].path,
+                                image: product.image,
+                                active: product.active,
                                 details: [{
                                     label: 'Unavailable',
                                     text: 'Will be removed from cart automatically'
@@ -162,7 +163,8 @@ function Cart(props) {
                                 discountedPrice,
                                 value,
                                 quantity: product.quantity,
-                                image: product.images[0].path,
+                                image: product.image,
+                                active: product.active,
                                 details: product.details,
                             },
                             quantity: prodQuantity,
@@ -175,7 +177,8 @@ function Cart(props) {
                                 slug: product.slug,
                                 price: 0,
                                 quantity: product.quantity,
-                                image: product.images[0].path,
+                                image: product.image,
+                                active: product.active,
                                 details: [{
                                     label: 'Out of Stock',
                                     text: 'Will be removed from cart automatically'
@@ -185,18 +188,20 @@ function Cart(props) {
                         };
                     }
                 }));
+                console.log(billCouponDB);
+                console.log(productCouponDB);
 
-                if (billCoupon) {
-                    if (billCoupon.type === 'Fixed Amount Discount') {
-                        setDiscountedPrice(totalPrice - billCoupon.amountOff);
-                        setValue(`$${billCoupon.amountOff}`);
+                if (billCouponDB) {
+                    if (billCouponDB.type === 'Fixed Amount Discount') {
+                        setDiscountedPrice(totalPrice - billCouponDB.amountOff);
+                        setValue(`$${billCouponDB.amountOff}`);
                     } else {
-                        setDiscountedPrice(totalPrice - (totalPrice * (billCoupon.percentOff / 100)));
-                        setValue(`${billCoupon.percentOff}%`);
+                        setDiscountedPrice(totalPrice - (totalPrice * (billCouponDB.percentOff / 100)));
+                        setValue(`${billCouponDB.percentOff}%`);
                     }
                 }
-                setBillCoupon(billCoupon);
-                setProductCoupon(productCoupon);
+                setBillCoupon(billCouponDB);
+                setProductCoupon(productCouponDB);
                 setCartTotal(totalPrice);
                 // setCartProducts(data);
             }
@@ -205,18 +210,18 @@ function Cart(props) {
             setCartProducts([]);
         }
         // setCartProducts(cartProducts);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        if (billCoupon && cartTotal && cartProducts.length > 0) {
-            // console.log(billCoupon, cartProducts);
-            if (billCoupon.type === 'Fixed Amount Discount') {
-                setDiscountedPrice(cartTotal - billCoupon.amountOff);
-                setValue(`$${billCoupon.amountOff}`);
-            } else {
-                setDiscountedPrice(cartTotal - (cartTotal * (billCoupon.percentOff / 100)));
-                setValue(`${billCoupon.percentOff}%`);
-            }
+        // if (billCoupon && cartTotal && cartProducts.length > 0) {
+            // if (billCoupon.type === 'Fixed Amount Discount') {
+            //     setDiscountedPrice(cartTotal - billCoupon.amountOff);
+            //     setValue(`$${billCoupon.amountOff}`);
+            // } else {
+            //     setDiscountedPrice(cartTotal - (cartTotal * (billCoupon.percentOff / 100)));
+            //     setValue(`${billCoupon.percentOff}%`);
+            // }
             // setCartProducts([].map.call(cartProducts, (product) => {
             //     let discountedPrice = null;
             //     let value = null;
@@ -235,7 +240,6 @@ function Cart(props) {
             //         //     }
             //         // }
             //     }
-            //     console.log(discountedPrice, value, flag);
             //     return {
             //         product: {
             //             name: product.product.name,
@@ -275,7 +279,7 @@ function Cart(props) {
             //     //     };
             //     // }
             // }));
-        }
+        // }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cartTotal]);
 
@@ -312,38 +316,43 @@ function Cart(props) {
 
     useEffect(() => {
         let flag = true;
-        if (firstName.name.length === 0) flag = true;
-        else if (firstName.error === true) flag = true;
-        else if (lastName.name.length === 0) flag = true;
-        else if (lastName.error === true) flag = true;
-        else if (contactNumber.name.length === 0) flag = true;
-        else if (contactNumber.error === true) flag = true;
-        else if (email.name.length === 0) flag = true;
+        // if (firstName.name.length === 0) flag = true;
+        // else if (firstName.error === true) flag = true;
+        // else if (lastName.name.length === 0) flag = true;
+        // else if (lastName.error === true) flag = true;
+        // else if (contactNumber.name.length === 0) flag = true;
+        // else if (contactNumber.error === true) flag = true;
+        if (email.name.length === 0) flag = true;
         else if (email.error === true) flag = true;
-        else if (state.error === true) flag = true;
-        else if (state.value.length === 0) flag = true;
-        else if (city.error === true) flag = true;
-        else if (city.value.length === 0) flag = true;
-        else if (addressLine1.error === true) flag = true;
-        else if (addressLine1.text.length === 0) flag = true;
-        else if (zipCode.error === true) flag = true;
-        else if (zipCode.text.length === 0) flag = true;
+        // else if (state.error === true) flag = true;
+        // else if (state.value.length === 0) flag = true;
+        // else if (city.error === true) flag = true;
+        // else if (city.value.length === 0) flag = true;
+        // else if (addressLine1.error === true) flag = true;
+        // else if (addressLine1.text.length === 0) flag = true;
+        // else if (zipCode.error === true) flag = true;
+        // else if (zipCode.text.length === 0) flag = true;
         else flag = false;
         setDisable(flag);
-    }, [state, city, addressLine1, zipCode, firstName, lastName, contactNumber, email]);
+    }, [email]);
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        // history.push('/payment');
+        localStorage.setItem('coupons', JSON.stringify({
+            productCoupon: productCoupon,
+            billCoupon: billCoupon,
+        }));
         history.push(`/payment?array=${JSON.stringify({
-            firstName: firstName.name,
-            lastName: lastName.name,
+            // firstName: firstName.name,
+            // lastName: lastName.name,
             email: email.name,
-            contactNumber: contactNumber.name,
-            city: city.value,
-            addressLine1: addressLine1.text,
-            addressLine2: addressLine2.text,
-            zipCode: zipCode.text,
-            cartTotal
+            // contactNumber: contactNumber.name,
+            // city: city.value,
+            // addressLine1: addressLine1.text,
+            // addressLine2: addressLine2.text,
+            // zipCode: zipCode.text,
+            // cartTotal
         })}`);
     }
 
@@ -356,13 +365,132 @@ function Cart(props) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
+                withCredentials: true,
                 body: JSON.stringify({
                     promotionCode: coupon.value
                 })
             });
             const data = await response.json();
             if (data.data) {
-                console.log(data.data);
+                const cartProductsLocal = JSON.parse(localStorage.getItem('cartProducts')) || [];
+                let billCouponDB = null;
+                let productCouponDB = null;
+                let flag = true;
+                if (!data.data.coupon.appliedToProducts) {
+                    if (data.data.coupon.maxRedemptions && data.data.coupon.maxRedemptions <= data.data.coupon.timesRedeeemed) {
+                        if (data.data.maxRedemptions && data.data.maxRedemptions <= data.data.timesRedeeemed) flag = false;
+                    }
+                    if (flag && data.data.coupon.redeemBy && new Date(data.data.coupon.redeemBy) >= new Date()) {
+                        if (flag && data.data.expiresAt && new Date(data.data.expiresAt) >= new Date()) billCouponDB = data.data.coupon;
+                    } else if (flag && !data.data.coupon.redeemBy) {
+                        if (flag && !data.data.redeemBy) billCouponDB = data.data.coupon;
+                    }
+                } else {
+                    if (data.data.coupon.maxRedemptions && data.data.coupon.maxRedemptions <= data.data.coupon.timesRedeeemed) {
+                        if (data.data.maxRedemptions && data.data.maxRedemptions <= data.data.timesRedeeemed) flag = false;
+                    }
+                    if (flag && data.data.coupon.redeemBy && new Date(data.data.coupon.redeemBy) >= new Date()) {
+                        if (flag && data.data.expiresAt && new Date(data.data.expiresAt) >= new Date()) productCouponDB = data.data.coupon;
+                    } else if (flag && !data.data.coupon.redeemBy) {
+                        if (flag && !data.data.redeemBy) productCouponDB = data.data.coupon;
+                    }
+                }
+                if (!billCouponDB) billCouponDB = billCoupon;
+                if (!productCouponDB) productCouponDB = productCoupon;
+                // if (!coupon && coupons.length > 0 && !coupons[0].redeemBy) 
+                let productCouponSlugs = [];
+                if (productCouponDB && productCouponDB.productCoupons.length > 0) productCouponSlugs = productCouponDB.productCoupons.map((productCoupon) => productCoupon.product.slug);
+                let totalPrice = 0;
+                setCartProducts([].map.call(cartProducts, (productObj) => {
+                    const product = productObj.product;
+                    const prodQuantity = (cartProductsLocal.find(cartProduct => cartProduct.slug === product.slug)).quantity;
+                    let discountedPrice = null;
+                    let value = null;
+                    if (productCouponDB) {
+                        let flag = true;
+                        if (coupon.redeemBy && new Date(coupon.redeemBy) < new Date()) flag = false;
+                        if (coupon.maxRedemptions && coupon.maxRedemptions <= coupon.timesRedeeemed) flag = false;
+                        if (flag && !productCouponDB.hasPromotionCodes) {
+                            if (productCouponDB.appliedToProducts && productCouponSlugs.includes(product.slug)) {
+                                if (productCouponDB.type === 'Fixed Amount Discount') {
+                                    discountedPrice = (product.price - productCouponDB.amountOff);
+                                    value = `$${productCouponDB.amountOff}`;
+                                } else {
+                                    discountedPrice = (product.price - (product.price * (productCouponDB.percentOff / 100)));
+                                    value = `${productCouponDB.percentOff}%`;
+                                }
+                            }
+                        }
+                    }
+                    if (!product.active) {
+                        localStorage.setItem('cartProducts', JSON.stringify(cartProductsLocal.filter(cartProduct => cartProduct.slug !== product.slug)));
+                        return {
+                            product: {
+                                name: product.name,
+                                slug: product.slug,
+                                price: 0,
+                                quantity: product.quantity,
+                                image: product.image,
+                                active: product.active,
+                                details: [{
+                                    label: 'Unavailable',
+                                    text: 'Will be removed from cart automatically'
+                                }],
+                            },
+                            quantity: product.quantity,
+                        };
+                    }
+                    else if (prodQuantity <= product.quantity) {
+                        if (discountedPrice) totalPrice += discountedPrice * prodQuantity;
+                        else totalPrice += product.price * prodQuantity;
+                        // totalPrice += product.price * prodQuantity;
+                        return {
+                            product: {
+                                name: product.name,
+                                slug: product.slug,
+                                price: product.price,
+                                discountedPrice,
+                                value,
+                                quantity: product.quantity,
+                                image: product.image,
+                                active: product.active,
+                                details: product.details,
+                            },
+                            quantity: prodQuantity,
+                        };
+                    } else {
+                        localStorage.setItem('cartProducts', JSON.stringify(cartProductsLocal.filter(cartProduct => cartProduct.slug !== product.slug)));
+                        return {
+                            product: {
+                                name: product.name,
+                                slug: product.slug,
+                                price: 0,
+                                quantity: product.quantity,
+                                image: product.image,
+                                active: product.active,
+                                details: [{
+                                    label: 'Out of Stock',
+                                    text: 'Will be removed from cart automatically'
+                                }],
+                            },
+                            quantity: product.quantity,
+                        };
+                    }
+                }));
+
+                if (billCouponDB) {
+                    if (billCouponDB.type === 'Fixed Amount Discount') {
+                        setDiscountedPrice(totalPrice - billCouponDB.amountOff);
+                        setValue(`$${billCouponDB.amountOff}`);
+                    } else {
+                        setDiscountedPrice(totalPrice - (totalPrice * (billCouponDB.percentOff / 100)));
+                        setValue(`${billCouponDB.percentOff}%`);
+                    }
+                }
+                if (billCouponDB) setBillCoupon(billCouponDB);
+                if (productCouponDB) setProductCoupon(productCouponDB);
+                setCartTotal(totalPrice);
                 setCouponButton({ text: 'Coupon Applied', disabled: true });
                 setTimeout(() => {
                     setCouponButton({ text: 'Apply Coupon', disabled: false });
@@ -450,40 +578,40 @@ function Cart(props) {
                     <>
                         <div className="margin-global-top-3" />
                         <Delivery
-                            firstName={firstName}
-                            setFirstName={setFirstName}
-                            lastName={lastName}
-                            setLastName={setLastName}
+                            // firstName={firstName}
+                            // setFirstName={setFirstName}
+                            // lastName={lastName}
+                            // setLastName={setLastName}
                             email={email}
                             setEmail={setEmail}
-                            contactNumber={contactNumber}
-                            setContactNumber={setContactNumber}
-                            state={state}
-                            setState={setState}
-                            stateList={stateList}
-                            setStateList={setStateList}
-                            stateLoading={stateLoading}
-                            setStateLoading={setStateLoading}
-                            city={city}
-                            setCity={setCity}
-                            cityList={cityList}
-                            setCityList={setCityList}
-                            cityLoading={cityLoading}
-                            setCityLoading={setCityLoading}
-                            addressLine1={addressLine1}
-                            setAddressLine1={setAddressLine1}
-                            addressLine2={addressLine2}
-                            setAddressLine2={setAddressLine2}
-                            landmark={landmark}
-                            setLandmark={setLandmark}
-                            zipCode={zipCode}
-                            setZipCode={setZipCode}
+                            // contactNumber={contactNumber}
+                            // setContactNumber={setContactNumber}
+                            // state={state}
+                            // setState={setState}
+                            // stateList={stateList}
+                            // setStateList={setStateList}
+                            // stateLoading={stateLoading}
+                            // setStateLoading={setStateLoading}
+                            // city={city}
+                            // setCity={setCity}
+                            // cityList={cityList}
+                            // setCityList={setCityList}
+                            // cityLoading={cityLoading}
+                            // setCityLoading={setCityLoading}
+                            // addressLine1={addressLine1}
+                            // setAddressLine1={setAddressLine1}
+                            // addressLine2={addressLine2}
+                            // setAddressLine2={setAddressLine2}
+                            // landmark={landmark}
+                            // setLandmark={setLandmark}
+                            // zipCode={zipCode}
+                            // setZipCode={setZipCode}
                         />
                         <Form onSubmit={onSubmit} className="form-style ">
                             <div className="justify-content-center">
                                 <Col>
                                     <Button className="center-relative-horizontal-fit-content" disabled={disable} type="submit">
-                                        Submit
+                                        Checkout
                                     </Button>
                                 </Col>
                             </div>

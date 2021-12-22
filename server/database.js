@@ -81,7 +81,8 @@ async function main() {
     if (command === 'create') {
         createMysqlDatabase(databaseName);
     } else if (command === 'migrate') {
-        runCommand('npx sequelize-cli db:migrate');
+        // runCommand('npx sequelize-cli db:migrate');
+        runCommand('sequelize-cli db:migrate');
     } else if (command === 'drop') {
         dropDatabase(databaseName);
     } else if (command === 'populate') {

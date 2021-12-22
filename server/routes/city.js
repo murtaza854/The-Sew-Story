@@ -34,7 +34,6 @@ router.post('/getById', async (req, res) => {
         const city = await cityController.getById(id);
         res.json({ data: city });
     } catch (error) {
-        console.log(error);
         res.json({ data: [], error: error.message });
     }
 });

@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
   price.init({
     amount: DataTypes.FLOAT,
     product_id: DataTypes.STRING,
-    active: DataTypes.BOOLEAN
+    active: DataTypes.BOOLEAN,
+    taxBehavior: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'price',

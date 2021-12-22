@@ -50,7 +50,7 @@ module.exports = {
                 },
                 {
                     model: Price,
-                    attributes: ['amount', 'active'],
+                    attributes: ['amount', 'active', 'taxBehavior'],
                     as: 'prices',
                     where: {
                         active: true
@@ -164,7 +164,7 @@ module.exports = {
                 },
                 {
                     model: Price,
-                    attributes: ['id', 'amount', 'active'],
+                    attributes: ['id', 'amount', 'active', 'taxBehavior'],
                     as: 'prices'
                 },
                 {
@@ -280,7 +280,7 @@ module.exports = {
                 },
                 {
                     model: Price,
-                    attributes: ['id', 'amount', 'active'],
+                    attributes: ['id', 'amount', 'active', 'taxBehavior'],
                     as: 'prices',
                     where: {
                         active: true
@@ -384,7 +384,6 @@ module.exports = {
         }
     },
     update(params) {
-        // console.log('params', params);
         const updateValues = {},
             updateKeys = ['name', 'slug', 'image', 'productCode', 'story', 'storyImageFileName', 'storyImagePath', 'storyWrittenBy', 'quantity', 'active', 'category_id', 'shortDescription'];
         updateKeys.forEach(function (key) {

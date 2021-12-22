@@ -3,13 +3,17 @@ const promotionCodeController = require('../controllers').promotionCode;
 const dotenv = require('dotenv');
 dotenv.config();
 
+const firebaseFile = require('../firebase');
+// const firebase = firebaseFile.firebase;
+const firebaseAdmin = firebaseFile.admin;
+
 const {
     STRIPE_SECRET_KEY,
     STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
-// const stripe = require("stripe")(STRIPE_SECRET_KEY);
-const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 router.get('/getAllPromotionCodes', async (req, res) => {
     try {
@@ -80,7 +84,7 @@ router.post('/add', async (req, res) => {
         params.restrictions.minimum_amount_currency = 'usd';
     }
     if (user) {
-        console.log(user);
+        console.log(user)
     }
     if (expiresAt) {
         params.expires_at = new Date(expiresAt);

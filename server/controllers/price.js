@@ -7,6 +7,7 @@ module.exports = {
             amount: params.amount,
             product_id: params.product_id,
             active: params.active,
+            taxBehavior: params.taxBehavior,
         })
             .then(function (data) {
                 return data;

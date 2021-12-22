@@ -41,4 +41,10 @@ export const headCells = [
     disablePadding: false,
     label: 'Promotion Codes',
   },
+  {
+    id: 'appliedToProducts',
+    numeric: false,
+    disablePadding: false,
+    label: 'Applied To Products',
+  },
 ];

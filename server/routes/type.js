@@ -15,7 +15,6 @@ router.post('/getById', async (req, res) => {
         const type = await typeController.getById(req.body.id);
         res.json({ data: type });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });
@@ -29,7 +28,6 @@ router.post('/add', async (req, res) => {
         );
         res.json({ data: obj });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });
@@ -43,7 +41,6 @@ router.post('/update', async (req, res) => {
         const editObj = await typeController.getById(req.body.id);
         res.json({ data: editObj });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });

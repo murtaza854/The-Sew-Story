@@ -56,7 +56,6 @@ module.exports = {
             attributes: ['id', 'name', 'slug', 'fileName', 'imagePath', 'comingSoon', 'active', 'homePage', 'ourStoryPage'],
         })
             .then(function (data) {
-                // console.log('data', data);
                 return data;
             });
     },

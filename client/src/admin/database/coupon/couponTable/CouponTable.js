@@ -193,6 +193,13 @@ export default function CouponTable(props) {
                                                     <CloseIcon />
                                                 )}
                                             </TableCell>
+                                            <TableCell>
+                                                {row.appliedToProducts ? (
+                                                    <CheckIcon />
+                                                ) : (
+                                                    <CloseIcon />
+                                                )}
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}

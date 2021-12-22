@@ -14,7 +14,7 @@ import './OrderMessage.scss';
 
 function OrderMessage(props) {
     const location = useLocation();
-    const [orderNumber, setOrderNumber] = React.useState('');
+    // const [orderNumber, setOrderNumber] = React.useState('');
     const cartCountFromContext = useContext(CartCountContext);
 
     const [OrderSuccess, setOrderSuccess] = React.useState(null);
@@ -41,12 +41,12 @@ function OrderMessage(props) {
             });
             const data = await response.json();
             if (data.success) {
-                setOrderNumber(data.orderNumber);
+                // setOrderNumber(data.orderNumber);
                 localStorage.removeItem('cartProducts');
                 cartCountFromContext.setCartCount(0);
                 setOrderSuccess(true);
             } else {
-                setOrderNumber(data.orderNumber);
+                // setOrderNumber(data.orderNumber);
                 localStorage.removeItem('cartProducts');
                 cartCountFromContext.setCartCount(0);
                 setOrderSuccess(false);
@@ -76,13 +76,13 @@ function OrderMessage(props) {
                                 </p>
                             </Col>
                         </Row>
-                        <Row>
+                        {/* <Row>
                             <Col>
                                 <p className="text-center">
                                     Your order number is: <span className="order-number bold-500">{orderNumber}</span>
                                 </p>
                             </Col>
-                        </Row>
+                        </Row> */}
                         <Row>
                             <Col>
                                 <p className="text-center margin-bottom-0">

@@ -1,52 +1,52 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Col, Container, Row, Form } from 'react-bootstrap';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+// import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import './Delivery.scss';
 // import { useHistory } from 'react-router';
 // import CartCountContext from '../../../../contexts/cartCountContext';
-import api from '../../../../api';
+// import api from '../../../../api';
 import { Heading } from '../../../../components';
 
 function Delivery(props) {
     // const user = useContext(UserContext);
     const {
-        firstName,
-        setFirstName,
-        lastName,
-        setLastName,
+        // firstName,
+        // setFirstName,
+        // lastName,
+        // setLastName,
         email,
         setEmail,
-        contactNumber,
-        setContactNumber,
-        addressLine1,
-        setAddressLine1,
-        addressLine2,
-        setAddressLine2,
-        zipCode,
-        setZipCode,
-        state,
-        setState,
-        stateList,
-        setStateList,
-        stateLoading,
-        setStateLoading,
-        city,
-        setCity,
-        cityList,
-        cityLoading,
-        setCityList,
-        setCityLoading,
+        // contactNumber,
+        // setContactNumber,
+        // addressLine1,
+        // setAddressLine1,
+        // addressLine2,
+        // setAddressLine2,
+        // zipCode,
+        // setZipCode,
+        // state,
+        // setState,
+        // stateList,
+        // setStateList,
+        // stateLoading,
+        // setStateLoading,
+        // city,
+        // setCity,
+        // cityList,
+        // cityLoading,
+        // setCityList,
+        // setCityLoading,
     } = props;
     // const history = useHistory();
 
-    const changeFirstName = event => {
-        if (event.target.value === '') setFirstName({ name: event.target.value, errorText: 'First name is required!', error: true });
-        else setFirstName({ name: event.target.value, errorText: '', error: false });
-    }
-    const changeLastName = event => {
-        if (event.target.value === '') setLastName({ name: event.target.value, errorText: 'Last name is required!', error: true });
-        else setLastName({ name: event.target.value, errorText: '', error: false });
-    }
+    // const changeFirstName = event => {
+    //     if (event.target.value === '') setFirstName({ name: event.target.value, errorText: 'First name is required!', error: true });
+    //     else setFirstName({ name: event.target.value, errorText: '', error: false });
+    // }
+    // const changeLastName = event => {
+    //     if (event.target.value === '') setLastName({ name: event.target.value, errorText: 'Last name is required!', error: true });
+    //     else setLastName({ name: event.target.value, errorText: '', error: false });
+    // }
     const changeEmail = event => {
         const mailformat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
         if (event.target.value === '') setEmail({ name: '', errorText: 'Email address is required!', error: true });
@@ -54,100 +54,99 @@ function Delivery(props) {
         else setEmail({ name: event.target.value, errorText: '', error: false });
     }
 
-    function formatPhoneNumber(phoneNumberString) {
-        var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
-        var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
-        if (match) {
-            var intlCode = (match[1] ? '+1 ' : '');
-            return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
-        }
-        return null;
-    }
+    // function formatPhoneNumber(phoneNumberString) {
+    //     var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+    //     var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+    //     if (match) {
+    //         var intlCode = (match[1] ? '+1 ' : '');
+    //         return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+    //     }
+    //     return null;
+    // }
 
-    const changeContactNumber = event => {
-        const phoneNumber = formatPhoneNumber(event.target.value);
-        if (phoneNumber === null) setContactNumber({ name: event.target.value, errorText: 'Please enter a valid phone number!', error: true });
-        else setContactNumber({ name: phoneNumber, errorText: '', error: false });
-    }
+    // const changeContactNumber = event => {
+    //     const phoneNumber = formatPhoneNumber(event.target.value);
+    //     if (phoneNumber === null) setContactNumber({ name: event.target.value, errorText: 'Please enter a valid phone number!', error: true });
+    //     else setContactNumber({ name: phoneNumber, errorText: '', error: false });
+    // }
 
-    const changeState = async array => {
-        if (array.length === 0) {
-            setState({ value: array, error: true, errortext: 'State is required!', readOnly: false });
-            setCity({ value: [], error: false, errortext: '', readOnly: true });
-        }
-        else {
-            setState({ value: array, error: false, errortext: '', readOnly: false });
-            setCity({ value: [], error: false, errortext: '', readOnly: false });
-        }
-    }
-    const handleStateSearch = async (query) => {
-        setStateLoading(true);
-        setStateList([]);
-        const response = await fetch(`${api}/state/get-states-search?stateText=${query}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-store'
-            },
-            credentials: 'include',
-            withCredentials: true,
-        });
-        const content = await response.json();
-        setTimeout(() => {
-            setStateList(content.data);
-            setStateLoading(false);
-        }, 1000)
-    };
-    const filterByState = () => true;
+    // const changeState = async array => {
+    //     if (array.length === 0) {
+    //         setState({ value: array, error: true, errortext: 'State is required!', readOnly: false });
+    //         setCity({ value: [], error: false, errortext: '', readOnly: true });
+    //     }
+    //     else {
+    //         setState({ value: array, error: false, errortext: '', readOnly: false });
+    //         setCity({ value: [], error: false, errortext: '', readOnly: false });
+    //     }
+    // }
+    // const handleStateSearch = async (query) => {
+    //     setStateLoading(true);
+    //     setStateList([]);
+    //     const response = await fetch(`${api}/state/get-states-search?stateText=${query}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Cache-Control': 'no-store'
+    //         },
+    //         credentials: 'include',
+    //         withCredentials: true,
+    //     });
+    //     const content = await response.json();
+    //     setTimeout(() => {
+    //         setStateList(content.data);
+    //         setStateLoading(false);
+    //     }, 1000)
+    // };
+    // const filterByState = () => true;
 
-    const changeCity = async array => {
-        if (array.length === 0) {
-            setCity({ value: array, error: true, errortext: 'City is required!', readOnly: false });
-        }
-        else {
-            setCity({ value: array, error: false, errortext: '', readOnly: false });
-        }
-    }
-    const handleCitySearch = async (query) => {
-        setCityLoading(true);
-        setCityList([]);
-        const response = await fetch(`${api}/city/get-cities-search?cityText=${query}&states=${JSON.stringify(state.value)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-store'
-            },
-            credentials: 'include',
-            withCredentials: true,
-        });
-        const content = await response.json();
-        setTimeout(() => {
-            setCityList(content.data);
-            setCityLoading(false);
-        }, 1000)
-    };
-    const filterByCity = () => true;
+    // const changeCity = async array => {
+    //     if (array.length === 0) {
+    //         setCity({ value: array, error: true, errortext: 'City is required!', readOnly: false });
+    //     }
+    //     else {
+    //         setCity({ value: array, error: false, errortext: '', readOnly: false });
+    //     }
+    // }
+    // const handleCitySearch = async (query) => {
+    //     setCityLoading(true);
+    //     setCityList([]);
+    //     const response = await fetch(`${api}/city/get-cities-search?cityText=${query}&states=${JSON.stringify(state.value)}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Cache-Control': 'no-store'
+    //         },
+    //         credentials: 'include',
+    //         withCredentials: true,
+    //     });
+    //     const content = await response.json();
+    //     setTimeout(() => {
+    //         setCityList(content.data);
+    //         setCityLoading(false);
+    //     }, 1000)
+    // };
+    // const filterByCity = () => true;
 
-    const handleAddressLine1 = event => {
-        if (event.target.value === '') setAddressLine1({ text: event.target.value, errorText: 'Address line 1 is required!', error: true });
-        else setAddressLine1({ text: event.target.value, errorText: '', error: false });
-    }
-    const handleAddressLine2 = event => {
-        setAddressLine2({ text: event.target.value });
-    }
-    const changeZipCode = event => {
-        const zipCodeFormat = /^[0-9]{5}(?:-[0-9]{4})?$/;
-        if (event.target.value === '') setZipCode({ text: event.target.value, errorText: 'Zip code is required!', error: true });
-        else if (!event.target.value.match(zipCodeFormat)) setZipCode({ text: event.target.value, errorText: 'Please enter a valid zip code!', error: true });
-        else setZipCode({ text: event.target.value, errorText: '', error: false });
-    }
+    // const handleAddressLine1 = event => {
+    //     if (event.target.value === '') setAddressLine1({ text: event.target.value, errorText: 'Address line 1 is required!', error: true });
+    //     else setAddressLine1({ text: event.target.value, errorText: '', error: false });
+    // }
+    // const handleAddressLine2 = event => {
+    //     setAddressLine2({ text: event.target.value });
+    // }
+    // const changeZipCode = event => {
+    //     const zipCodeFormat = /^[0-9]{5}(?:-[0-9]{4})?$/;
+    //     if (event.target.value === '') setZipCode({ text: event.target.value, errorText: 'Zip code is required!', error: true });
+    //     else if (!event.target.value.match(zipCodeFormat)) setZipCode({ text: event.target.value, errorText: 'Please enter a valid zip code!', error: true });
+    //     else setZipCode({ text: event.target.value, errorText: '', error: false });
+    // }
 
     // useEffect(() => {
     //     window.scrollTo(0, 0);
     // }, []);
     // const onSubmit = e => {
     //     e.preventDefault();
-    //     // console.log(logo.picturePreview);
     //     localStorage.setItem('delivery', JSON.stringify({
     //         state: state.value,
     //         city: city.value,
@@ -164,7 +163,7 @@ function Delivery(props) {
             <Row>
                 <Col>
                     <Heading
-                        text="Delivery Details"
+                        text="Customer Email"
                         className="text-center margin-global-top-3"
                     />
                 </Col>
@@ -178,7 +177,7 @@ function Delivery(props) {
                         style={{ display: 'none' }}
                         readOnly={true}
                     />
-                    <Row className="justify-content-between">
+                    {/* <Row className="justify-content-between">
                         <Form.Group className="form-group-rght" as={Col} md={6} controlId="firstName">
                             <Form.Label>First Name</Form.Label>
                             <Form.Control
@@ -203,8 +202,8 @@ function Delivery(props) {
                             <div className="error-text">{lastName.errorText}</div>
                         </Form.Group>
                     </Row>
-                    <div className="margin-global-top-2" />
-                    <Row className="justify-content-between">
+                    <div className="margin-global-top-2" /> */}
+                    <Row className="justify-content-center">
                         <Form.Group className="form-group-rght" as={Col} md={6} controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -216,7 +215,7 @@ function Delivery(props) {
                             />
                             <div className="error-text">{email.errorText}</div>
                         </Form.Group>
-                        <div className="margin-global-top-2 unhide-768" />
+                        {/* <div className="margin-global-top-2 unhide-768" />
                         <Form.Group className="form-group-rght" as={Col} md={6} controlId="contactNumber">
                             <Form.Label>Contact Number</Form.Label>
                             <Form.Control
@@ -226,10 +225,10 @@ function Delivery(props) {
                                 value={contactNumber.name}
                             />
                             <div className="error-text">{contactNumber.errorText}</div>
-                        </Form.Group>
+                        </Form.Group> */}
                     </Row>
-                    <div className="margin-global-top-2" />
-                    <Row className="justify-content-between">
+                    {/* <div className="margin-global-top-2" /> */}
+                    {/* <Row className="justify-content-between">
                         <Form.Group as={Col} md={6} controlId="state">
                             <Form.Label>State</Form.Label>
                             <AsyncTypeahead
@@ -313,7 +312,7 @@ function Delivery(props) {
                                 value={addressLine2.text}
                             />
                         </Form.Group>
-                    </Row>
+                    </Row> */}
                     {/* <div className="margin-global-top-2" />
                     <Row className="justify-content-center">
                         <Button disabled={disable} type="submit">

@@ -12,7 +12,6 @@ function Admin(props) {
     const [adminState, setAdminState] = useState(null);
     const [loading, setLoading] = useState(true);
     const admin = useContext(AdminContext);
-    // console.log(user);
     const darkTheme = createTheme({
         palette: {
             type: 'dark',

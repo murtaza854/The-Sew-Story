@@ -64,7 +64,6 @@ router.post('/getById', async (req, res) => {
         const category = await categoryController.getById(req.body.id);
         res.json({ data: category });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });
@@ -86,7 +85,6 @@ router.post('/add', upload.single('image'), async (req, res) => {
         );
         res.json({ data: obj });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });
@@ -112,7 +110,6 @@ router.post('/updateWithImage', upload.single('image'), async (req, res) => {
         const editObj = await categoryController.getById(data.id);
         res.json({ data: editObj });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });
@@ -131,7 +128,6 @@ router.post('/updateWithoutImage', async (req, res) => {
         const editObj = await categoryController.getById(req.body.id);
         res.json({ data: editObj });
     } catch (error) {
-        console.log(error);
         res.json({ data: null, error: error });
     }
 });

@@ -14,13 +14,12 @@ const {
     STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
-// const stripe = require("stripe")(STRIPE_SECRET_KEY);
-const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 router.post("/cartProducts", async (req, res) => {
     const { cartProducts } = req.body;
     // convert array of objects to array of slugs
-    console.log(cartProducts);
     const slugs = cartProducts.map(product => product.slug);
     try {
         const products = await productController.getProducts(slugs);
@@ -33,8 +32,6 @@ router.post("/cartProducts", async (req, res) => {
 
 router.post("/payment", async (req, res) => {
     const { product } = req.body;
-    console.log(123);
-    console.log(product);
     // const session = await stripe.checkout.sessions.create({
     //     payment_method_types: ["card"],
     //     line_items: [
@@ -114,12 +111,10 @@ router.post('/confirmOrder', async (req, res) => {
                     price_per_unit: product['prices.amount'],
                 });
                 // const stripeProduct = await stripe.products.retrieve(product.id);
-                // console.log(stripeProduct);
                 // const prices = await stripe.prices.list({
                 //     product: product.id,
                 //     active: true,
                 // });
-                // console.log(prices);
                 // const price = prices.data[0];
                 // await stripe.invoiceItems.create({
                 //     customer: newCustomer.id,
@@ -179,8 +174,6 @@ const calculateOrderAmount = async (items, products) => {
         for (let index = 0; index < items.length; index++) {
             const item = items[index];
             const product = products.find(product => product.slug === item.slug);
-            console.log(product);
-            console.log(item);
             if (product.active === 0) {
                 throw new Error('Product is not available. Please update your cart.');
             };
@@ -219,7 +212,6 @@ router.post("/create-payment-intent", async (req, res) => {
             clientSecret: paymentIntent.client_secret,
         });
     } catch (error) {
-        console.log(errorMessage);
         res.json({ error: errorMessage.message });
     }
 });

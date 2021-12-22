@@ -41,7 +41,7 @@ module.exports = {
     },
     getAllClient() {
         return Coupon.findAll({
-            attributes: ['name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes', 'timesRedeeemed'],
+            attributes: ['id', 'name', 'type', 'amountOff', 'percentOff', 'redeemBy', 'maxRedemptions', 'appliedToProducts', 'hasPromotionCodes', 'timesRedeeemed'],
             where: {
                 hasPromotionCodes: false,
             },
@@ -64,7 +64,6 @@ module.exports = {
                 return data;
             })
             .catch(function (error) {
-                console.log(error);
             });
     },
     getById(id) {

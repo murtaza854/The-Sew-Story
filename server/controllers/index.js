@@ -14,6 +14,7 @@ const coupon = require('./coupon');
 const promotionCode = require('./promotionCode');
 const orderCoupon = require('./orderCoupon');
 const productCoupon = require('./productCoupon');
+const shippingRate = require('./shippingRate');
 
 module.exports = {
     user,
@@ -31,5 +32,6 @@ module.exports = {
     coupon,
     promotionCode,
     orderCoupon,
-    productCoupon
+    productCoupon,
+    shippingRate
 };

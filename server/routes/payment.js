@@ -7,6 +7,7 @@ const stateController = require('../controllers').state;
 const userController = require('../controllers').user;
 const couponController = require('../controllers').coupon;
 const orderCouponController = require('../controllers').orderCoupon;
+const ShippingRate = require('../controllers').shippingRate;
 const firebaseFile = require('../firebase');
 const shipstationAPI = require('node-shipstation');
 const firebaseAdmin = firebaseFile.admin;
@@ -34,31 +35,29 @@ const shipstation = new shipstationAPI(
     SHIPSTATION_API_KEY,
     SHIPSTATION_API_KEY_SECRET);
 
-// const stripe = require("stripe")(STRIPE_SECRET_KEY);
-const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 router.post('/create', async (req, res) => {
     const {
         deliveryDetails,
-        items
+        items,
+        coupons
     } = req.body;
     const {
-        firstName,
-        lastName,
+    //     firstName,
+    //     lastName,
         email,
-        contactNumber,
-        city,
-        addressLine1,
-        addressLine2,
-        zipCode,
-        cartTotal,
+    //     contactNumber,
+    //     city,
+    //     addressLine1,
+    //     addressLine2,
+    //     zipCode,
+    //     cartTotal,
     } = deliveryDetails;
-    // console.log(req.body);
     const sessionCookie = req.cookies.session || null;
-    // console.log(sessionCookie);
     const slugs = items.map(product => product.slug);
     const products = await productController.getProductsCartID(slugs);
-    // console.log(products);
     const line_items = [];
     for (let i = 0; i < products.length; i++) {
         const product = products[i];
@@ -81,192 +80,233 @@ router.post('/create', async (req, res) => {
             }
         }
     }
-    // console.log(await stripe.products.list({
-    //   }));
-    const state = await stateController.getStatebyId(city[0].state_id);
-    if (!sessionCookie) {
-        const customer = await stripe.customers.create({
-            name: `${firstName} ${lastName}`,
-            email,
-            phone: contactNumber,
-            address: {
-                line1: addressLine1,
-                line2: addressLine2,
-                postal_code: zipCode,
-                country: 'US',
-                city: city[0].name,
-                state: state.name,
-            },
-            shipping: {
-                name: `${firstName} ${lastName}`,
-                address: {
-                    line1: addressLine1,
-                    line2: addressLine2,
-                    postal_code: zipCode,
-                    country: 'US',
-                    city: city[0].name,
-                    state: state.name,
-                },
-                phone: contactNumber,
-            },
-        });
-        const coupons = await couponController.getAll();
-        let coupon = null;
-        for (let i = 0; i < coupons.length; i++) {
-            const couponFromArray = coupons[i].dataValues;
-            if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
-                coupon = couponFromArray;
-                break;
-            }
+    // const state = await stateController.getStatebyId(city[0].state_id);
+    // const shippingRates = await ShippingRate.getAllID();
+    const shippingRatesStripe = await stripe.shippingRates.list({
+        active: true,
+    });
+    const shippingRates = shippingRatesStripe.data.map(shippingRate => {
+        return {
+            // shipping_amount: shippingRate.fixed_amount,
+            shipping_rate: shippingRate.id
         }
-        if (!coupon && coupons.length > 0 && !coupons[0].dataValues.redeemBy) coupon = coupons[0].dataValues;
+    });
+    if (!sessionCookie) {
+        // const customer = await stripe.customers.create({
+        //     name: `${firstName} ${lastName}`,
+        //     email,
+        //     phone: contactNumber,
+        //     address: {
+        //         line1: addressLine1,
+        //         line2: addressLine2,
+        //         postal_code: zipCode,
+        //         country: 'US',
+        //         city: city[0].name,
+        //         state: state.name,
+        //     },
+        //     shipping: {
+        //         name: `${firstName} ${lastName}`,
+        //         address: {
+        //             line1: addressLine1,
+        //             line2: addressLine2,
+        //             postal_code: zipCode,
+        //             country: 'US',
+        //             city: city[0].name,
+        //             state: state.name,
+        //         },
+        //         phone: contactNumber,
+        //     },
+        // });
+        // const coupons = await couponController.getAll();
+        // let coupon = null;
+        // for (let i = 0; i < coupons.length; i++) {
+        //     const couponFromArray = coupons[i].dataValues;
+        //     if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
+        //         coupon = couponFromArray;
+        //         break;
+        //     }
+        // }
+        // if (!coupon && coupons.length > 0 && !coupons[0].dataValues.redeemBy) coupon = coupons[0].dataValues;
         const params = {
             // currency: 'usd',
             payment_method_types: ['card'],
-            customer: customer.id,
+            // customer: customer.id,
+            customer_email: email,
             line_items: line_items,
             mode: 'payment',
             success_url: `${API_URL1}/order/status?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${API_URL1}/order/status`,
-            // automatic_tax: { enabled: true },
+            automatic_tax: { enabled: true },
+            phone_number_collection: {
+                enabled: true,
+            },
+            shipping_address_collection: {
+                allowed_countries: ['US'],
+            },
+            shipping_options: shippingRates,
         };
-        if (coupon) {
+        if (coupons.productCoupon) {
             params.discounts = [];
             params.discounts.push({
-                coupon: coupon.id,
+                coupon: coupons.productCoupon.id
             });
         }
+        if (coupons.billCoupon) {
+            if ('discounts' in params) {
+                params.discounts.push({
+                    coupon: coupons.billCoupon.id
+                });
+            } else {
+                params.discounts = [];
+                params.discounts.push({
+                    coupon: coupons.billCoupon.id
+                });
+            }
+        }
+        // if (coupons) {
+            // params.discounts = [];
+            // params.discounts.push({
+            //     coupon: coupon.id,
+            // });
+        // }
         const session = await stripe.checkout.sessions.create(params);
-        res.json({ session: session, coupons });
+        res.json({ session: session });
     } else {
         const user = await firebaseAdmin.auth().verifySessionCookie(sessionCookie, true);
         const userData = await userController.findByUid({
             uid: user.uid,
         });
         const stripe_customer_id = userData.dataValues.stripe_id;
-        await stripe.customers.update(stripe_customer_id, {
-            name: `${firstName} ${lastName}`,
-            phone: contactNumber,
-            address: {
-                line1: addressLine1,
-                line2: addressLine2,
-                postal_code: zipCode,
-                country: 'US',
-                city: city[0].name,
-                state: state.name,
-            },
-            shipping: {
-                name: `${firstName} ${lastName}`,
-                address: {
-                    line1: addressLine1,
-                    line2: addressLine2,
-                    postal_code: zipCode,
-                    country: 'US',
-                    city: city[0].name,
-                    state: state.name,
-                },
-                phone: contactNumber,
-            },
-        });
-        const coupons = await couponController.getAll();
-        let coupon = null;
-        for (let i = 0; i < coupons.length; i++) {
-            const couponFromArray = coupons[i].dataValues;
-            if (couponFromArray.redeemBy && new Date(couponFromArray.redeemBy) >= new Date()) {
-                coupon = couponFromArray;
-                break;
-            }
-        }
-        if (!coupon && coupons.length > 0 && !coupons[0].dataValues.redeemBy) coupon = coupons[0].dataValues;
+        // await stripe.customers.update(stripe_customer_id, {
+        //     name: `${firstName} ${lastName}`,
+        //     phone: contactNumber,
+        //     address: {
+        //         line1: addressLine1,
+        //         line2: addressLine2,
+        //         postal_code: zipCode,
+        //         country: 'US',
+        //         city: city[0].name,
+        //         state: state.name,
+        //     },
+        //     shipping: {
+        //         name: `${firstName} ${lastName}`,
+        //         address: {
+        //             line1: addressLine1,
+        //             line2: addressLine2,
+        //             postal_code: zipCode,
+        //             country: 'US',
+        //             city: city[0].name,
+        //             state: state.name,
+        //         },
+        //         phone: contactNumber,
+        //     },
+        // });
         const params = {
             // currency: 'usd',
             payment_method_types: ['card'],
-            customer: customer.id,
+            customer: stripe_customer_id,
             line_items: line_items,
             mode: 'payment',
-            success_url: `${API_URL1}/order/status?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${API_URL1}/order/status`,
-            // automatic_tax: { enabled: true },
+            // success_url: `${API_URL1}/order/status?session_id={CHECKOUT_SESSION_ID}`,
+            // cancel_url: `${API_URL1}/order/status`,
+            success_url: `${API_URL3}/order/status?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${API_URL3}/order/status`,
+            automatic_tax: { enabled: true },
+            phone_number_collection: {
+                enabled: true,
+            },
+            shipping_address_collection: {
+                allowed_countries: ['US'],
+            },
+            shipping_options: shippingRates,
         };
-        if (coupon) {
+        if (coupons.productCoupon) {
             params.discounts = [];
             params.discounts.push({
-                coupon: coupon.id,
+                coupon: coupons.productCoupon.id
             });
         }
+        if (coupons.billCoupon) {
+            if ('discounts' in params) {
+                params.discounts.push({
+                    coupon: coupons.billCoupon.id
+                });
+            } else {
+                params.discounts = [];
+                params.discounts.push({
+                    coupon: coupons.billCoupon.id
+                });
+            }
+        }
         const session = await stripe.checkout.sessions.create(params);
-        res.json({ session: session, coupons });
+        res.json({ session: session });
     }
 });
 
 router.post('/create-order', async (req, res) => {
     const {
         sessionID,
-        cartProducts,
-        coupon
+        cartProducts
     } = req.body;
     if (cartProducts) {
         const session = await stripe.checkout.sessions.retrieve(sessionID);
-        const {
-            customer,
-            amount_subtotal,
-            amount_total
-        } = session;
-        const stripe_customer = await stripe.customers.retrieve(customer);
-        const {
-            name,
-            email,
-            phone,
-            address
-        } = stripe_customer;
-        const states = await stateController.getAllStatesByName(address.state);
-        const stateIDs = states.map(state => state.id);
-        const city = await cityController.getCityByNameAndStateIds(address.city, stateIDs);
-        const orderNumber = await generateOrderNumber();
-        const userID = await userController.getUserIDByStripeID(stripe_customer.id);
-        await orderController.create({
-            orderNumber: orderNumber,
-            orderStatus: 'Processing',
-            orderDate: new Date(),
-            firstName: name.split(' ')[0],
-            lastName: name.split(' ')[1],
-            email,
-            contactNumber: phone,
-            addressLine1: address.line1,
-            addressLine2: address.line2,
-            city_id: city.id,
-            zipCode: address.postal_code,
-            amountSubtotal: amount_subtotal,
-            orderTotal: amount_total,
-            user_id: userID ? userID.id : null,
-            stripe_sessionID: sessionID,
-            coupon_id: coupon ? coupon : null,
-        });
-        if (coupon) {
-            await orderCouponController.create({
-                order_id: orderNumber,
-                coupon_id: coupon,
-            });
-        }
+        // console.log(session);
+        // const {
+        //     customer,
+        //     amount_subtotal,
+        //     amount_total,
+        //     payment_status,
+        //     shipping,
+        //     shipping_rate,
+        //     total_details
+        // } = session;
+        // const stripe_customer = await stripe.customers.retrieve(customer);
+        // const states = await stateController.getAllStatesByName(address.state);
+        // const stateIDs = states.map(state => state.id);
+        // const city = await cityController.getCityByNameAndStateIds(address.city, stateIDs);
+        // const orderNumber = await generateOrderNumber();
+        // const userID = await userController.getUserIDByStripeID(stripe_customer.id);
+        // await orderController.create({
+        //     orderNumber: orderNumber,
+        //     orderStatus: payment_status,
+        //     orderDate: new Date(),
+        //     firstName: stripe_customer.name.split(' ')[0],
+        //     lastName: stripe_customer.name.split(' ')[1],
+        //     email: stripe_customer.email,
+        //     contactNumber: stripe_customer.phone,
+        //     addressLine1: shipping.address.line1,
+        //     addressLine2: shipping.address.line2,
+        //     city: shipping.address.city,
+        //     state: shipping.address.state,
+        //     zipCode: shipping.address.postal_code,
+        //     amountSubtotal: amount_subtotal,
+        //     orderTotal: amount_total,
+        //     user_id: userID ? userID.id : null,
+        //     stripe_sessionID: sessionID,
+        //     coupon_id: coupon ? coupon : null,
+        //     shippingRateId: shipping_rate,
+        // });
+        // if (coupon) {
+        //     await orderCouponController.create({
+        //         order_id: orderNumber,
+        //         coupon_id: coupon,
+        //     });
+        // }
         const slugs = cartProducts.map(product => product.slug);
         const products = await productController.getProductsCartID(slugs);
         products.forEach(async product => {
-            await orderItemController.create({
-                order_id: orderNumber,
-                product_id: product.id,
-                price_per_unit: product['prices.amount'],
-                quantity: cartProducts.find(cartProduct => cartProduct.slug === product.slug).quantity,
-            });
+            // await orderItemController.create({
+            //     order_id: orderNumber,
+            //     product_id: product.id,
+            //     price_per_unit: product['prices.amount'],
+            //     quantity: cartProducts.find(cartProduct => cartProduct.slug === product.slug).quantity,
+            // });
             await productController.updateQuantity(product.id, product.quantity - cartProducts.find(cartProduct => cartProduct.slug === product.slug).quantity);
         });
-        res.json({ success: true, orderNumber });
+        res.json({ success: true });
     } else {
-        console.log('no products');
         res.json({ success: false });
     }
-    // console.log(session);
-    // console.log(cartProducts);
-    // console.log(stripe_customer);
 });
 
 
@@ -282,7 +322,6 @@ const generateOrderNumber = async () => {
         const second = date.getSeconds();
         const milisecond = date.getMilliseconds();
         orderNumber = `${year}${month}${day}${hour}${minute}${second}${milisecond}`;
-        console.log(orderNumber);
         const order = await orderController.checkOrderNumber({ orderNumber: orderNumber });
         if (!order) {
             break;

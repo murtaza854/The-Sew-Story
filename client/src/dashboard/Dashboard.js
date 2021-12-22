@@ -33,7 +33,6 @@ function Dashboard(props) {
                     },
                 });
                 const content = await response.json();
-                console.log(content);
                 setLoggedInUser(content.data);
             }
         })()

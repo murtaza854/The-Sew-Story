@@ -28,7 +28,6 @@ function CityForm(props) {
                     const content = await response.json();
                     if (content.data) {
                         const { data } = content;
-                        console.log(data);
                         setName({ value: data.name, error: false, helperText: 'Enter a name Ex. Eldridge' });
                         setCheckBoxes({ active: data.active });
                         setDisabled(false);

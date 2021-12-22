@@ -4,83 +4,39 @@ import { Heading } from '../../components';
 import Box from '@mui/material/Box';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import api from '../../api'
 import './Gallery.scss';
 
 function Gallery(props) {
-    const itemData = [
-        {
-            img: 'Products/Product 1.jpeg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/Product 2.jpeg',
-            title: 'Chair',
-        },
-        {
-            img: 'Products/Product 3.jpeg',
-            title: 'Table',
-        },
-        {
-            img: 'Products/Product 4.jpeg',
-            title: 'Sofa',
-        },
-        {
-            img: 'Products/Product 5.jpeg',
-            title: 'Cupboard',
-        },
-        {
-            img: 'Products/Product 6.jpeg',
-            title: 'Wardrobe',
-        },
-        {
-            img: 'Products/Product 7.jpeg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/1.jpg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/2.jpg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/3.jpg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/4.jpg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/5.jpg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/Others 1.jpg',
-            title: 'Bed',
-        },
-        {
-            img: 'Products/Others 2.jpg',
-            title: 'Bed',
-        },
-        {
-            img: 'Story/Story 1.jpg',
-            title: 'Chair',
-        },
-        {
-            img: 'Story/Story 2.jpg',
-            title: 'Table',
-        },
-        {
-            img: 'Story/Story 3.jpg',
-            title: 'Sofa',
-        },
-    ];
+    const [itemData, setItemData] = React.useState([]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
         document.title = 'Gallery | The Sew Story';
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`${api}/gallery/getAll-client`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const body = await response.json();
+            const data = body.data;
+            const images = [];
+            data.forEach(item => {
+                const obj = 
+                {
+                    img: item.path,
+                    title: item.fileName,
+                }
+                images.push(obj);
+            });
+            setItemData(images);
+        };
+        fetchData();
     }, []);
 
     return (

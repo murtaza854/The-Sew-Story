@@ -9,8 +9,8 @@ const {
     STRIPE_SECRET_KEY_LIVE
 } = process.env;
 
-// const stripe = require("stripe")(STRIPE_SECRET_KEY);
-const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(STRIPE_SECRET_KEY_LIVE);
 
 router.get('/getAllCoupons', async (req, res) => {
     try {
@@ -66,7 +66,7 @@ router.post('/add', async (req, res) => {
     }
     if (appliedToProducts) {
         params.applies_to = {};
-        params.applies_to.products = products.map(product => product.id);
+        params.applies_to.products = products.map(product => product.value);
     }
     const coupon = await stripe.coupons.create(params);
     const couponDb = await couponController.create({

@@ -19,7 +19,6 @@ router.post('/send-password-reset-link', async (req, res) => {
         await sendPasswordResetEmail(auth, req.body.email);
         res.json({ data: true });
     } catch (error) {
-        console.log(error);
         res.json({ data: false });
     }
 });
